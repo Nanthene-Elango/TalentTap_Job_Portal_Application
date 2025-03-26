@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Login</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        .error-input {
+            border-color: #ff0000;
+        }
+        .error-message {
+            color: #ff0000;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-white flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md">
+        <form id="loginForm" class="bg-white shadow-lg rounded-lg px-12 pt-8 pb-10" novalidate>
+            <div class="flex justify-center mb-6">
+                <img src="./img/LOGO_TRANSPARENT.png" alt="TalentTap Logo" class="h-16">
+            </div>
+            <h2 class="text-center text-2xl font-bold mb-6">User Login</h2>
+            
+            <div class="mb-2">
+                <!-- <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                    Username or Email
+                </label> -->
+                <input 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2" 
+                    id="username" 
+                    name="username"
+                    type="text" 
+                    placeholder="Username or Email"
+                    required
+                    style="border-color: #5e17eb;"
+                >
+                <div id="usernameError" class="error-message" style="min-height: 3vh;"></div>
+            </div>
+            
+            <div class="mb-6">
+                <!-- <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    Password
+                </label> -->
+                <input 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2" 
+                    id="password" 
+                    name="password"
+                    type="password" 
+                    placeholder="Password"
+                    required
+                    minlength="8"
+                    style="border-color: #5e17eb;"
+                >
+                <div id="passwordError" class="error-message" style="min-height: 3vh;"></div>
+                <a href="#" class="text-sm" style="color: #5e17eb;">Forgot Password?</a>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <button 
+                    id="loginButton"
+                    class="w-full py-2 rounded focus:outline-none focus:shadow-outline text-white font-bold" 
+                    type="submit"
+                    style="background-color: #5e17eb;"
+                >
+                    Log In
+                </button>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-gray-600 text-sm">
+                    Don't have an account? 
+                    <a href="#" style="color: #5e17eb;">Sign Up</a>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Email regex validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            function validateUsername() {
+                const username = usernameInput.value.trim();
+                
+                if (username === '') {
+                    usernameError.textContent = 'Username or email is required';
+                    usernameInput.classList.add('error-input');
+                    return false;
+                }
+
+                // Check if it's a valid email or username
+                if (!emailRegex.test(username) && username.length < 3) {
+                    usernameError.textContent = 'Please enter a valid email or username';
+                    usernameInput.classList.add('error-input');
+                    return false;
+                }
+
+                usernameError.textContent = '';
+                usernameInput.classList.remove('error-input');
+                return true;
+            }
+
+            function validatePassword() {
+                const password = passwordInput.value;
+                
+                if (password === '') {
+                    passwordError.textContent = 'Password is required';
+                    passwordInput.classList.add('error-input');
+                    return false;
+                }
+
+                if (password.length < 8) {
+                    passwordError.textContent = 'Password must be at least 8 characters long';
+                    passwordInput.classList.add('error-input');
+                    return false;
+                }
+
+                passwordError.textContent = '';
+                passwordInput.classList.remove('error-input');
+                return true;
+            }
+
+            // Real-time validation
+            usernameInput.addEventListener('input', validateUsername);
+            passwordInput.addEventListener('input', validatePassword);
+
+            // Form submission validation
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const isUsernameValid = validateUsername();
+                const isPasswordValid = validatePassword();
+
+                if (isUsernameValid && isPasswordValid) {
+                    // Simulate login process
+                    alert('Login successful!');
+                    // In a real application, you would send the login request here
+                }
+            });
+        });
+    </script>
+</body>
+</html>
