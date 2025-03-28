@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | About Us</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assests/css/style.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 5rem 1rem;
+            background: linear-gradient(to right, #925cff, #c4a0ff);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-section img {
+            max-height: 80px;
+            width: auto;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section h2 {
+            font-weight: 700;
+            /* color: #5e17eb; */
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .value-card {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-primary {
+            background-color: #5e17eb;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #4812b8;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            overflow: hidden;
+            background: #fff;
+            padding: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .carousel {
+            display: flex;
+            animation: scroll 20s linear infinite;
+            width: max-content;
+        }
+
+        .carousel img {
+            height: 60px;
+            margin: 0 1.5rem;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+        }
+
+        .carousel img:hover {
+            filter: grayscale(0%);
+        }
+
+        @keyframes scroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .hero-section {
+                padding: 3rem 1rem;
+            }
+
+            .section h2 {
+                font-size: 1.75rem;
+            }
+
+            .values-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            .carousel img {
+                height: 50px;
+                margin: 0 1rem;
+            }
+
+            .navbar-nav {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .value-card {
+                padding: 1rem;
+            }
+
+            .btn-primary {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .carousel img {
+                height: 40px;
+                margin: 0 0.75rem;
+            }
+
+            .row>div {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .about-container {
+                padding: 10px;
+            }
+
+            .hero-section {
+                padding: 1.5rem 0.5rem;
+            }
+
+            .hero-section img {
+                max-height: 60px;
+            }
+
+            .hero-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-section p {
+                font-size: 0.9rem;
+            }
+
+            .section h2 {
+                font-size: 1.25rem;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .carousel img {
+                height: 30px;
+                margin: 0 0.5rem;
+            }
+
+            .btn-primary {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .d-flex.gap-3 {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    <script src="./js/util.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-4" id="nav-container">
+
+        </div>
+    </nav>
+
+    <div class="about-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <img src="./img/LOGO_TRANSPARENT.png" alt="TalentTap Logo">
+            <h1 class="fw-bold">Connecting Talent to Opportunity</h1>
+            <p class="fs-4">Your Career, Your Future – Tapped into Success</p>
+        </div>
+
+        <!-- Our Story -->
+        <div class="section">
+            <h2>How TalentTap Began?</h2>
+            <p>TalentTap was born from a simple idea: finding the right job or the perfect candidate shouldn’t be a
+                struggle. Founded by a team of innovators passionate about empowering people, we set out to create a
+                platform that simplifies the hiring process while celebrating talent in all its forms. Since our launch,
+                as of March 28, 2025, we’ve been committed to transforming the job market.</p>
+        </div>
+
+        <!-- What We Do -->
+        <div class="section">
+            <h2>Empowering Careers, Building Teams</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>For Job Seekers</h5>
+                    <p>Whether you’re a fresh graduate or a seasoned professional, TalentTap helps you discover jobs
+                        that match your skills, experience, and aspirations. From software engineers to digital
+                        marketers, we’ve got your next step covered.</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>For Employers</h5>
+                    <p>Looking for top talent? TalentTap connects you with verified candidates who fit your company’s
+                        vision. Build your dream team with ease and precision.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Values -->
+        <div class="section">
+            <h2>What Drives Us</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <h5>Innovation</h5>
+                    <p>We leverage cutting-edge technology to make job searching and hiring smarter.</p>
+                </div>
+                <div class="value-card">
+                    <h5>Inclusivity</h5>
+                    <p>Every talent deserves a chance, and every employer deserves the best fit.</p>
+                </div>
+                <div class="value-card">
+                    <h5>Simplicity</h5>
+                    <p>We streamline the process so you can focus on what matters – your career or your team.</p>
+                </div>
+                <div class="value-card">
+                    <h5>Trust</h5>
+                    <p>With secure verification and transparent processes, we build connections you can rely on.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why Choose TalentTap -->
+        <div class="section">
+            <h2>Why We Stand Out</h2>
+            <p>Unlike traditional job boards, TalentTap offers a personalized experience. Job seekers build detailed
+                profiles with skills and education, while employers provide in-depth company insights – ensuring the
+                perfect match every time. Our secure registration process keeps your journey safe and authentic. Over
+                10,000 jobs posted and 50,000+ connections made since launch!</p>
+        </div>
+
+        <!-- Company Logos Carousel -->
+        <div class="carousel-container">
+            <div class="carousel">
+                <img src="https://logo.clearbit.com/google.com" alt="Google">
+                <img src="https://logo.clearbit.com/Adobe.com" alt="Adobe">
+                <img src="https://logo.clearbit.com/amazon.com" alt="Amazon">
+                <img src="https://logo.clearbit.com/Zomato.com" alt="Zomato">
+                <img src="https://logo.clearbit.com/tcs.com" alt="TCS">
+                <img src="https://logo.clearbit.com/Infosys.com" alt="Infosys">
+                <!-- Duplicates for seamless loop -->
+                <img src="https://logo.clearbit.com/google.com" alt="Google">
+                <img src="https://logo.clearbit.com/Adobe.com" alt="Adobe">
+                <img src="https://logo.clearbit.com/amazon.com" alt="Amazon">
+                <img src="https://logo.clearbit.com/Zomato.com" alt="Zomato">
+                <img src="https://logo.clearbit.com/tcs.com" alt="TCS">
+                <img src="https://logo.clearbit.com/Infosys.com" alt="Infosys">
+
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="section text-center">
+            <h2>Join the TalentTap Community</h2>
+            <p>Ready to tap into your next opportunity or find the talent your company needs? Sign up today and let’s
+                build something amazing together.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="btn btn-violet">Sign Up as a Job Seeker</a>
+                <a href="#" class="btn btn-violet">Register as an Employer</a>
+            </div>
+            <p class="mt-3">Questions? Contact us at <a class="text-violet"
+                    href="mailto:support@talenttap.com">support@talenttap.com</a></p>
+        </div>
+    </div>
+
+
+    <footer class="footer bg-dark text-light py-5" id="footer-container">
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
