@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Company Profile</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/companyprofile.css">
+    <script src="./js/util.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-4" id="nav-container">
+            <!-- Navbar content will be loaded dynamically -->
+        </div>
+    </nav>
+
+    <!-- Company Profile Content -->
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="header">
+            <h1>Company Profile</h1>
+            <!-- <a href="companies.html" class="btn-violet"><i class="fas fa-arrow-left"></i> Back to Companies</a> -->
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="companies.html">Companies</a></li>
+                <li class="breadcrumb-item active" id="breadcrumb-company-name">Loading...</li>
+            </ol>
+        </nav>
+
+        <!-- Company Details -->
+        <div class="company-details">
+            <div class="company-header">
+                <img src="https://via.placeholder.com/100" alt="Company Logo" class="company-logo" id="company-logo">
+                <div>
+                    <h2 id="company-name">Loading...</h2>
+                    <p><i class="fas fa-briefcase"></i> <span id="industry-type">Loading...</span> <span id="verified-badge" class="verified-badge">Verified</span></p>
+                </div>
+            </div>
+            <p><i class="fas fa-users"></i> Company Size: <span id="company-size">Loading...</span></p>
+            <p><i class="fas fa-globe"></i> Website: <a href="#" id="website-url">Loading...</a></p>
+            <p><i class="fas fa-calendar-alt"></i> Founded: <span id="founded-at">Loading...</span></p>
+            <div class="mt-3" id="action-buttons">
+                <!-- Buttons will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="company-details">
+            <h2>About</h2>
+            <p id="about">Loading...</p>
+        </div>
+
+        <!-- Current Openings Section -->
+        <div class="company-details" id="jobs-section">
+            <h2>Current Openings</h2>
+            <div id="job-listings">
+                <!-- Job listings will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="jobDetailsModalLabel">Job Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="jobDetailsContent">
+                    <!-- Job details will be dynamically inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light py-5" id="footer-container">
+        <!-- Footer content will be loaded dynamically -->
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <!-- Custom JS -->
+    <script src="./js/companyprofile.js"></script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Companies</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/companies.css">
+    <script src="./js/util.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-4" id="nav-container">
+            <!-- Navbar content will be loaded dynamically -->
+        </div>
+    </nav>
+
+    <!-- Companies Page Content -->
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="header">
+            <h1>Explore Companies</h1>
+            <div class="search-bar col-md-4 col-sm-12">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" id="common-search" class="form-control" placeholder="Search companies, industries, or locations..." onkeyup="filterCompanies()">
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Filters -->
+            <div class="col-lg-3 col-md-12 mb-4">
+                <div class="filters">
+                    <h3>Filters</h3>
+                    <div class="filter-group">
+                        <label for="company-select">Select a Company</label>
+                        <select id="company-select" class="form-select" onchange="filterCompanies()">
+                            <option value="">All Companies</option>
+                            <option value="starcafe">StarCafe</option>
+                            <option value="edupro">EduPro</option>
+                            <option value="techtrend">TechTrend</option>
+                            <option value="finglobal">FinGlobal</option>
+                            <option value="healthplus">HealthPlus</option>
+                            <option value="greenenergy">GreenEnergy</option>
+                            <option value="innovatech">InnovaTech</option>
+                            <option value="edulearn">EduLearn</option>
+                            <option value="finsecure">FinSecure</option>
+                            <option value="globalsoft">GlobalSoft</option>
+                            <option value="cloudnine">CloudNine</option>
+                            <option value="energycore">EnergyCore</option>
+                            <option value="learnwise">LearnWise</option>
+                            <option value="fintechpro">FinTechPro</option>
+                            <option value="softpeak">SoftPeak</option>
+                            <option value="healthwave">HealthWave</option>
+                            <option value="techspire">TechSpire</option>
+                            <option value="edusmart">EduSmart</option>
+                            <option value="fintrust">FinTrust</option>
+                            <option value="globaltech">GlobalTech</option>
+                            <option value="technova">TechNova</option>
+                            <option value="marketminds">MarketMinds</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="industry-filter">Industry</label>
+                        <select id="industry-filter" class="form-select" onchange="filterCompanies()">
+                            <option value="">All Industries</option>
+                            <option value="technology">Technology</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="finance">Finance</option>
+                            <option value="hospitality">Hospitality</option>
+                            <option value="energy">Energy</option>
+                            <option value="software">Software</option>
+                            <option value="marketing">Marketing</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="location-filter">Location</label>
+                        <input type="text" id="location-filter" class="form-control" placeholder="Search location..." onkeyup="filterCompanies()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company List -->
+            <div class="col-lg-9 col-md-12">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="company-list">
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="starcafe" data-industry="hospitality" data-location="new york" data-id="1" onclick="goToCompanyProfile(1)">
+                            <div>
+                                <h3>StarCafe</h3>
+                                <p><i class="fas fa-briefcase"></i> Hospitality • Founded: 1971</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 120+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="edupro" data-industry="education" data-location="boston" data-id="2" onclick="goToCompanyProfile(2)">
+                            <div>
+                                <h3>EduPro</h3>
+                                <p><i class="fas fa-briefcase"></i> Education • Founded: 1977</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 45+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="techtrend" data-industry="technology" data-location="san francisco" data-id="3" onclick="goToCompanyProfile(3)">
+                            <div>
+                                <h3>TechTrend</h3>
+                                <p><i class="fas fa-briefcase"></i> Technology • Founded: 2019</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 80+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="finglobal" data-industry="finance" data-location="london" data-id="4" onclick="goToCompanyProfile(4)">
+                            <div>
+                                <h3>FinGlobal</h3>
+                                <p><i class="fas fa-briefcase"></i> Finance • Founded: 1995</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 200+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="healthplus" data-industry="healthcare" data-location="chicago" data-id="5" onclick="goToCompanyProfile(5)">
+                            <div>
+                                <h3>HealthPlus</h3>
+                                <p><i class="fas fa-briefcase"></i> Healthcare • Founded: 1985</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 150+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="greenenergy" data-industry="energy" data-location="austin" data-id="6" onclick="goToCompanyProfile(6)">
+                            <div>
+                                <h3>GreenEnergy</h3>
+                                <p><i class="fas fa-briefcase"></i> Energy • Founded: 2010</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 90+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="innovatech" data-industry="technology" data-location="seattle" data-id="7" onclick="goToCompanyProfile(7)">
+                            <div>
+                                <h3>InnovaTech</h3>
+                                <p><i class="fas fa-briefcase"></i> Technology • Founded: 2015</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 110+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="edulearn" data-industry="education" data-location="miami" data-id="8" onclick="goToCompanyProfile(8)">
+                            <div>
+                                <h3>EduLearn</h3>
+                                <p><i class="fas fa-briefcase"></i> Education • Founded: 2000</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 60+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="finsecure" data-industry="finance" data-location="toronto" data-id="9" onclick="goToCompanyProfile(9)">
+                            <div>
+                                <h3>FinSecure</h3>
+                                <p><i class="fas fa-briefcase"></i> Finance • Founded: 1990</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 180+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="globalsoft" data-industry="software" data-location="bangalore" data-id="10" onclick="goToCompanyProfile(10)">
+                            <div>
+                                <h3>GlobalSoft</h3>
+                                <p><i class="fas fa-briefcase"></i> Software • Founded: 2005</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 130+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="cloudnine" data-industry="technology" data-location="singapore" data-id="11" onclick="goToCompanyProfile(11)">
+                            <div>
+                                <h3>CloudNine</h3>
+                                <p><i class="fas fa-briefcase"></i> Technology • Founded: 2018</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 95+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="1">
+                        <div class="company-card" data-name="energycore" data-industry="energy" data-location="houston" data-id="12" onclick="goToCompanyProfile(12)">
+                            <div>
+                                <h3>EnergyCore</h3>
+                                <p><i class="fas fa-briefcase"></i> Energy • Founded: 2012</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 70+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="learnwise" data-industry="education" data-location="dallas" data-id="13" onclick="goToCompanyProfile(13)">
+                            <div>
+                                <h3>LearnWise</h3>
+                                <p><i class="fas fa-briefcase"></i> Education • Founded: 2008</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 55+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="fintechpro" data-industry="finance" data-location="dubai" data-id="14" onclick="goToCompanyProfile(14)">
+                            <div>
+                                <h3>FinTechPro</h3>
+                                <p><i class="fas fa-briefcase"></i> Finance • Founded: 2016</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 140+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="softpeak" data-industry="software" data-location="tokyo" data-id="15" onclick="goToCompanyProfile(15)">
+                            <div>
+                                <h3>SoftPeak</h3>
+                                <p><i class="fas fa-briefcase"></i> Software • Founded: 2011</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 100+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="healthwave" data-industry="healthcare" data-location="los angeles" data-id="16" onclick="goToCompanyProfile(16)">
+                            <div>
+                                <h3>HealthWave</h3>
+                                <p><i class="fas fa-briefcase"></i> Healthcare • Founded: 1998</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 160+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="techspire" data-industry="technology" data-location="berlin" data-id="17" onclick="goToCompanyProfile(17)">
+                            <div>
+                                <h3>TechSpire</h3>
+                                <p><i class="fas fa-briefcase"></i> Technology • Founded: 2020</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 85+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="edusmart" data-industry="education" data-location="sydney" data-id="18" onclick="goToCompanyProfile(18)">
+                            <div>
+                                <h3>EduSmart</h3>
+                                <p><i class="fas fa-briefcase"></i> Education • Founded: 2003</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 50+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="fintrust" data-industry="finance" data-location="paris" data-id="19" onclick="goToCompanyProfile(19)">
+                            <div>
+                                <h3>FinTrust</h3>
+                                <p><i class="fas fa-briefcase"></i> Finance • Founded: 1988</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 170+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="globaltech" data-industry="software" data-location="shanghai" data-id="20" onclick="goToCompanyProfile(20)">
+                            <div>
+                                <h3>GlobalTech</h3>
+                                <p><i class="fas fa-briefcase"></i> Software • Founded: 2007</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 125+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="technova" data-industry="technology" data-location="london" data-id="21" onclick="goToCompanyProfile(21)">
+                            <div>
+                                <h3>TechNova</h3>
+                                <p><i class="fas fa-briefcase"></i> Technology • Founded: 2010</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 75+ Jobs Available</p>
+                        </div>
+                    </div>
+                    <div class="col company-item" data-page="2">
+                        <div class="company-card" data-name="marketminds" data-industry="marketing" data-location="mumbai" data-id="22" onclick="goToCompanyProfile(22)">
+                            <div>
+                                <h3>MarketMinds</h3>
+                                <p><i class="fas fa-briefcase"></i> Marketing • Founded: 2015</p>
+                            </div>
+                            <p class="jobs-available"><i class="fas fa-suitcase"></i> 40+ Jobs Available</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pagination">
+                        <!-- Pagination links will be generated dynamically -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light py-5" id="footer-container">
+        <!-- Footer content will be loaded dynamically -->
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Company Page Logic
+        let currentPage = 1;
+        const itemsPerPage = 12; // Set to 12 companies per page
+
+        function goToCompanyProfile(companyId) {
+            window.location.href = `companyprofile.html?company_id=${companyId}`;
+        }
+
+        function filterCompanies() {
+            let commonSearch = document.getElementById('common-search').value.toLowerCase();
+            let companySelect = document.getElementById('company-select').value.toLowerCase();
+            let industry = document.getElementById('industry-filter').value.toLowerCase();
+            let locationInput = document.getElementById('location-filter').value.toLowerCase();
+            let companies = document.getElementsByClassName('company-item');
+
+            let visibleCompanies = [];
+            for (let i = 0; i < companies.length; i++) {
+                let company = companies[i].querySelector('.company-card');
+                let name = company.getAttribute('data-name').toLowerCase();
+                let companyIndustry = company.getAttribute('data-industry').toLowerCase();
+                let location = company.getAttribute('data-location').toLowerCase();
+
+                let matchesCommonSearch = name.includes(commonSearch) || companyIndustry.includes(commonSearch) || location.includes(commonSearch);
+                let matchesCompany = !companySelect || name === companySelect;
+                let matchesIndustry = !industry || companyIndustry === industry;
+                let matchesLocation = location.includes(locationInput);
+
+                if (matchesCommonSearch && matchesCompany && matchesIndustry && matchesLocation) {
+                    visibleCompanies.push(companies[i]);
+                    companies[i].style.display = '';
+                } else {
+                    companies[i].style.display = 'none';
+                }
+            }
+
+            // Update pagination based on visible companies
+            updatePagination(visibleCompanies);
+        }
+
+        function updatePagination(visibleCompanies) {
+            let totalPages = Math.ceil(visibleCompanies.length / itemsPerPage);
+            let pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                let li = document.createElement('li');
+                li.className = 'page-item' + (i === currentPage ? ' active' : '');
+                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(li);
+            }
+
+            // Show only the companies for the current page
+            for (let i = 0; i < visibleCompanies.length; i++) {
+                let page = Math.floor(i / itemsPerPage) + 1;
+                if (page === currentPage) {
+                    visibleCompanies[i].style.display = '';
+                } else {
+                    visibleCompanies[i].style.display = 'none';
+                }
+            }
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            filterCompanies();
+        }
+
+        // Initial load
+        window.onload = function() {
+            filterCompanies();
+        };
+    </script>
+</body>
+</html>

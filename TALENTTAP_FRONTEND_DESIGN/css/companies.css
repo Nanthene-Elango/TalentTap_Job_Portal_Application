@@ -1,0 +1,228 @@
+.container {
+    max-width: 1400px;
+}
+
+.header {
+    background: linear-gradient(to right, #5e17eb, #c4a0ff);
+    color: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.search-bar {
+    position: relative;
+}
+
+.search-bar input {
+    border-radius: 30px;
+    padding: 12px 20px 12px 40px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-size: 15px;
+    width: 100%;
+}
+
+.search-bar input:focus {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    outline: none;
+}
+
+.search-bar .fa-magnifying-glass {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #6c757d;
+}
+
+.filters {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+.filters h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.filter-group {
+    margin-bottom: 25px;
+}
+
+.filter-group label {
+    font-size: 15px;
+    color: #495057;
+    margin-bottom: 10px;
+    font-weight: 500;
+    display: block;
+}
+
+.filter-group select, .filter-group input[type="text"] {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+.filter-group select:focus, .filter-group input[type="text"]:focus {
+    border-color: #5e17eb;
+    box-shadow: none;
+}
+
+/* Company Card Style with Icons */
+.company-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.company-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #5e17eb;
+}
+
+.company-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.company-card h3 {
+    font-size: 19px;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.company-card p {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.company-card p i {
+    margin-right: 8px;
+    color: #5e17eb;
+}
+
+.company-card .jobs-available {
+    font-size: 14px;
+    color: #5e17eb;
+    font-weight: 500;
+    background: #e7f0ff;
+    padding: 4px 10px;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.company-card .jobs-available i {
+    margin-right: 8px;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.pagination .page-link {
+    border: none;
+    color: #5e17eb;
+    padding: 10px 15px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #e7f0ff;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #5e17eb;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .search-bar input {
+        padding: 10px 15px 10px 35px;
+    }
+
+    .search-bar .fa-magnifying-glass {
+        left: 12px;
+        font-size: 16px;
+    }
+
+    .company-card {
+        padding: 15px;
+    }
+
+    .company-card h3 {
+        font-size: 16px;
+    }
+
+    .company-card p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+    }
+
+    .filters {
+        padding: 15px;
+    }
+
+    .filter-group select, .filter-group input[type="text"] {
+        font-size: 13px;
+    }
+}
