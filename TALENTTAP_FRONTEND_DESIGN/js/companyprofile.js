@@ -834,10 +834,10 @@ if (companyId && companies[companyId]) {
                 }</p>
             </div>
             <div class="job-actions">
-                <button class="btn-violet" onclick='viewJob(${JSON.stringify(job)})'>View</button>
+                <button class="btn btn-violet" onclick='viewJob(${JSON.stringify(job)})'>View</button>
                 ${isLoggedIn 
-                    ? `<button class="btn-violet" onclick="applyJob(${job.job_id})">Apply</button>`
-                    : `<button class="btn-violet" onclick="window.location.href='Login.html'">Login to Apply</button>`}
+                    ? `<button class="btn btn-violet" onclick="applyJob(${job.job_id})">Apply</button>`
+                    : `<button class="btn btn-violet" onclick="window.location.href='Login.html'">Login to Apply</button>`}
             </div>
         `;
         jobListings.appendChild(jobElement);
