@@ -52,7 +52,7 @@
                     <h5 class="filter-heading mb-0">Filters <span
                             class="filter-count badge rounded-pill bg-light text-dark">0 selected</span></h5>
                 </div>
-                
+
                 <div class="col-md-4 text-end">
                     <a href="#" class="clear-filter" onclick="clearFilters()">Clear All Filters</a>
                     <button class="btn btn-sm filter-toggle-btn ms-2" type="button" data-bs-toggle="collapse"
@@ -322,7 +322,14 @@
                                 class="fas fa-sm fa-external-link ms-1"></i></a>
                     </div>
                     <div class="text-muted small">Posted 7 days ago</div>
-                    
+
+                    <button class="btn btn-primary apply-btn">Apply Now</button>
+                    <button class="btn btn-primary save-btn" onclick="savejob()"><i class="far fa-bookmark"></i>
+                        save</button>
+                    <button class="btn btn-primary save-btn d-none" onabort="unsavejob()"><i
+                            class="fas fa-bookmark"></i>
+                        saved</button>
+
                     <div class="detail-section mt-3">
                         <h6 class="detail-title">Skills & Categories</h6>
                         <div class="mb-3">
@@ -339,7 +346,7 @@
                             <strong>Category:</strong> Information Technology
                         </div>
                     </div>
-                    
+
                     <div class="row my-4">
                         <div class="col-md-6 mb-3 mb-md-0">
                             <div class="card h-100">
@@ -365,20 +372,23 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-body">
                                     <h6 class="card-title">Important Dates</h6>
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-2">
-                                            <i class="fas fa-calendar-plus me-2"></i> <strong>Posted:</strong> March 22, 2025
+                                            <i class="fas fa-calendar-plus me-2"></i> <strong>Posted:</strong> March 22,
+                                            2025
                                         </li>
                                         <li class="mb-2">
-                                            <i class="fas fa-calendar-times me-2"></i> <strong>Deadline:</strong> April 15, 2025
+                                            <i class="fas fa-calendar-times me-2"></i> <strong>Deadline:</strong> April
+                                            15, 2025
                                         </li>
                                         <li class="mb-2">
-                                            <i class="fas fa-hourglass-half me-2"></i> <strong>Time Left:</strong> 16 days
+                                            <i class="fas fa-hourglass-half me-2"></i> <strong>Time Left:</strong> 16
+                                            days
                                         </li>
                                     </ul>
                                 </div>
@@ -386,12 +396,6 @@
                         </div>
                     </div>
                 </div>
-
-                <button class="btn btn-primary apply-btn">Apply Now</button>
-                <button class="btn btn-primary save-btn" onclick="savejob()"><i class="far fa-bookmark"></i>
-                    save</button>
-                <button class="btn btn-primary save-btn d-none" onabort="unsavejob()"><i class="fas fa-bookmark"></i>
-                    saved</button>
 
                 <div class="job-description">
                     <p>We are looking for an experienced Frontend Developer to join our team. You will be
