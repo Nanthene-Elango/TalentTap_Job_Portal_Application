@@ -19,3 +19,106 @@
     z-index: 2;
     color: white;
 }
+body {
+    background-color: #f8f9fa;
+  }
+
+  .company-slider {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100%;
+  }
+
+  .company-track {
+    display: flex;
+    gap: 20px;
+    animation: scroll 15s linear infinite;
+    width: 200%;
+  }
+
+  .company-card {
+    display: inline-block;
+    width: 200px;
+    padding: 15px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .company-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+
+  #view-all-btn {
+    cursor: pointer;
+    border-radius: 30px;
+    border: solid 2px #5e17eb;
+    color: #5e17eb;
+    font-size: larger;
+  }
+
+  #view-all-btn:hover {
+    background-color: #5e17eb;
+    color: white;
+  }
+
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .how-it-works {
+    text-align: center;
+    padding: 50px 0;
+  }
+
+  .step {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .step:hover {
+    transform: translateY(-5px);
+  }
+
+  .icon-box {
+    width: 60px;
+    height: 60px;
+    background: #5e17eb;
+    color: white;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+  }
+
+  .faq-section {
+    background-color: #eadeff;
+    padding: 60px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 10px gainsboro;
+  }
+
+  .faq-title {
+    font-weight: bold;
+  }
+
+  .faq-img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
