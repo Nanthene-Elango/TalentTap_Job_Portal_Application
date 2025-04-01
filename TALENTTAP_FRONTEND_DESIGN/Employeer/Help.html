@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Help Center</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <style>
+        * {
+            font-size: 0.92rem;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .text-violet {
+            color: #5e17eb;
+        }
+
+        .bg-violet {
+            background-color: #5e17eb;
+        }
+
+        .bg-violet-light {
+            background-color: #f8f5ff;
+        }
+
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-violet {
+            color: #5e17eb;
+            border-color: #5e17eb;
+            transition: all 0.3s ease;
+        }
+
+        .btn-violet:hover {
+            background-color: #4912b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .btn-outline-violet:hover {
+            background-color: #5e17eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-link {
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-link:hover {
+            color: #5e17eb;
+        }
+
+        .navbar-link.active {
+            color: #5e17eb;
+            font-weight: 600;
+        }
+
+        .navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #5e17eb;
+            border-radius: 3px;
+        }
+
+        .profile-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-dropdown:hover {
+            background-color: #f0f0f0;
+        }
+
+        .profile-circle {
+            width: 36px;
+            height: 36px;
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 0.5rem 0;
+            min-width: 220px;
+            margin-top: 10px;
+        }
+
+        .dropdown-item {
+            padding: 0.6rem 1.2rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            color: #666;
+        }
+
+        .dropdown-item:hover i {
+            color: #5e17eb;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #fff5f5;
+        }
+
+        .dropdown-item.text-danger:hover i {
+            color: #dc3545;
+        }
+
+        .dropdown-divider {
+            margin: 0.3rem 0;
+        }
+
+        .quick-actions {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .badge-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff5757;
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 50px;
+            border: 2px solid white;
+        }
+
+        .icon-button {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            color: #555;
+        }
+
+        .icon-button:hover {
+            background-color: #eee;
+            color: #5e17eb;
+            transform: translateY(-2px);
+        }
+
+        .post-job-btn {
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            padding: 0.35rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transform-origin: center;
+            border: none;
+        }
+
+        .post-job-btn i {
+            margin-right: 8px;
+        }
+
+        .post-job-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Help Center Specific Styles */
+        .help-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-header {
+            background-color: #f8f5ff;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .help-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .help-icon i {
+            font-size: 1.5rem;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 1.2rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: #5e17eb;
+        }
+
+        .faq-answer {
+            padding-top: 1rem;
+            color: #666;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .contact-method:last-child {
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f8f5ff;
+            color: #5e17eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+
+        .contact-icon i {
+            font-size: 1.25rem;
+        }
+
+        .contact-info {
+            flex-grow: 1;
+        }
+
+        .contact-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-details {
+            color: #666;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            padding-left: 3rem;
+            border-radius: 50px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #5e17eb;
+            box-shadow: 0 0 0 3px rgba(94, 23, 235, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .topic-tag {
+            display: inline-block;
+            background-color: #f8f5ff;
+            color: #5e17eb;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .topic-tag:hover {
+            background-color: #5e17eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .divider-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: #eee;
+        }
+
+        .divider-text {
+            padding: 0 1rem;
+            color: #888;
+            font-weight: 500;
+        }
+
+        @media (max-width: 992px) {
+            .quick-actions {
+                margin-right: 0;
+                margin-bottom: 15px;
+                justify-content: center;
+            }
+
+            .post-job-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar-collapse {
+                padding: 1rem 0;
+            }
+
+            .profile-dropdown {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./index.html">
+                <img src="./img/LOGO_TRANSPARENT.png" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            
+            <div class="d-flex align-items-center order-lg-3">
+                <div class="quick-actions d-flex">
+                    <a href="notifications.html" class="icon-button">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-notification">5</span>
+                    </a>
+                    <a href="messages.html" class="icon-button">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge-notification">3</span>
+                    </a>
+                </div>
+                
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">EP</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">EP</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                                <div class="small text-muted">Premium Plan</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="employer-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="company-profile.html"><i class="fas fa-building"></i>Company Profile</a></li>
+                        <li><a class="dropdown-item" href="manage-jobs.html"><i class="fas fa-briefcase"></i>Manage Jobs</a></li>
+                        <li><a class="dropdown-item" href="candidates.html"><i class="fas fa-users"></i>View Candidates</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="account-settings.html"><i class="fas fa-cog"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="subscription.html"><i class="fas fa-credit-card"></i>Subscription</a></li>
+                        <li><a class="dropdown-item" href="help.html"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="employer-dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="manage-jobs.html">
+                            <i class="fas fa-briefcase me-1"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="candidates.html">
+                            <i class="fas fa-users me-1"></i> Candidates
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="reports.html">
+                            <i class="fas fa-chart-bar me-1"></i> Reports
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                    <button class="btn btn-violet w-100">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold mb-3">How can we help you?</h2>
+                    <p class="text-muted mx-auto" style="max-width: 600px;">
+                        Find answers to frequently asked questions or get in touch with our support team.
+                    </p>
+                    <div class="search-box mx-auto" style="max-width: 600px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search for help topics..." class="form-control">
+                    </div>
+                    <div class="mt-3">
+                        <span class="topic-tag"><i class="fas fa-briefcase me-1"></i> Job Posting</span>
+                        <span class="topic-tag"><i class="fas fa-user-plus me-1"></i> Candidates</span>
+                        <span class="topic-tag"><i class="fas fa-credit-card me-1"></i> Billing</span>
+                        <span class="topic-tag"><i class="fas fa-cog me-1"></i> Account</span>
+                        <span class="topic-tag"><i class="fas fa-chart-line me-1"></i> Reports</span>
+                    </div>
+                </div>
+
+                <!-- Frequently Asked Questions Section -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="card help-card">
+                            <div class="help-header">
+                                <div class="text-center">
+                                    <div class="help-icon mx-auto">
+                                        <i class="fas fa-question"></i>
+                                    </div>
+                                    <h4 class="fw-bold">Frequently Asked Questions</h4>
+                                    <p class="text-muted mb-0">Find quick answers to common questions</p>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="accordion" id="faqAccordion">
+                                    <!-- FAQ Item 1 -->
+                                    <div class="faq-item">
+                                        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                            <span>How do I post a new job?</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div id="faq1" class="collapse faq-answer">
+                                            <p>To post a new job:</p>
+                                            <ol>
+                                                <li>Click the "Post a Job" button in the top navigation bar</li>
+                                                <li>Fill out the job details form with title, description, requirements, etc.</li>
+                                                <li>Set the compensation range and job type (full-time, part-time, etc.)</li>
+                                                <li>Review and click "Publish Job"</li>
+                                            </ol>
+                                            <p>Your job will be live immediately and visible to potential candidates. You can edit or pause the job posting at any time from the "Manage Jobs" section.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- FAQ Item 2 -->
+                                    <div class="faq-item">
+                                        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                            <span>How do I review and manage job applicants?</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div id="faq2" class="collapse faq-answer">
+                                            <p>You can review and manage applicants in two ways:</p>
+                                            <ol>
+                                                <li>From your dashboard, click on "Recent Applicants" and then "View All Candidates"</li>
+                                                <li>Go to the "Candidates" tab in the main navigation</li>
+                                            </ol>
+                                            <p>There, you can filter candidates by job position, view resumes, update their status (New, Shortlisted, Interview, etc.), and contact them directly through our messaging system.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- FAQ Item 3 -->
+                                    <div class="faq-item">
+                                        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                            <span>How do I upgrade my subscription plan?</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div id="faq3" class="collapse faq-answer">
+                                            <p>To upgrade your subscription:</p>
+                                            <ol>
+                                                <li>Click on your profile in the top-right corner</li>
+                                                <li>Select "Subscription" from the dropdown menu</li>
+                                                <li>Review the available plans and their features</li>
+                                                <li>Select your desired plan and follow the payment instructions</li>
+                                            </ol>
+                                            <p>Your account will be upgraded immediately upon successful payment. If you have any billing questions, please contact our support team.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- FAQ Item 4 -->
+                                    <div class="faq-item">
+                                        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                            <span>How do I update my company profile?</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div id="faq4" class="collapse faq-answer">
+                                            <p>Keeping your company profile updated is important to attract quality candidates:</p>
+                                            <ol>
+                                                <li>Click on your profile in the top-right corner</li>
+                                                <li>Select "Company Profile" from the dropdown menu</li>
+                                                <li>Update your company information, logo, description, and culture details</li>
+                                                <li>Add company photos and videos to showcase your workplace</li>
+                                                <li>Save your changes</li>
+                                            </ol>
+                                            <p>A complete company profile increases your visibility and helps candidates understand if they'd be a good fit for your organization.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- FAQ Item 5 -->
+                                    <div class="faq-item">
+                                        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                            <span>How do I generate and export reports?</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div id="faq5" class="collapse faq-answer">
+                                            <p>To generate and export recruitment reports:</p>
+                                            <ol>
+                                                <li>Navigate to the "Reports" section in the main navigation</li>
+                                                <li>Select the type of report you want to generate (applicant sources, job performance, etc.)</li>
+                                                <li>Set the date range and any other filters</li>
+                                                <li>Click "Generate Report"</li>
+                                                <li>Use the "Export" button to download as PDF, Excel, or CSV</li>
+                                            </ol>
+                                            <p>These reports can help you optimize your recruiting strategy and track your hiring metrics over time.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- FAQ Item 6 -->
+                                    <div class="faq-item">
+                                        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                            <span>How to add team members to my account?</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div id="faq6" class="collapse faq-answer">
+                                            <p>To add team members who can help manage your recruiting process:</p>
+                                            <ol>
+                                                <li>Click on your profile and select "Account Settings"</li>
+                                                <li>Navigate to the "Team Members" tab</li>
+                                                <li>Click "Add Team Member"</li>
+                                                <li>Enter their email address and select their permission level (Admin, Recruiter, Viewer)</li>
+                                                <li>Send the invitation</li>
+                                            </ol>
+                                            <p>Note: The number of team members you can add depends on your subscription plan. Premium and Enterprise plans allow for unlimited team members.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider">
+                    <div class="divider-line"></div>
+                    <div class="divider-text">STILL NEED HELP?</div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- Contact Options Section -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card help-card h-100">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-4">Contact Support</h5>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Email Support</div>
+                                        <div class="contact-details">support@talenttap.com</div>
+                                        <div class="small text-muted">Response within 24 hours</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Live Chat</div>
+                                        <div class="contact-details">Available Monday-Friday</div>
+                                        <div class="small text-muted">9:00 AM - 6:00 PM EST</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Phone Support</div>
+                                        <div class="contact-details">+1 (800) 555-HIRE</div>
+                                        <div class="small text-muted">For Premium & Enterprise customers</div>
+                                    </div>
+                                </div>
+
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">WhatsApp Support</div>
+                                        <div class="contact-details">+1 (800) 555-CHAT</div>
+                                        <div class="small text-muted">Quick responses for urgent issues</div>
+                                    </div>
+                                </div>
+
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-comments"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Community Forum</div>
+                                        <div class="contact-details">Connect with other TalentTap users</div>
+                                        <a href="#" class="btn btn-sm btn-outline-violet mt-2">Join Discussion</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card help-card h-100">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-4">Additional Resources</h5>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Knowledge Base</div>
+                                        <div class="contact-details">Detailed guides and tutorials</div>
+                                        <a href="#" class="btn btn-sm btn-outline-violet mt-2">Browse Articles</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Video Tutorials</div>
+                                        <div class="contact-details">Step-by-step visual guides</div>
+                                        <a href="#" class="btn btn-sm btn-outline-violet mt-2">Watch Videos</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Webinars</div>
+                                        <div class="contact-details">Join our live training sessions</div>
+                                        <a href="#" class="btn btn-sm btn-outline-violet mt-2">Upcoming Events</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Best Practice Guides</div>
+                                        <div class="contact-details">Optimize your hiring process</div>
+                                        <a href="#" class="btn btn-sm btn-outline-violet mt-2">Download Guides</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-method">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-title">Dedicated Account Manager</div>
+                                        <div class="contact-details">Available for Enterprise customers</div>
+                                        <a href="#" class="btn btn-sm btn-outline-violet mt-2">Learn More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <img src="./img/LOGO_TRANSPARENT.png" alt="TalentTap Logo" style="height: 40px;" class="mb-3">
+                    <p class="text-muted small">TalentTap connects employers with the right talent through our innovative recruitment platform. Find your next great hire with us.</p>
+                    <div class="mt-3">
+                        <a href="#" class="me-2 text-muted"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="me-2 text-muted"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-2 text-muted"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="me-2 text-muted"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h6 class="fw-bold mb-3">For Employers</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Post a Job</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Search Candidates</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Pricing Plans</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Featured Jobs</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Recruitment Tools</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h6 class="fw-bold mb-3">For Job Seekers</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Find Jobs</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Create Profile</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Career Resources</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Job Alerts</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Career Advice</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h6 class="fw-bold mb-3">Resources</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Blog</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Webinars</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Podcast</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="fw-bold mb-3">Company</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Contact Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Accessibility</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <div class="row">
+                    <div class="col-md-6 small text-muted">
+                        &copy; 2025 TalentTap. All rights reserved.
+                    </div>
+                    <div class="col-md-6 text-md-end small">
+                        <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                        <a href="#" class="text-muted text-decoration-none me-3">Terms of Service</a>
+                        <a href="#" class="text-muted text-decoration-none">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Toggle FAQ answers
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-chevron-down')) {
+                    icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                }
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const questionText = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Topic tag filter
+        const topicTags = document.querySelectorAll('.topic-tag');
+        topicTags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const tagText = this.textContent.toLowerCase().trim();
+                const searchInput = document.querySelector('.search-box input');
+                searchInput.value = tagText;
+                searchInput.dispatchEvent(new Event('keyup'));
+            });
+        });
+    </script>
+</body>
+</html>

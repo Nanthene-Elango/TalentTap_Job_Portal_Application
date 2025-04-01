@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings Panel | TalentTap</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <style>
+        * {
+            font-size: 0.92rem;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        body { background-color: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .text-violet { color: #5e17eb; }
+        .bg-violet { background-color: #5e17eb; }
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-violet:hover {
+            background-color: #4912b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+        }
+        .navbar-link {
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+        }
+        .navbar-link:hover { color: #5e17eb; }
+        .navbar-link.active {
+            color: #5e17eb;
+            font-weight: 600;
+        }
+        .navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #5e17eb;
+            border-radius: 3px;
+        }
+        .profile-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .profile-dropdown:hover { background-color: #f0f0f0; }
+        .profile-circle {
+            width: 36px;
+            height: 36px;
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 0.5rem 0;
+            min-width: 220px;
+            margin-top: 10px;
+        }
+        .dropdown-item {
+            padding: 0.6rem 1.2rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+        }
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            color: #666;
+        }
+        .quick-actions {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        .badge-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff5757;
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 50px;
+            border: 2px solid white;
+        }
+        .icon-button {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            color: #555;
+        }
+        .icon-button:hover {
+            background-color: #eee;
+            color: #5e17eb;
+            transform: translateY(-2px);
+        }
+        .post-job-btn {
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            padding: 0.35rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+        }
+        .main-content { display: flex; padding: 40px 0; }
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-right: 30px;
+        }
+        .sidebar-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .sidebar-menu { list-style: none; padding: 0; }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        .sidebar-link i { margin-right: 10px; }
+        .sidebar-link:hover {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+        }
+        .sidebar-link.active {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+            font-weight: 600;
+            border-left: 4px solid #5e17eb;
+        }
+        .content { flex: 1; }
+        .content-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .content-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .edit-button {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .edit-button:hover {
+            background-color: #5e17eb;
+            color: white;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #5e17eb;
+            outline: none;
+            box-shadow: 0 0 5px rgba(94, 23, 235, 0.2);
+        }
+        .info-field { margin-bottom: 20px; }
+        .field-label { font-weight: 500; color: #666; margin-bottom: 8px; }
+        .field-value {
+            padding: 12px 15px;
+            background-color: #f8f5ff;
+            border-radius: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .password-modal {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            width: 400px;
+            max-width: 90%;
+        }
+        .modal-header { margin-bottom: 20px; }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-body { margin-bottom: 20px; }
+        .modal-footer { display: flex; justify-content: flex-end; }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #666;
+            margin-right: 10px;
+        }
+        .btn-primary { background-color: #5e17eb; color: white; }
+        .btn-secondary:hover { background-color: #e5e5e5; }
+        .btn-primary:hover { background-color: #4912b8; }
+        .file-upload {
+            position: relative;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .file-upload label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f8f5ff;
+            color: #5e17eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload label:hover {
+            background-color: #5e17eb;
+            color: white;
+        }
+        .file-upload input[type="file"] { display: none; }
+        .file-preview {
+            margin-top: 10px;
+            max-width: 150px;
+            border-radius: 8px;
+            display: none;
+        }
+        .verified-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 10px;
+            display: none;
+        }
+        .verification-status { color: #666; margin-top: 10px; }
+        @media (max-width: 992px) {
+            .main-content { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+            .quick-actions { margin-right: 0; margin-bottom: 15px; justify-content: center; }
+            .post-job-btn { margin-left: 0; margin-top: 10px; width: 100%; justify-content: center; }
+            .navbar-collapse { padding: 1rem 0; }
+            .profile-dropdown { justify-content: center; margin-top: 15px; }
+        }
+        .form-control.error {
+    border: 1px solid #e74c3c;
+    background: #fff1f1;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+    font-weight: 500;
+}
+
+.error-message.visible {
+    display: block;
+}
+/* Add these styles to your existing CSS */
+.verified-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.field-value {
+    display: flex;
+    align-items: center;
+}
+
+.field-value #emailVerified,
+.field-value #phoneVerified {
+    margin-left: 10px;
+}
+
+/* Improved validation styling */
+.form-control.error {
+    border: 1px solid #e74c3c;
+    background: #fff1f1;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+    font-weight: 500;
+}
+
+.error-message.visible {
+    display: block;
+}
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./index.html">
+                <img src="./img/LOGO_TRANSPARENT.png" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            <div class="d-flex align-items-center order-lg-3">
+                <div class="quick-actions d-flex">
+                    <a href="notifications.html" class="icon-button">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-notification">5</span>
+                    </a>
+                    <a href="messages.html" class="icon-button">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge-notification">3</span>
+                    </a>
+                </div>
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">JD</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">JD</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                                <div class="small text-muted">Premium Plan</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="employer-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="company-profile.html"><i class="fas fa-building"></i>Company Profile</a></li>
+                        <li><a class="dropdown-item" href="manage-jobs.html"><i class="fas fa-briefcase"></i>Manage Jobs</a></li>
+                        <li><a class="dropdown-item" href="candidates.html"><i class="fas fa-users"></i>View Candidates</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="account-settings.html"><i class="fas fa-cog"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="subscription.html"><i class="fas fa-credit-card"></i>Subscription</a></li>
+                        <li><a class="dropdown-item" href="help.html"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="employer-dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="manage-jobs.html">
+                            <i class="fas fa-briefcase me-1"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="candidates.html">
+                            <i class="fas fa-users me-1"></i> Candidates
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link active" href="account-settings.html">
+                            <i class="fas fa-cog me-1"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                    <button class="btn btn-violet w-100">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2 class="sidebar-heading">Settings</h2>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-link active" data-section="my-info"><i class="fas fa-user"></i> My Info</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="password"><i class="fas fa-lock"></i> Password & Security</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="identity"><i class="fas fa-id-card"></i> Identity Verification</a></li>
+                </ul>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- My Info Section -->
+                <div id="my-info" class="content-section" style="display: block;">
+                    <h2 class="content-title">My Info</h2>
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h3 class="content-title">Account Details</h3>
+                            <button class="edit-button" id="editAccountBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Full Name</div>
+                            <div class="field-value" id="fullName">John Doe</div>
+                            <input type="text" class="form-control edit-field" id="editFullName" style="display: none;" value="John Doe">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Username</div>
+                            <div class="field-value" id="username">johndoe123</div>
+                            <input type="text" class="form-control edit-field" id="editUsername" style="display: none;" value="johndoe123">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Email</div>
+                            <div class="field-value" id="email">john.doe@example.com</div>
+                            <input type="email" class="form-control edit-field" id="editEmail" style="display: none;" value="john.doe@example.com">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Phone Number</div>
+                            <div class="field-value" id="phoneNumber">+1-555-123-4567</div>
+                            <input type="tel" class="form-control edit-field" id="editPhoneNumber" style="display: none;" value="+1-555-123-4567">
+                        </div>
+                        <button class="btn btn-primary" id="saveAccountBtn" style="display: none;">Save Changes</button>
+                    </div>
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h3 class="content-title">Company Details</h3>
+                            <button class="edit-button" id="editCompanyBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Name</div>
+                            <div class="field-value" id="companyName">Acme Inc.</div>
+                            <input type="text" class="form-control edit-field" id="editCompanyName" style="display: none;" value="Acme Inc.">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Industry</div>
+                            <div class="field-value" id="companyIndustry">Technology</div>
+                            <input type="text" class="form-control edit-field" id="editCompanyIndustry" style="display: none;" value="Technology">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Designation</div>
+                            <div class="field-value" id="designation">HR Manager</div>
+                            <input type="text" class="form-control edit-field" id="editDesignation" style="display: none;" value="HR Manager">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">About the Company</div>
+                            <div class="field-value" id="companyAbout">A leading tech solutions provider.</div>
+                            <textarea class="form-control edit-field" id="editCompanyAbout" style="display: none;">A leading tech solutions provider.</textarea>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Size</div>
+                            <div class="field-value" id="companySize">51-200 employees</div>
+                            <select class="form-control edit-field" id="editCompanySize" style="display: none;">
+                                <option value="1-10">1-10 employees</option>
+                                <option value="11-50">11-50 employees</option>
+                                <option value="51-200" selected>51-200 employees</option>
+                                <option value="201+">201+ employees</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Location</div>
+                            <div class="field-value" id="location">USA</div>
+                            <select class="form-control edit-field" id="editLocation" style="display: none;">
+                                <option value="usa" selected>USA</option>
+                                <option value="uk">UK</option>
+                                <option value="india">India</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" id="saveCompanyBtn" style="display: none;">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Password & Security Section -->
+                <div id="password" class="content-section" style="display: none;">
+                    <h2 class="content-title">Password & Security</h2>
+                    <div class="content-card">
+                        <div id="passwordStatus" class="info-field">
+                            <div class="field-label">Password</div>
+                            <div class="field-value">Current Password Set</div>
+                        </div>
+                        <div id="changePasswordFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="currentPassword" class="form-label">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+                            </div>
+                            <button class="btn btn-primary" id="savePasswordBtn">Save Password</button>
+                        </div>
+                        <button class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                    </div>
+                </div>
+
+                <!-- Identity Verification Section -->
+                <div id="identity" class="content-section" style="display: none;">
+                    <h2 class="content-title">Identity Verification</h2>
+                    <div class="content-card">
+                        <div class="form-group">
+                            <label class="form-label">Government-Issued ID</label>
+                            <div class="file-upload">
+                                <label for="govId">Upload ID</label>
+                                <input type="file" id="govId" accept="image/*,application/pdf">
+                                <img id="govIdPreview" class="file-preview" alt="Government ID Preview">
+                                <span id="govIdVerified" class="verified-badge">Verified</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Company ID Card (or use Company Email below)</label>
+                            <div class="file-upload">
+                                <label for="companyId">Upload ID</label>
+                                <input type="file" id="companyId" accept="image/*,application/pdf">
+                                <img id="companyIdPreview" class="file-preview" alt="Company ID Preview">
+                                <span id="companyIdVerified" class="verified-badge">Verified</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyEmail" class="form-label">Company Email (or use Company ID above)</label>
+                            <input type="email" id="companyEmail" class="form-control" placeholder="Enter company email">
+                        </div>
+                        <button class="btn btn-primary" id="submitVerificationBtn">Submit for Verification</button>
+                        <p class="verification-status" id="verificationStatus">Status: Pending</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Confirmation Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Password</h3>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your password to continue editing your information.</p>
+                <div class="form-group">
+                    <label for="confirmPasswordInput" class="form-label">Password</label>
+                    <input type="password" id="confirmPasswordInput" class="form-control" placeholder="Enter your password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+    // Existing sidebar navigation code remains unchanged
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const contentSections = document.querySelectorAll('.content-section');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            const section = this.getAttribute('data-section');
+            contentSections.forEach(s => s.style.display = 'none');
+            document.getElementById(section).style.display = 'block';
+        });
+    });
+
+    // Validation regex patterns
+    const nameRegex = /^[A-Za-z\s]{2,}$/;
+    const usernameRegex = /^[A-Za-z0-9]{3,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Updated phone regex for 10 digit numbers starting with 7, 8, or 9 only
+    const phoneRegex = /^[7-9]\d{9}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&*])[A-Za-z\d@#$%^&*]{8,}$/;
+    const companyNameRegex = /^[A-Za-z0-9\s\-.&]{2,}$/;
+    const industryRegex = /^[A-Za-z\s]{2,}$/;
+    const designationRegex = /^[A-Za-z\s]{2,}$/;
+
+    // Function to set field state (similar to login form)
+    function setFieldState(field, isValid, errorMessage) {
+        let errorElement = field.nextElementSibling;
+        if (!errorElement || !errorElement.classList.contains('error-message')) {
+            errorElement = document.createElement('div');
+            errorElement.className = 'error-message';
+            field.parentNode.insertBefore(errorElement, field.nextSibling);
+        }
+        
+        if (isValid) {
+            field.classList.remove('error');
+            errorElement.textContent = '';
+            errorElement.classList.remove('visible');
+        } else {
+            field.classList.add('error');
+            errorElement.textContent = errorMessage;
+            errorElement.classList.add('visible');
+        }
+        return isValid;
+    }
+
+    // Validation functions
+    function validateField(field) {
+        const value = field.value.trim();
+        switch(field.id) {
+            case 'editFullName':
+                return setFieldState(field, nameRegex.test(value), 'Full name must be at least 2 characters (letters only)');
+            case 'editUsername':
+                return setFieldState(field, usernameRegex.test(value), 'Username must be at least 3 characters (letters and numbers only)');
+            case 'editEmail':
+                return setFieldState(field, emailRegex.test(value), 'Please enter a valid email address');
+            case 'editPhoneNumber':
+                return setFieldState(field, phoneRegex.test(value), 'Phone number must be 10 digits and start with 7, 8, or 9');
+            case 'editCompanyName':
+                return setFieldState(field, companyNameRegex.test(value), 'Company name must be at least 2 characters');
+            case 'editCompanyIndustry':
+                return setFieldState(field, industryRegex.test(value), 'Industry must be at least 2 characters (letters only)');
+            case 'editDesignation':
+                return setFieldState(field, designationRegex.test(value), 'Designation must be at least 2 characters (letters only)');
+            case 'editCompanyAbout':
+                return setFieldState(field, value.length >= 10, 'Company description must be at least 10 characters');
+            case 'currentPassword':
+            case 'newPassword':
+            case 'confirmPassword':
+                return setFieldState(field, passwordRegex.test(value), 'Must be 8+ characters with uppercase, lowercase, number, and special character');
+            case 'companyEmail':
+                return setFieldState(field, emailRegex.test(value) || !value, 'Please enter a valid email address');
+            default:
+                return true;
+        }
+    }
+
+    // Add real-time validation to all inputs
+    const inputs = document.querySelectorAll('.edit-field, #currentPassword, #newPassword, #confirmPassword, #companyEmail');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => validateField(input));
+    });
+    
+    // Phone number input - restrict to numbers only and enforce 10 digit limit
+    const phoneInput = document.getElementById('editPhoneNumber');
+    if (phoneInput) {
+        phoneInput.addEventListener('keypress', function(e) {
+            // Allow only numbers
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+            
+            // Limit to 10 digits
+            if (this.value.length >= 10 && e.key !== 'Backspace' && e.key !== 'Delete') {
+                e.preventDefault();
+            }
+            
+            // Enforce first digit as 7, 8, or 9
+            if (this.value.length === 0 && !['7','8','9'].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+        
+        // Handle paste events to enforce phone number rules
+        phoneInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            const filteredData = pasteData.replace(/[^0-9]/g, '').substring(0, 10);
+            
+            if (filteredData.length === 10 && /^[7-9]/.test(filteredData)) {
+                this.value = filteredData;
+            }
+        });
+    }
+
+    // Add verification badges to display for email and phone
+    // Update the HTML structure to include verification badges
+    const emailContainer = document.querySelector('.info-field:has(#email)');
+    const phoneContainer = document.querySelector('.info-field:has(#phoneNumber)');
+    
+    if (emailContainer) {
+        const verifiedBadge = document.createElement('span');
+        verifiedBadge.className = 'verified-badge';
+        verifiedBadge.id = 'emailVerified';
+        verifiedBadge.textContent = 'Verified';
+        verifiedBadge.style.display = 'inline-block';
+        emailContainer.appendChild(verifiedBadge);
+    }
+    
+    if (phoneContainer) {
+        const verifiedBadge = document.createElement('span');
+        verifiedBadge.className = 'verified-badge';
+        verifiedBadge.id = 'phoneVerified';
+        verifiedBadge.textContent = 'Verified';
+        verifiedBadge.style.display = 'inline-block';
+        phoneContainer.appendChild(verifiedBadge);
+    }
+
+    // Edit functionality
+    let isEditingAccount = false;
+    let isEditingCompany = false;
+
+    document.getElementById('editAccountBtn').addEventListener('click', () => {
+        document.getElementById('passwordOverlay').style.display = 'flex';
+        isEditingAccount = true;
+    });
+
+    document.getElementById('editCompanyBtn').addEventListener('click', () => {
+        document.getElementById('passwordOverlay').style.display = 'flex';
+        isEditingCompany = true;
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+        document.getElementById('passwordOverlay').style.display = 'none';
+        isEditingAccount = false;
+        isEditingCompany = false;
+    });
+
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+        const password = document.getElementById('confirmPasswordInput').value;
+        if (password) {
+            if (password === "password123") { // Simulated correct password
+                document.getElementById('passwordOverlay').style.display = 'none';
+                document.getElementById('confirmPasswordInput').value = '';
+
+                if (isEditingAccount) {
+                    const accountCard = document.querySelector('#my-info .content-card:first-of-type');
+                    const fieldValues = accountCard.querySelectorAll('.field-value');
+                    const editFields = accountCard.querySelectorAll('.edit-field');
+                    fieldValues.forEach(el => el.style.display = 'none');
+                    editFields.forEach(el => el.style.display = 'block');
+                    document.getElementById('saveAccountBtn').style.display = 'block';
+                    document.getElementById('editAccountBtn').style.display = 'none';
+                    
+                    // Hide verification badges during edit
+                    if (document.getElementById('emailVerified')) 
+                        document.getElementById('emailVerified').style.display = 'none';
+                    if (document.getElementById('phoneVerified'))
+                        document.getElementById('phoneVerified').style.display = 'none';
+                } else if (isEditingCompany) {
+                    const companyCard = document.querySelector('#my-info .content-card:last-of-type');
+                    const fieldValues = companyCard.querySelectorAll('.field-value');
+                    const editFields = companyCard.querySelectorAll('.edit-field');
+                    fieldValues.forEach(el => el.style.display = 'none');
+                    editFields.forEach(el => el.style.display = 'block');
+                    document.getElementById('saveCompanyBtn').style.display = 'block';
+                    document.getElementById('editCompanyBtn').style.display = 'none';
+                }
+            } else {
+                alert('Incorrect password.');
+            }
+        } else {
+            alert('Please enter your password.');
+        }
+    });
+
+    document.getElementById('saveAccountBtn').addEventListener('click', () => {
+        const accountCard = document.querySelector('#my-info .content-card:first-of-type');
+        const editFields = accountCard.querySelectorAll('.edit-field');
+        let allValid = true;
+        
+        editFields.forEach(field => {
+            if (!validateField(field)) allValid = false;
+        });
+
+        if (allValid) {
+            const fieldValues = accountCard.querySelectorAll('.field-value');
+            fieldValues.forEach((el, index) => {
+                el.textContent = editFields[index].value;
+                el.style.display = 'block';
+            });
+            editFields.forEach(el => el.style.display = 'none');
+            document.getElementById('saveAccountBtn').style.display = 'none';
+            document.getElementById('editAccountBtn').style.display = 'block';
+            isEditingAccount = false;
+            
+            // Show verification badges again
+            if (document.getElementById('emailVerified')) 
+                document.getElementById('emailVerified').style.display = 'inline-block';
+            if (document.getElementById('phoneVerified'))
+                document.getElementById('phoneVerified').style.display = 'inline-block';
+                
+            alert('Account details saved.');
+        } else {
+            alert('Please correct the errors before saving.');
+        }
+    });
+
+    document.getElementById('saveCompanyBtn').addEventListener('click', () => {
+        const companyCard = document.querySelector('#my-info .content-card:last-of-type');
+        const editFields = companyCard.querySelectorAll('.edit-field');
+        let allValid = true;
+        
+        editFields.forEach(field => {
+            if (!validateField(field)) allValid = false;
+        });
+
+        if (allValid) {
+            const fieldValues = companyCard.querySelectorAll('.field-value');
+            fieldValues.forEach((el, index) => {
+                el.textContent = editFields[index].value;
+                el.style.display = 'block';
+            });
+            editFields.forEach(el => el.style.display = 'none');
+            document.getElementById('saveCompanyBtn').style.display = 'none';
+            document.getElementById('editCompanyBtn').style.display = 'block';
+            isEditingCompany = false;
+            alert('Company details saved.');
+        } else {
+            alert('Please correct the errors before saving.');
+        }
+    });
+
+    // Password & Security
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+        document.getElementById('passwordStatus').style.display = 'none';
+        document.getElementById('changePasswordFields').style.display = 'block';
+        document.getElementById('changePasswordBtn').style.display = 'none';
+    });
+
+    document.getElementById('savePasswordBtn').addEventListener('click', () => {
+        const current = document.getElementById('currentPassword');
+        const newPass = document.getElementById('newPassword');
+        const confirmPass = document.getElementById('confirmPassword');
+        
+        const isCurrentValid = validateField(current);
+        const isNewValid = validateField(newPass);
+        const isConfirmValid = validateField(confirmPass);
+
+        if (isCurrentValid && isNewValid && isConfirmValid) {
+            if (current.value !== "password123") {
+                setFieldState(current, false, 'Current password is incorrect');
+            } else if (newPass.value !== confirmPass.value) {
+                setFieldState(confirmPass, false, 'Passwords do not match');
+            } else {
+                alert('Password changed successfully.');
+                current.value = '';
+                newPass.value = '';
+                confirmPass.value = '';
+                document.getElementById('passwordStatus').style.display = 'block';
+                document.getElementById('changePasswordFields').style.display = 'none';
+                document.getElementById('changePasswordBtn').style.display = 'block';
+            }
+        }
+    });
+
+    // Identity Verification
+    document.getElementById('submitVerificationBtn').addEventListener('click', () => {
+        const govId = document.getElementById('govId').files[0];
+        const companyId = document.getElementById('companyId').files[0];
+        const companyEmail = document.getElementById('companyEmail');
+        
+        const isEmailValid = validateField(companyEmail);
+
+        if (!govId) {
+            alert('Please upload a Government-Issued ID.');
+        } else if (!companyId && !companyEmail.value) {
+            alert('Please provide either a Company ID or a Company Email.');
+        } else if (!isEmailValid && companyEmail.value) {
+            alert('Please correct the company email format.');
+        } else {
+            document.getElementById('verificationStatus').textContent = 'Status: Submitted for Verification';
+            setTimeout(() => {
+                document.getElementById('govIdVerified').style.display = 'inline-block';
+                if (companyId) document.getElementById('companyIdVerified').style.display = 'inline-block';
+                document.getElementById('verificationStatus').textContent = 'Status: Verified';
+                document.getElementById('verificationStatus').style.color = '#2e7d32';
+            }, 2000);
+            alert('Verification documents submitted successfully.');
+        }
+    });
+
+    // Existing file preview code remains unchanged
+    document.getElementById('govId').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const preview = document.getElementById('govIdPreview');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        }
+    });
+
+    document.getElementById('companyId').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const preview = document.getElementById('companyIdPreview');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        }
+    });
+    
+    // Update the initial phone number display to match our required format
+    const phoneNumberDisplay = document.getElementById('phoneNumber');
+    if (phoneNumberDisplay) {
+        phoneNumberDisplay.textContent = '9876543210'; // Sample 10-digit number starting with 9
+    }
+    
+    const phoneNumberInput = document.getElementById('editPhoneNumber');
+    if (phoneNumberInput) {
+        phoneNumberInput.value = '9876543210'; // Sample 10-digit number starting with 9
+    }
+});
+        </script>
+</body>
+</html>

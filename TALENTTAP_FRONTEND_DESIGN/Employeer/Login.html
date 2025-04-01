@@ -3,17 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalentTap | Login</title>
-    <link rel="icon" type="image/x-icon" href="./assests/img/favicon.png">
+    <title>TalentTap | Employer Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f1f5f9, #d8e2ef);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px; 
+            padding: 35px;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #5e17eb;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #5e17eb;
+            outline: none;
+            box-shadow: 0 0 5px rgba(106, 90, 205, 0.2);
+        }
+
+        .form-control.error {
+            border: 1px solid #e74c3c;
+            background: #fff1f1;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1rem;
+            color: #777;
+            user-select: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: #5e17eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #4834d4;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #5e17eb;
+            text-decoration: none;
+            margin-top: 5px;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .signup-link a {
+            color: #5e17eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 25px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
         <form id="loginForm" novalidate>
             <div style="display: flex; justify-content: center; margin-bottom: 30px;">
                 <img src="./img/LOGO_TRANSPARENT.png" alt="TalentTap Logo" style="height: 60px;">
@@ -52,22 +206,89 @@
                 <a href="#" class="forgot-password">Forgot Password?</a>
             </div>
 
-            <button 
-                id="loginButton"
-                class="btn"
-                type="submit"
-            >
+            <button id="loginButton" class="btn" type="submit">
                 Log In
             </button>
 
             <div class="signup-link">
                 <p>
-                    Don't have an account? 
-                    <a href="#">Sign Up</a>
+                    Don't have an account? <a href="./EmployerRegistration.html">Sign Up</a>
                 </p>
             </div>
         </form>
     </div>
-    <script src="./js/login.js"></script>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const togglePasswordElement = document.querySelector('.toggle-password');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Toggle password visibility
+            togglePasswordElement.addEventListener('click', togglePassword);
+
+            // Simple validation functions
+            function validateUsernameOrEmail() {
+                const value = usernameInput.value.trim();
+                if (!value) {
+                    usernameInput.classList.add('error');
+                    usernameError.textContent = 'Username or email is required';
+                    usernameError.classList.add('visible');
+                    return false;
+                }
+                usernameInput.classList.remove('error');
+                usernameError.textContent = '';
+                usernameError.classList.remove('visible');
+                return true;
+            }
+
+            function validatePassword() {
+                const value = passwordInput.value;
+                if (!value) {
+                    passwordInput.classList.add('error');
+                    passwordError.textContent = 'Password is required';
+                    passwordError.classList.add('visible');
+                    return false;
+                }
+                passwordInput.classList.remove('error');
+                passwordError.textContent = '';
+                passwordError.classList.remove('visible');
+                return true;
+            }
+
+            // Real-time validation
+            usernameInput.addEventListener('input', validateUsernameOrEmail);
+            passwordInput.addEventListener('input', validatePassword);
+
+            // Form submission
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const isUsernameValid = validateUsernameOrEmail();
+                const isPasswordValid = validatePassword();
+
+                if (isUsernameValid && isPasswordValid) {
+                    // Here you would typically send the data to your server
+                    console.log('Form is valid, submitting...');
+                    window.location.href = "../Employeer/EmployerDashboard.html";
+                }
+            });
+        });
+    </script>
 </body>
 </html>

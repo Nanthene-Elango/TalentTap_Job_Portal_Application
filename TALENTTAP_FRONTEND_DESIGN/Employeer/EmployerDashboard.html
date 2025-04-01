@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Employer Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <style>
+        * {
+            font-size: 0.92rem;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .text-violet {
+            color: #5e17eb;
+        }
+
+        .bg-violet {
+            background-color: #5e17eb;
+        }
+
+        .bg-violet-light {
+            background-color: #f8f5ff;
+        }
+
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-violet {
+            color: #5e17eb;
+            border-color: #5e17eb;
+            transition: all 0.3s ease;
+        }
+
+        .btn-violet:hover {
+            background-color: #4912b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .btn-outline-violet:hover {
+            background-color: #5e17eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-link {
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-link:hover {
+            color: #5e17eb;
+        }
+
+        .navbar-link.active {
+            color: #5e17eb;
+            font-weight: 600;
+        }
+
+        .navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #5e17eb;
+            border-radius: 3px;
+        }
+
+        .profile-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-dropdown:hover {
+            background-color: #f0f0f0;
+        }
+
+        .profile-circle {
+            width: 36px;
+            height: 36px;
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 0.5rem 0;
+            min-width: 220px;
+            margin-top: 10px;
+        }
+
+        .dropdown-item {
+            padding: 0.6rem 1.2rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            color: #666;
+        }
+
+        .dropdown-item:hover i {
+            color: #5e17eb;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #fff5f5;
+        }
+
+        .dropdown-item.text-danger:hover i {
+            color: #dc3545;
+        }
+
+        .dropdown-divider {
+            margin: 0.3rem 0;
+        }
+
+        .quick-actions {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .badge-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff5757;
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 50px;
+            border: 2px solid white;
+        }
+
+        .icon-button {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            color: #555;
+        }
+
+        .icon-button:hover {
+            background-color: #eee;
+            color: #5e17eb;
+            transform: translateY(-2px);
+        }
+
+        .post-job-btn {
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            padding: 0.35rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transform-origin: center;
+            border: none;
+        }
+
+        .post-job-btn i {
+            margin-right: 8px;
+        }
+
+        .post-job-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .dashboard-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .dashboard-card .card-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-card .card-icon i {
+            font-size: 1.5rem;
+        }
+
+        .dashboard-card .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card .card-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .applicant-list {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .applicant-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .applicant-card:last-child {
+            border-bottom: none;
+        }
+
+        .applicant-card:hover {
+            background-color: #f8f9fa;
+        }
+
+        .applicant-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #5e17eb;
+        }
+
+        .applicant-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .applicant-position {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .applicant-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background-color: #e7f5ff;
+            color: #0c63e4;
+        }
+
+        .status-shortlisted {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+
+        .status-interview {
+            background-color: #e3f2fd;
+            color: #2196f3;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        .view-all-link {
+            color: #5e17eb;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        .view-all-link i {
+            margin-left: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .job-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .job-fulltime {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .job-parttime {
+            background-color: #ede7f6;
+            color: #5e35b1;
+        }
+
+        .job-remote {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+
+        /* Verification Message Styles */
+        .verification-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .verification-message p {
+            margin: 0;
+            color: #856404;
+            font-weight: 500;
+        }
+
+        .verification-message .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+
+        /* Updated Job Card Styles */
+        .job-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-card .card-header {
+            background-color: #5e17eb;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .job-card .card-header h6 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .job-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .job-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .job-info i {
+            margin-right: 0.75rem;
+            color: #5e17eb;
+        }
+
+        .job-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .job-stats .applicants {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .job-stats .status {
+            display: flex;
+            align-items: center;
+        }
+
+        .job-stats .status .badge {
+            margin-right: 0.75rem;
+        }
+
+        @media (max-width: 992px) {
+            .quick-actions {
+                margin-right: 0;
+                margin-bottom: 15px;
+                justify-content: center;
+            }
+
+            .post-job-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar-collapse {
+                padding: 1rem 0;
+            }
+
+            .profile-dropdown {
+                justify-content: center;
+                margin-top: 15px;
+            }
+
+            .verification-message {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .verification-message .btn {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./EmployerDashboard.html">
+                <img src="./img/LOGO_TRANSPARENT.png" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            
+            <div class="d-flex align-items-center order-lg-3">
+                <div class="quick-actions d-flex">
+                    <a href="#" class="icon-button">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-notification">5</span>
+                    </a>
+                    <a href="#" class="icon-button">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge-notification">3</span>
+                    </a>
+                </div>
+                
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">EP</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">EP</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="account-settings.html"><i class="fas fa-cog"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="help.html"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link active" href="EmployerDashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="./Jobs.html">
+                            <i class="fas fa-briefcase me-1"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="Candidates.html">
+                            <i class="fas fa-users me-1"></i> Candidates
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                    <button class="btn btn-violet w-100">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Verification Message (Hidden if Verified) -->
+    <div class="container">
+        <div id="verificationMessage" class="verification-message" style="display: none;">
+            <p>Your company profile is not verified. Please verify your profile to post jobs.</p>
+            <a href="EmployerProfile.html" class="btn btn-violet">Go to Verify</a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0 fw-bold">Dashboard Overview</h3>
+                    <div class="d-flex">
+                        <select class="form-select me-2">
+                            <option>Last 30 days</option>
+                            <option>Last week</option>
+                            <option>Last 3 months</option>
+                        </select>
+                        <button class="btn btn-outline-violet">
+                            <i class="fas fa-download me-1"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards Row -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-body">
+                                <div class="card-icon bg-violet-light text-violet">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div class="card-value">12</div>
+                                <div class="card-label">Active Job Postings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-body">
+                                <div class="card-icon bg-violet-light text-violet">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="card-value">48</div>
+                                <div class="card-label">Total Applicants</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-body">
+                                <div class="card-icon bg-violet-light text-violet">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="card-value">1,254</div>
+                                <div class="card-label">Total Job Views</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-body">
+                                <div class="card-icon bg-violet-light text-violet">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div class="card-value">5</div>
+                                <div class="card-label">Candidates Hired</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Applicants Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="section-header">
+                            <h5 class="section-title">Recent Applicants</h5>
+                            <a href="candidates.html" class="view-all-link">
+                                View All Candidates <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="card dashboard-card">
+                            <div class="card-body p-0">
+                                <div class="applicant-list">
+                                    <!-- Applicant 1 -->
+                                    <div class="applicant-card">
+                                        <div class="applicant-img">JS</div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="applicant-name">John Smith</div>
+                                                    <div class="applicant-position">Senior Frontend Developer <span class="job-badge job-fulltime">Full-time</span></div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="status-badge status-new">New</div>
+                                                    <div class="applicant-date mt-1">Applied 2 hours ago</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Applicant 2 -->
+                                    <div class="applicant-card">
+                                        <div class="applicant-img">AJ</div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="applicant-name">Amanda Johnson</div>
+                                                    <div class="applicant-position">Product Designer <span class="job-badge job-remote">Remote</span></div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="status-badge status-interview">Interview</div>
+                                                    <div class="applicant-date mt-1">Applied 1 day ago</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Applicant 3 -->
+                                    <div class="applicant-card">
+                                        <div class="applicant-img">RK</div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="applicant-name">Robert Kim</div>
+                                                    <div class="applicant-position">Marketing Specialist <span class="job-badge job-fulltime">Full-time</span></div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="status-badge status-shortlisted">Shortlisted</div>
+                                                    <div class="applicant-date mt-1">Applied 2 days ago</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Applicant 4 -->
+                                    <div class="applicant-card">
+                                        <div class="applicant-img">LP</div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="applicant-name">Lisa Patel</div>
+                                                    <div class="applicant-position">Backend Developer <span class="job-badge job-remote">Remote</span></div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="status-badge status-new">New</div>
+                                                    <div class="applicant-date mt-1">Applied 3 days ago</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Applicant 5 -->
+                                    <div class="applicant-card">
+                                        <div class="applicant-img">DW</div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <div class="applicant-name">David Wilson</div>
+                                                    <div class="applicant-position">Project Manager <span class="job-badge job-parttime">Part-time</span></div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="status-badge status-interview">Interview</div>
+                                                    <div class="applicant-date mt-1">Applied 4 days ago</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Jobs Summary -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section-header">
+                            <h5 class="section-title">Active Job Postings</h5>
+                            <a href="jobs.html" class="view-all-link">
+                                Manage All Jobs <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card job-card h-100">
+                                    <div class="card-header">
+                                        <h6>Senior Frontend Developer</h6>
+                                        <span class="job-badge job-fulltime">Full-time</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="job-info">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>San Francisco, CA (Remote)</span>
+                                        </div>
+                                        <div class="job-info">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            <span>$110,000 - $140,000</span>
+                                        </div>
+                                        <div class="job-stats">
+                                            <div class="applicants">
+                                                <i class="fas fa-users me-1"></i> 18 Applicants
+                                            </div>
+                                            <div class="status">
+                                                <span class="badge bg-success">Active</span>
+                                                <span class="small text-muted">Expires in 15 days</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card job-card h-100">
+                                    <div class="card-header">
+                                        <h6>Product Designer</h6>
+                                        <span class="job-badge job-remote">Remote</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="job-info">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>Anywhere (Remote)</span>
+                                        </div>
+                                        <div class="job-info">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            <span>$90,000 - $120,000</span>
+                                        </div>
+                                        <div class="job-stats">
+                                            <div class="applicants">
+                                                <i class="fas fa-users me-1"></i> 12 Applicants
+                                            </div>
+                                            <div class="status">
+                                                <span class="badge bg-success">Active</span>
+                                                <span class="small text-muted">Expires in 21 days</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simulated verification status (replace with actual backend logic)
+        const isVerified = false; // Set to true/false based on actual company verification status
+
+        // Show/hide verification message based on verification status
+        const verificationMessage = document.getElementById('verificationMessage');
+        if (!isVerified) {
+            verificationMessage.style.display = 'flex';
+        } else {
+            verificationMessage.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

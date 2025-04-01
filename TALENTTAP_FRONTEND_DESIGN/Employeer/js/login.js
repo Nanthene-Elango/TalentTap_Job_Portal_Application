@@ -88,9 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const isPasswordValid = validatePassword();
 
         if (isUsernameValid && isPasswordValid) {
-            // Simulate login process
-            alert('Login successful!');
-            // In a real application, you would send the login request here
+            window.location.href = "../Employeer/EmployerDashboard.html";
+
         }
     });
 });
