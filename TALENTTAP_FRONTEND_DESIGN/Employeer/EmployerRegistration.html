@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
@@ -120,6 +121,12 @@
         .form-control.error {
             border-color: #e74c3c;
             background: #fff1f1;
+        }
+
+        .form-control:disabled {
+            background: #f5f5f5;
+            border-color: #e0e0e0;
+            color: #555;
         }
 
         .error-message {
@@ -395,7 +402,7 @@
             <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
 
-        <form id="registrationForm">
+        <form id="registrationForm" novalidate>
             <!-- Step 1: Basic Details -->
             <div class="form-step active" id="basicDetailsStep">
                 <h2>Basic Details</h2>
@@ -454,9 +461,9 @@
                         <div class="progress-fill"></div>
                         <span class="btn-text">Get OTP</span>
                     </button>
-                    <button type="button" class="btn progress-btn" id="phoneNextBtn" style="display: none;">
+                    <button type="button" class="btn next-btn progress-btn" id="phoneNextBtn" data-step="2" style="display: none;">
                         <div class="progress-fill"></div>
-                        <span class="btn-text">Verify</span>
+                        <span class="btn-text">Next</span>
                     </button>
                 </div>
             </div>
@@ -493,9 +500,9 @@
                         <div class="progress-fill"></div>
                         <span class="btn-text">Get OTP</span>
                     </button>
-                    <button type="button" class="btn progress-btn" id="emailNextBtn" style="display: none;">
+                    <button type="button" class="btn next-btn progress-btn" id="emailNextBtn" data-step="3" style="display: none;">
                         <div class="progress-fill"></div>
-                        <span class="btn-text">Verify</span>
+                        <span class="btn-text">Next</span>
                     </button>
                 </div>
             </div>
@@ -614,7 +621,7 @@
             const usernameRegex = /^[A-Za-z0-9]+$/;
             const phoneRegex = /^[7-9]\d{9}$/;
             const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-            const companySizeRegex = /^\d+-\d+$/; // Validates format like "0-100"
+            const companySizeRegex = /^\d+-\d+$/;
 
             // Show toast notification
             function showToast(message) {
@@ -649,6 +656,7 @@
                     $('#phoneVerifyBtn').show();
                     $('#phoneStatus').removeClass('verified').text('');
                     $('#phoneOtpMessage').hide();
+                    $('#phoneNumber').prop('disabled', false).attr('placeholder', 'Enter your phone number');
                     clearInterval(phoneTimerInterval);
                     phoneAttempts = 0;
                 } else {
@@ -659,6 +667,7 @@
                     $('#emailVerifyBtn').show();
                     $('#emailStatus').removeClass('verified').text('');
                     $('#emailOtpMessage').hide();
+                    $('#email').prop('disabled', false).attr('placeholder', 'Enter your email');
                     clearInterval(emailTimerInterval);
                     emailAttempts = 0;
                 }
@@ -679,6 +688,7 @@
                         $('#changePhoneBtn').show();
                         $('#phoneStatus').addClass('verified').text('Verified');
                         disableOTPInputs('phone');
+                        $('#phoneNumber').prop('disabled', true).attr('placeholder', '');
                     }
                 }
                 
@@ -688,6 +698,7 @@
                         $('#emailStatus').addClass('verified').text('Verified');
                         $('#changeEmailBtn').show();
                         disableOTPInputs('email');
+                        $('#email').prop('disabled', true).attr('placeholder', '');
                     }
                 }
             }
@@ -752,6 +763,7 @@
                 const phoneVerifyBtn = $('#phoneVerifyBtn');
                 animateProgressButton(phoneVerifyBtn, function() {
                     const phone = $('#phoneNumber').val();
+                    $('#phoneNumber').prop('disabled', true).attr('placeholder', '');
                     $('#displayPhone').text(phone.replace(/.(?=.{4})/g, '*'));
                     $('#phoneOtpMessage, #phoneOtpContainer, #phoneResendContainer').show();
                     $('#phoneVerifyBtn').hide();
@@ -768,6 +780,7 @@
                 const emailVerifyBtn = $('#emailVerifyBtn');
                 animateProgressButton(emailVerifyBtn, function() {
                     const email = $('#email').val();
+                    $('#email').prop('disabled', true).attr('placeholder', '');
                     $('#displayEmail').text(email.replace(/(?<=.{3}).(?=[^@]*@)/g, '*'));
                     $('#emailOtpMessage, #emailOtpContainer, #emailResendContainer').show();
                     $('#emailVerifyBtn').hide();
@@ -782,7 +795,7 @@
             function verifyOTP(type) {
                 if (!validateOTPInputs(type)) return;
                 
-                const verifyBtn = type === 'email' ? $('#emailNextBtn') : $('#phoneNextBtn');
+                const nextBtn = type === 'email' ? $('#emailNextBtn') : $('#phoneNextBtn');
                 
                 if (type === 'email') {
                     emailAttempts++;
@@ -792,11 +805,11 @@
 
                 if ((type === 'email' && emailAttempts > 3) || (type === 'phone' && phoneAttempts > 3)) {
                     showToast('Maximum OTP attempts reached. Please request a new OTP.');
-                    verifyBtn.prop('disabled', true);
+                    nextBtn.prop('disabled', true);
                     return;
                 }
 
-                animateProgressButton(verifyBtn, function() {
+                animateProgressButton(nextBtn, function() {
                     const otpInputs = type === 'email' 
                         ? ['otp1', 'otp2', 'otp3', 'otp4', 'otp5', 'otp6']
                         : ['phoneOtp1', 'phoneOtp2', 'phoneOtp3', 'phoneOtp4', 'phoneOtp5', 'phoneOtp6'];
@@ -819,11 +832,9 @@
                             }
                             
                             statusElement.addClass('verified').text('Verified');
-                            setTimeout(() => {
-                                currentStep++;
-                                showStep(currentStep);
-                                updateProgressBar();
-                            }, 1000);
+                            currentStep++;
+                            showStep(currentStep);
+                            updateProgressBar();
                         } else {
                             $(`#otp${type === 'email' ? 'Email' : 'Phone'}Error`)
                                 .text('Invalid OTP. Please try again.')
@@ -913,6 +924,18 @@
                 const foundedAt = $('#foundedAt').val();
                 const companyAbout = $('#companyAbout').val().trim();
 
+                console.log('Validating Company Details...');
+                console.log('Company Name:', companyName);
+                console.log('Company Logo:', companyLogo);
+                console.log('Company Industry:', companyIndustry);
+                console.log('Company Email:', companyEmail);
+                console.log('Company Phone:', companyPhone);
+                console.log('Company Size:', companySize);
+                console.log('Location:', location);
+                console.log('Website URL:', websiteUrl);
+                console.log('Founded At:', foundedAt);
+                console.log('Company About:', companyAbout);
+
                 if (!companyName || companyName.length < 2) {
                     showError('companyName', companyName ? 'Minimum 2 characters' : 'Company name is required');
                     isValid = false;
@@ -989,6 +1012,7 @@
                     clearError('companyAbout');
                 }
 
+                console.log('Validation Result:', isValid);
                 return isValid;
             }
 
@@ -1027,11 +1051,34 @@
 
             $('.next-btn').click(function() {
                 const step = parseInt($(this).data('step'));
-                if (step === 1 && !validateBasicDetails()) return;
-                if (step === 4 && !validateCompanyDetails()) return;
+                console.log('Next button clicked, current step:', step);
+
+                if (step === 1 && !validateBasicDetails()) {
+                    console.log('Basic Details validation failed');
+                    return;
+                }
+                if (step === 2 && !phoneVerified) {
+                    console.log('Phone verification required');
+                    verifyOTP('phone');
+                    return;
+                }
+                if (step === 3 && !emailVerified) {
+                    console.log('Email verification required');
+                    verifyOTP('email');
+                    return;
+                }
+                if (step === 4 && !validateCompanyDetails()) {
+                    console.log('Company Details validation failed');
+                    return;
+                }
+                
                 animateProgressButton($(this), function() {
-                    if (step === 4) prepareConfirmation();
+                    if (step === 4) {
+                        console.log('Preparing confirmation step');
+                        prepareConfirmation();
+                    }
                     currentStep = step + 1;
+                    console.log('Advancing to step:', currentStep);
                     showStep(currentStep);
                     updateProgressBar();
                 });
@@ -1039,6 +1086,7 @@
 
             $('.prev-btn').click(function() {
                 currentStep = parseInt($(this).data('step')) - 1;
+                console.log('Previous button clicked, going to step:', currentStep);
                 showStep(currentStep);
                 updateProgressBar();
             });
@@ -1053,10 +1101,7 @@
             });
 
             $('#phoneVerifyBtn').click(sendPhoneOTP);
-            $('#phoneNextBtn').click(function() { verifyOTP('phone'); });
-
             $('#emailVerifyBtn').click(sendEmailOTP);
-            $('#emailNextBtn').click(function() { verifyOTP('email'); });
 
             $('#phoneResendBtn').click(function() {
                 $('.otp-input').val('');
@@ -1109,11 +1154,17 @@
             $('#registrationForm').submit(function(e) {
                 e.preventDefault();
                 animateProgressButton($('#submitBtn'), function() {
-                    $('#submitBtn .btn-text').text('Processing...');
-                    setTimeout(function() {
-                        showToast('Registration successful! Welcome to TalentTap.');
-                        window.location.href = 'dashboard.html';
-                    }, 2000);
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Employer registration completed successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#5e17eb'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'employer-dashboard.html';
+                        }
+                    });
                 });
             });
 
