@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5e17eb;
+            --primary-light: #7c42f5;
+            --primary-dark: #4a12c0;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .app-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .step-indicator {
+            display: flex;
+            padding: 20px 0;
+            justify-content: center;
+            background-color: #f1f1f1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #d1d1d1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .step.active .step-circle {
+            background-color: var(--primary-color);
+        }
+
+        .step.completed .step-circle {
+            background-color: var(--primary-dark);
+        }
+
+        .step-line {
+            height: 3px;
+            width: 100px;
+            background-color: #d1d1d1;
+            position: relative;
+            top: 15px;
+        }
+
+        .step-title {
+            font-size: 14px;
+            text-align: center;
+            color: #555;
+        }
+
+        .step.active .step-title {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .step-content {
+            padding: 30px;
+            min-height: 350px;
+        }
+
+        .job-details-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .resume-preview {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            /* color: var(--primary-color); */
+            margin-bottom: 20px;
+        }
+
+        /* Hide all steps by default */
+        #step2,
+        #step3,
+        #success {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="app-container">
+            <div class="app-header">
+                <h2>Job Application</h2>
+            </div>
+
+            <div class="step-indicator">
+                <div class="step active" id="step1-indicator">
+                    <div class="step-circle">1</div>
+                    <div class="step-title">Review Job</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" id="step2-indicator">
+                    <div class="step-circle">2</div>
+                    <div class="step-title">Review Resume</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" id="step3-indicator">
+                    <div class="step-circle">3</div>
+                    <div class="step-title">Submit</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Review Job Details -->
+            <div class="step-content" id="step1">
+                <h4 class="mb-4">Review Job Details</h4>
+                <div class="job-details-card">
+                    <h5 class="text-primary" style="color: var(--primary-color) !important;">Senior Developer</h5>
+                    <div class="mb-3">
+                        <span class="badge bg-light text-dark me-2">TechCorp Inc.</span>
+                        <span class="badge bg-light text-dark me-2">San Francisco, CA</span>
+                        <span class="badge bg-light text-dark">$120K - $150K</span>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Job Description</h6>
+                        <p>We are looking for a Senior Developer to join our growing team. The ideal candidate will have
+                            experience with modern web technologies and a passion for creating high-quality software
+                            products.</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Requirements</h6>
+                        <ul>
+                            <li>5+ years of experience in web development</li>
+                            <li>Strong knowledge of JavaScript, HTML, CSS</li>
+                            <li>Experience with React or similar frameworks</li>
+                            <li>Bachelor's degree in Computer Science or related field</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6>Benefits</h6>
+                        <ul>
+                            <li>Competitive salary and equity</li>
+                            <li>Health, dental, and vision insurance</li>
+                            <li>Flexible working hours</li>
+                            <li>Remote work options</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Review Resume -->
+            <div class="step-content" id="step2">
+                <h4 class="mb-4">Review Your Resume</h4>
+                <p>Please review your current resume. You can also upload a new one if needed.</p>
+
+                <div class="resume-preview mb-3">
+                    <h5>John Doe</h5>
+                    <p>Senior Developer with 6 years of experience</p>
+                    <p><strong>Email:</strong> john.doe@email.com</p>
+                    <p><strong>Phone:</strong> (123) 456-7890</p>
+                    <hr>
+                    <h6>Experience</h6>
+                    <p><strong>Software Developer</strong> - ABC Tech (2018-Present)</p>
+                    <p><strong>Junior Developer</strong> - XYZ Solutions (2016-2018)</p>
+                    <hr>
+                    <h6>Education</h6>
+                    <p>BS Computer Science - Tech University (2016)</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <small><i class="fas fa-info-circle"></i> Note: Any changes made to your resume here will also
+                        update the resume in your profile.</small>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-eye"></i> View Full Resume
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm ms-2">
+                        <i class="fas fa-upload"></i> Upload Different Resume
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Submit Application -->
+            <div class="step-content" id="step3">
+                <h4 class="mb-4">Submit Application</h4>
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        Application Summary
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Role:</strong> Senior Developer</p>
+                        <p><strong>Company:</strong> TechCorp Inc.</p>
+                        <p><strong>Resume:</strong> John_Doe_Resume.pdf</p>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="coverLetter" class="form-label">Cover Letter or Additional Notes (Optional)</label>
+                    <textarea class="form-control" id="coverLetter" rows="5"
+                        placeholder="Add any additional information you'd like to share with the employer..."></textarea>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="step-content" id="success">
+                <div class="success-message">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    <h4 class="mb-3" style="color: var(--primary-color);">Job Applied Successfully!</h4>
+                    <p class="mb-4">You will receive an email soon regarding approval status. You can check your
+                        application status from your dashboard anytime.</p>
+                    <button class="btn btn-primary">Return to Job Search</button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons" id="step1-buttons">
+                <button class="btn btn-light" disabled>Back</button>
+                <button class="btn btn-primary" onclick="goToStep(2)">Continue to Next Step</button>
+            </div>
+
+            <div class="action-buttons" id="step2-buttons" style="display: none;">
+                <button class="btn btn-light" onclick="goToStep(1)">Back</button>
+                <button class="btn btn-primary" onclick="goToStep(3)">Continue with Current Resume</button>
+            </div>
+
+            <div class="action-buttons" id="step3-buttons" style="display: none;">
+                <button class="btn btn-light" onclick="goToStep(2)">Back</button>
+                <button class="btn btn-primary" onclick="showSuccess()">Submit Application</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and Font Awesome JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+    <script>
+        function goToStep(step) {
+            // Hide all steps
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+
+            // Hide all buttons
+            document.getElementById('step1-buttons').style.display = 'none';
+            document.getElementById('step2-buttons').style.display = 'none';
+            document.getElementById('step3-buttons').style.display = 'none';
+
+            // Reset all indicators
+            document.getElementById('step1-indicator').className = 'step';
+            document.getElementById('step2-indicator').className = 'step';
+            document.getElementById('step3-indicator').className = 'step';
+
+            // Show selected step
+            document.getElementById('step' + step).style.display = 'block';
+            document.getElementById('step' + step + '-buttons').style.display = 'flex';
+
+            // Update indicators
+            for (let i = 1; i <= step; i++) {
+                if (i < step) {
+                    document.getElementById('step' + i + '-indicator').className = 'step completed';
+                } else {
+                    document.getElementById('step' + i + '-indicator').className = 'step active';
+                }
+            }
+        }
+
+        function showSuccess() {
+            // Hide all steps and buttons
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step1-buttons').style.display = 'none';
+            document.getElementById('step2-buttons').style.display = 'none';
+            document.getElementById('step3-buttons').style.display = 'none';
+
+            // Show success message
+            document.getElementById('success').style.display = 'block';
+
+            // Update indicators
+            document.getElementById('step1-indicator').className = 'step completed';
+            document.getElementById('step2-indicator').className = 'step completed';
+            document.getElementById('step3-indicator').className = 'step completed';
+        }
+    </script>
+</body>
+
+</html>
