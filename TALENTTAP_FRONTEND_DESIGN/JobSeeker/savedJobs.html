@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Jobs - Job Seeker Profile</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .job-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            margin-bottom: 15px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .job-card.selected {
+            border-left: 4px solid #5e17eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .job-title {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .company-name {
+            color: #495057;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .job-details {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .job-badge {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .badge-open {
+            background-color: #5e17eb;
+        }
+
+        .badge-applied {
+            background-color: #12ca21;
+        }
+
+        .badge-closed {
+            background-color: #6c757d;
+        }
+
+        .badge-expired {
+            background-color: #dc3545;
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .job-meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .job-meta-item i {
+            margin-right: 5px;
+            width: 16px;
+        }
+
+        .job-detail-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .detail-header {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-title {
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+
+        .count-badge {
+            font-size: 0.8rem;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-box i {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            color: #6c757d;
+        }
+
+        .search-box input {
+            padding-left: 35px;
+            border-radius: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #adb5bd;
+        }
+
+        .job-tag {
+            display: inline-block;
+            background-color: #f0ebfe;
+            color: #5e17eb;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item {
+            cursor: pointer;
+        }
+
+        /* Theme Color Changes */
+        .btn-primary {
+            background-color: #5e17eb;
+            border-color: #5e17eb;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: #4a12c4;
+            border-color: #4a12c4;
+        }
+
+        .btn-outline-danger {
+            color: #5e17eb;
+            border-color: #5e17eb;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #5e17eb;
+            border-color: #5e17eb;
+            color: white;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #5e17eb;
+        }
+
+        a {
+            color: #5e17eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #4a12c4;
+        }
+    </style>
+    <script src="./js/util.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-4" id="nav-container">
+
+        </div>
+    </nav>
+    <div class="container py-4">
+
+        <div class="row">
+            <!-- Left Column - Job List -->
+            <h4>Saved Jobs</h4>
+            <div class="col-md-5 col-lg-4 mb-4 overflow-y-auto" style="height: 800px;">
+                <div class="filter-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control" placeholder="Search saved jobs...">
+                    </div>
+
+                    <ul class="nav nav-pills mb-3" id="jobsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-jobs-tab" data-bs-toggle="pill"
+                                data-bs-target="#all-jobs" type="button" role="tab">
+                                All <span class="count-badge ms-1">6</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="open-jobs-tab" data-bs-toggle="pill"
+                                data-bs-target="#open-jobs" type="button" role="tab">
+                                Open <span class="count-badge ms-1">4</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="closed-jobs-tab" data-bs-toggle="pill"
+                                data-bs-target="#closed-jobs" type="button" role="tab">
+                                Closed <span class="count-badge ms-1">1</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="expired-jobs-tab" data-bs-toggle="pill"
+                                data-bs-target="#expired-jobs" type="button" role="tab">
+                                Expired <span class="count-badge ms-1">1</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="jobsTabContent">
+                    <div class="tab-pane fade show active" id="all-jobs" role="tabpanel">
+                        <!-- Job Card 1 - Selected by default -->
+                        <div class="job-card selected" onclick="showJobDetails('job1')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Senior Frontend Developer</div>
+                                    <div class="company-name">Acme Corporation</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> New York
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $90K - $120K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 7 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 42 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 2 -->
+                        <div class="job-card" onclick="showJobDetails('job2')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">UX/UI Designer</div>
+                                    <div class="company-name">DesignHub Inc.</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Remote
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $70K - $90K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 3 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 28 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 3 -->
+                        <div class="job-card" onclick="showJobDetails('job3')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Data Science Intern</div>
+                                    <div class="company-name">Tech Innovations</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> San Francisco
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-money-bill-alt"></i> $2000/month
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Internship
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 2 days ago
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-calendar-alt"></i> 3 months
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 4 -->
+                        <div class="job-card" onclick="showJobDetails('job4')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Backend Developer</div>
+                                    <div class="company-name">Cloud Solutions Ltd.</div>
+                                </div>
+                                <span class="badge job-badge badge-closed">Closed</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Chicago
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $85K - $110K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 14 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 56 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 5 -->
+                        <div class="job-card" onclick="showJobDetails('job5')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">DevOps Engineer</div>
+                                    <div class="company-name">InfraTech Solutions</div>
+                                </div>
+                                <span class="badge job-badge badge-expired">Expired</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Seattle
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $95K - $125K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 30 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 38 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 6 -->
+                        <div class="job-card" onclick="showJobDetails('job6')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Content Writer</div>
+                                    <div class="company-name">Digital Marketing Pro</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Remote
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $25/hour
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Part-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 5 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 16 applicants
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="open-jobs" role="tabpanel">
+                        <!-- This would be populated with open jobs -->
+                        <div class="empty-state d-none">
+                            <i class="fas fa-paper-plane"></i>
+                            <p>No open jobs available</p>
+                        </div>
+                        <!-- Job Card 1 - Selected by default -->
+                        <div class="job-card selected" onclick="showJobDetails('job1')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Senior Frontend Developer</div>
+                                    <div class="company-name">Acme Corporation</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> New York
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $90K - $120K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 7 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 42 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 2 -->
+                        <div class="job-card" onclick="showJobDetails('job2')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">UX/UI Designer</div>
+                                    <div class="company-name">DesignHub Inc.</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Remote
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $70K - $90K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 3 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 28 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 3 -->
+                        <div class="job-card" onclick="showJobDetails('job3')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Data Science Intern</div>
+                                    <div class="company-name">Tech Innovations</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> San Francisco
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-money-bill-alt"></i> $2000/month
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Internship
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 2 days ago
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-calendar-alt"></i> 3 months
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Card 6 -->
+                        <div class="job-card" onclick="showJobDetails('job6')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Content Writer</div>
+                                    <div class="company-name">Digital Marketing Pro</div>
+                                </div>
+                                <span class="badge job-badge badge-open">Open</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Remote
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $25/hour
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Part-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 5 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 16 applicants
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="closed-jobs" role="tabpanel">
+                        <!--if no jobs-->
+                        <div class="empty-state d-none">
+                            <i class="fas fa-paper-plane"></i>
+                            <p>No Jobs closed</p>
+                        </div>
+
+                        <!-- Job Card 4 -->
+                        <div class="job-card" onclick="showJobDetails('job4')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">Backend Developer</div>
+                                    <div class="company-name">Cloud Solutions Ltd.</div>
+                                </div>
+                                <span class="badge job-badge badge-closed">Closed</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Chicago
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $85K - $110K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 14 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 56 applicants
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="expired-jobs" role="tabpanel">
+                        <!-- This would be populated with open jobs -->
+                        <div class="empty-state d-none">
+                            <i class="fas fa-filter"></i>
+                            <p>No jobs expired</p>
+                        </div>
+                        <!-- Job Card 5 -->
+                        <div class="job-card" onclick="showJobDetails('job5')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="job-title">DevOps Engineer</div>
+                                    <div class="company-name">InfraTech Solutions</div>
+                                </div>
+                                <span class="badge job-badge badge-expired">Expired</span>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-map-marker-alt location-dot"></i> Seattle
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-dollar-sign"></i> $95K - $125K
+                                </div>
+                                <div class="job-meta-item">
+                                    <i class="fas fa-briefcase"></i> Full-time
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div class="job-meta-item">
+                                    <i class="fas fa-clock"></i> 30 days ago
+                                </div>
+                                <div class="job-meta-item ms-auto">
+                                    <i class="fas fa-user-friends"></i> 38 applicants
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <!-- Right Column - Job Details -->
+            <div class="col-md-7 col-lg-8 overflow-y-auto" style="height: 800px;">
+                <div class="job-detail-card">
+                    <div class="detail-header mb-4">
+                        <div class="d-flex align-items-start">
+                            <div>
+                                <h4>Senior Frontend Developer</h4>
+                                <div class="company-name">Acme Corporation</div>
+                                <div class="d-flex align-items-center mt-1">
+                                    <span class="badge job-badge badge-open me-2">Open</span>
+                                    <span class="text-muted small">Posted 7 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h6 class="detail-title">Skills & Categories</h6>
+                        <div class="mb-3">
+                            <span class="job-tag">JavaScript</span>
+                            <span class="job-tag">React.js</span>
+                            <span class="job-tag">Redux</span>
+                            <span class="job-tag">HTML5</span>
+                            <span class="job-tag">CSS3</span>
+                            <span class="job-tag">Webpack</span>
+                            <span class="job-tag">REST APIs</span>
+                            <span class="job-tag">Git</span>
+                        </div>
+                        <div>
+                            <strong>Category:</strong> Information Technology
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i> Apply Now
+                        </button>
+                        <button class="btn btn-outline-danger">
+                            <i class="fas fa-bookmark me-2"></i> Unsave Job
+                        </button>
+                    </div>
+
+                    <div class="d-none">
+                        <b>Status:</b> <span>Approved <i class="fas fa-circle-check text-success"></i></span>
+                    </div>
+
+                    <div class="row my-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">Job Details</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <i class="fas fa-map-marker-alt me-2"></i> New York, USA
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-dollar-sign me-2"></i> $90,000 - $120,000 per year
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-briefcase me-2"></i> Full-time
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-user-friends me-2"></i> 42 applicants
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-users me-2"></i> 3 openings
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">Important Dates</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <i class="fas fa-calendar-plus me-2"></i> <strong>Posted:</strong> March 22,
+                                            2025
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-calendar-times me-2"></i> <strong>Deadline:</strong> April
+                                            15, 2025
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-hourglass-half me-2"></i> <strong>Time Left:</strong> 16
+                                            days
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h5 class="detail-title">Job Description</h5>
+                        <div class="job-description">
+                            <p>We are looking for an experienced Frontend Developer to join our dynamic team at Acme
+                                Corporation. The ideal candidate will be responsible for implementing visual elements
+                                and their behaviors with user interactions for web applications.</p>
+                            <p>As a Senior Frontend Developer, you will work closely with our design and backend teams
+                                to create seamless user experiences.</p>
+
+                            <h6>Responsibilities:</h6>
+                            <ul>
+                                <li>Develop new user-facing features using React.js and related technologies</li>
+                                <li>Build reusable components and libraries for future use</li>
+                                <li>Optimize applications for maximum speed and scalability</li>
+                                <li>Collaborate with backend developers to integrate REST APIs</li>
+                                <li>Participate in code reviews and mentor junior developers</li>
+                                <li>Stay up-to-date with emerging trends and technologies in frontend development</li>
+                            </ul>
+
+                            <h6>Requirements:</h6>
+                            <ul>
+                                <li>5+ years of experience as a Frontend Developer</li>
+                                <li>Strong proficiency in JavaScript, including DOM manipulation and the JavaScript
+                                    object model</li>
+                                <li>Thorough understanding of React.js and its core principles</li>
+                                <li>Experience with popular React workflows (such as Redux)</li>
+                                <li>Knowledge of modern authorization mechanisms, such as JSON Web Tokens</li>
+                                <li>Familiarity with modern frontend build pipelines and tools</li>
+                                <li>Experience with common frontend development tools such as Babel, Webpack, NPM, etc.
+                                </li>
+                                <li>Good understanding of asynchronous request handling, partial page updates, and AJAX
+                                </li>
+                                <li>Proficient understanding of cross-browser compatibility issues and ways to work
+                                    around them</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer bg-dark text-light py-5" id="footer-container">
+    
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showJobDetails(jobId) {
+            // Remove selected class from all job cards
+            document.querySelectorAll('.job-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected class to clicked job card
+            const clickedCard = event.currentTarget;
+            clickedCard.classList.add('selected');
+
+            // This function would typically fetch job details from an API
+            // and update the right panel. For this demo, we're just selecting the card.
+
+            // Scroll to top on mobile when a job is selected
+            if (window.innerWidth < 768) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+
+</html>
