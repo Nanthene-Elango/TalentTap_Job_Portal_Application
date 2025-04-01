@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap - Jobs</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{jobseeker/css/style.css}">
+    <link rel="stylesheet" th:href="@{jobseeker/css/index.css}">
+    <link rel="stylesheet" th:href="@{jobseeker/css/jobs.css}">
+    <script th:src="@{jobseeker/js/jobs.js}"></script>
+    <script th:src="@{jobseeker/js/util.js}"></script>
+</head>
+
+<body>
+    
+    <div th:replace="jobseeker/navbar :: navbar"></div>
+
+    <div class="search-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control search-bar"
+                            placeholder="Search jobs, skills, or companies...">
+                        <button class="btn btn-primary search-btn">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="container mt-4">
+        <div class="filter-section">
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <h5 class="filter-heading mb-0">Filters <span
+                            class="filter-count badge rounded-pill bg-light text-dark">0 selected</span></h5>
+                </div>
+
+                <div class="col-md-4 text-end">
+                    <a href="#" class="clear-filter" onclick="clearFilters()">Clear All Filters</a>
+                    <button class="btn btn-sm filter-toggle-btn ms-2" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+                        <i class="bi bi-chevron-up"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-12">
+                    <div class="filter-tags" id="activeFilterTags">
+                        <!-- Active filter tags will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse show" id="filterCollapse">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="filter-group">
+                            <div class="filter-label">Job Type</div>
+                            <select class="filter-select" id="job-type" onchange="toggleFilters()">
+                                <option value="">Any Type</option>
+                                <option value="fulltime">Full Time</option>
+                                <option value="parttime">Part Time</option>
+                                <option value="internship">Internship</option>
+                                <option value="contract">Contract</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="filter-group">
+                            <div class="filter-label">Location</div>
+                            <select class="filter-select" id="location">
+                                <option value="">Any Location</option>
+                                <option value="remote">Remote</option>
+                                <option value="new-york">New York</option>
+                                <option value="san-francisco">San Francisco</option>
+                                <option value="london">London</option>
+                                <option value="bangalore">Bangalore</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="filter-group">
+                            <div class="filter-label">Experience</div>
+                            <select class="filter-select" id="experience">
+                                <option value="">Any Experience</option>
+                                <option value="entry">Entry Level</option>
+                                <option value="mid">Mid Level</option>
+                                <option value="senior">Senior Level</option>
+                                <option value="executive">Executive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="filter-group">
+                            <div class="filter-label">Industry</div>
+                            <select class="filter-select" id="industry">
+                                <option value="">Any Industry</option>
+                                <option value="tech">Technology</option>
+                                <option value="finance">Finance</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="education">Education</option>
+                                <option value="retail">Retail</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <button class="btn btn-sm filter-more-btn" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#advancedFilters" aria-expanded="false" aria-controls="advancedFilters">
+                            <i class="bi bi-sliders"></i> More Filters
+                        </button>
+                    </div>
+                </div>
+
+                <div class="collapse mt-3" id="advancedFilters">
+                    <div class="row">
+                        <div class="col-md-3 mb-3 salary-filter">
+                            <div class="filter-group">
+                                <div class="filter-label">Salary</div>
+                                <select class="filter-select" id="salary">
+                                    <option value="">Any Salary</option>
+                                    <option value="0-30k">$0 - $30k</option>
+                                    <option value="30k-60k">$30k - $60k</option>
+                                    <option value="60k-100k">$60k - $100k</option>
+                                    <option value="100k+">$100k+</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="filter-group">
+                                <div class="filter-label">Freshness</div>
+                                <select class="filter-select" id="freshness">
+                                    <option value="">Any Time</option>
+                                    <option value="24h">Last 24 Hours</option>
+                                    <option value="3d">Last 3 Days</option>
+                                    <option value="7d">Last 7 Days</option>
+                                    <option value="14d">Last 14 Days</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3 duration-filter">
+                            <div class="filter-group">
+                                <div class="filter-label">Duration</div>
+                                <select class="filter-select" id="duration">
+                                    <option value="">Any Duration</option>
+                                    <option value="1-3">1-3 Months</option>
+                                    <option value="3-6">3-6 Months</option>
+                                    <option value="6+">6+ Months</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3 stipend-filter">
+                            <div class="filter-group">
+                                <div class="filter-label">Stipend</div>
+                                <select class="filter-select" id="stipend">
+                                    <option value="">Any Stipend</option>
+                                    <option value="0-5k">$0 - $5k</option>
+                                    <option value="5k-10k">$5k - $10k</option>
+                                    <option value="10k+">$10k+</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content container mb-5">
+        <!-- Job List -->
+        <div class="job-list-container">
+            <div class="job-card active" onclick="showJobDetail(1)">
+                <h5 class="job-title">Senior Frontend Developer</h5>
+                <div class="company-name">TechCorp Inc.</div>
+                <div class="job-info">
+                    <span class="job-tag"><i class="fas fa-suitcase"></i> Full Time</span>
+                    <span class="job-tag"><i class="fas fa-map-marker-alt"></i> Chennai , Tamilnadu</span>
+                    <span class="job-tag"> Rs.10000 - Rs.13000</span>
+                    <span class="job-tag"><i class="fas fa-users"></i> 34 Applicants</span>
+                </div>
+                <div class="posted-date"><i class="fas fa-clock"></i> Posted 2 days ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(2)">
+                <h5 class="job-title">UX/UI Design Intern</h5>
+                <div class="company-name">Creative Studios</div>
+                <div class="job-info">
+                    <span class="job-tag">Internship</span>
+                    <span class="job-tag">New York</span>
+                    <span class="job-tag">6 Months</span>
+                    <span class="job-tag">$2500/month</span>
+                </div>
+                <div class="posted-date">Posted 1 day ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(3)">
+                <h5 class="job-title">Data Scientist</h5>
+                <div class="company-name">AnalyticsPro</div>
+                <div class="job-info">
+                    <span class="job-tag">Full Time</span>
+                    <span class="job-tag">San Francisco</span>
+                    <span class="job-tag">$120k - $150k</span>
+                </div>
+                <div class="posted-date">Posted 3 days ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(4)">
+                <h5 class="job-title">Marketing Coordinator</h5>
+                <div class="company-name">GlobalBrand</div>
+                <div class="job-info">
+                    <span class="job-tag">Part Time</span>
+                    <span class="job-tag">London</span>
+                    <span class="job-tag">$35k - $45k</span>
+                </div>
+                <div class="posted-date">Posted 4 days ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(5)">
+                <h5 class="job-title">Software Engineering Intern</h5>
+                <div class="company-name">InnovateTech</div>
+                <div class="job-info">
+                    <span class="job-tag">Internship</span>
+                    <span class="job-tag">Bangalore</span>
+                    <span class="job-tag">3 Months</span>
+                    <span class="job-tag">$1800/month</span>
+                </div>
+                <div class="posted-date">Posted 6 hours ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(6)">
+                <h5 class="job-title">Project Manager</h5>
+                <div class="company-name">BuildCorp</div>
+                <div class="job-info">
+                    <span class="job-tag">Full Time</span>
+                    <span class="job-tag">Boston</span>
+                    <span class="job-tag">$80k - $95k</span>
+                </div>
+                <div class="posted-date">Posted 3 days ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(7)">
+                <h5 class="job-title">Customer Success Representative</h5>
+                <div class="company-name">ServiceFirst</div>
+                <div class="job-info">
+                    <span class="job-tag">Full Time</span>
+                    <span class="job-tag">Remote</span>
+                    <span class="job-tag">$50k - $65k</span>
+                </div>
+                <div class="posted-date">Posted 5 days ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(8)">
+                <h5 class="job-title">Content Writing Intern</h5>
+                <div class="company-name">MediaGroup</div>
+                <div class="job-info">
+                    <span class="job-tag">Internship</span>
+                    <span class="job-tag">Remote</span>
+                    <span class="job-tag">4 Months</span>
+                    <span class="job-tag">$1200/month</span>
+                </div>
+                <div class="posted-date">Posted 1 day ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(9)">
+                <h5 class="job-title">Backend Developer</h5>
+                <div class="company-name">CloudSys</div>
+                <div class="job-info">
+                    <span class="job-tag">Full Time</span>
+                    <span class="job-tag">Berlin</span>
+                    <span class="job-tag">€70k - €85k</span>
+                </div>
+                <div class="posted-date">Posted 2 days ago</div>
+            </div>
+
+            <div class="job-card" onclick="showJobDetail(10)">
+                <h5 class="job-title">HR Coordinator</h5>
+                <div class="company-name">PeopleFirst</div>
+                <div class="job-info">
+                    <span class="job-tag">Full Time</span>
+                    <span class="job-tag">Chicago</span>
+                    <span class="job-tag">$55k - $65k</span>
+                </div>
+                <div class="posted-date">Posted 3 days ago</div>
+            </div>
+        </div>
+
+        <!-- Job Detail -->
+        <div class="job-detail-container">
+            <div class="job-detail">
+                <div class="detail-header">
+                    <h3 class="job-title">Senior Frontend Developer</h3>
+                    <div class="d-flex justify-content-between">
+                        <div class="company-name mb-3">TechCorp Inc.</div>
+                        <a href="" class="text-decoration-none">View Profile<i
+                                class="fas fa-sm fa-external-link ms-1"></i></a>
+                    </div>
+                    <div class="text-muted small">Posted 7 days ago</div>
+
+                    <button class="btn btn-primary apply-btn">Apply Now</button>
+                    <button class="btn btn-primary save-btn" onclick="savejob()"><i class="far fa-bookmark"></i>
+                        save</button>
+                    <button class="btn btn-primary save-btn d-none" onabort="unsavejob()"><i
+                            class="fas fa-bookmark"></i>
+                        saved</button>
+
+                    <div class="detail-section mt-3">
+                        <h6 class="detail-title">Skills & Categories</h6>
+                        <div class="mb-3">
+                            <span class="job-tag">JavaScript</span>
+                            <span class="job-tag">React.js</span>
+                            <span class="job-tag">Redux</span>
+                            <span class="job-tag">HTML5</span>
+                            <span class="job-tag">CSS3</span>
+                            <span class="job-tag">Webpack</span>
+                            <span class="job-tag">REST APIs</span>
+                            <span class="job-tag">Git</span>
+                        </div>
+                        <div>
+                            <strong>Category:</strong> Information Technology
+                        </div>
+                    </div>
+
+                    <div class="row my-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">Job Details</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <i class="fas fa-map-marker-alt me-2"></i> New York, USA
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-dollar-sign me-2"></i> $90,000 - $120,000 per year
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-briefcase me-2"></i> Full-time
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-user-friends me-2"></i> 42 applicants
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-users me-2"></i> 3 openings
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">Important Dates</h6>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <i class="fas fa-calendar-plus me-2"></i> <strong>Posted:</strong> March 22,
+                                            2025
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-calendar-times me-2"></i> <strong>Deadline:</strong> April
+                                            15, 2025
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-hourglass-half me-2"></i> <strong>Time Left:</strong> 16
+                                            days
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="job-description">
+                    <p>We are looking for an experienced Frontend Developer to join our team. You will be
+                        responsible for building our user interface components, integrating with our backend
+                        services, and ensuring a smooth user experience across all devices.</p>
+
+                    <div class="job-responsibilities">
+                        <h5>Responsibilities:</h5>
+                        <ul>
+                            <li>Develop new user-facing features using React.js</li>
+                            <li>Build reusable components and libraries for future use</li>
+                            <li>Translate designs and wireframes into high-quality code</li>
+                            <li>Optimize components for maximum performance across devices</li>
+                            <li>Collaborate with the backend team to integrate user-facing elements with
+                                server-side logic</li>
+                            <li>Stay up-to-date with emerging trends in frontend development</li>
+                        </ul>
+                    </div>
+
+                    <div class="job-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>5+ years of experience in frontend development</li>
+                            <li>Strong proficiency in JavaScript, CSS, HTML</li>
+                            <li>Experience with React.js and its core principles</li>
+                            <li>Experience with popular React workflows (Redux, Hooks)</li>
+                            <li>Familiarity with RESTful APIs</li>
+                            <li>Good understanding of responsive design and cross-browser compatibility</li>
+                            <li>Excellent problem-solving skills and attention to detail</li>
+                        </ul>
+                    </div>
+
+                    <div class="job-benefits">
+                        <h5>Benefits:</h5>
+                        <ul>
+                            <li>Competitive salary and equity package</li>
+                            <li>Flexible working hours and remote work options</li>
+                            <li>Health, dental, and vision insurance</li>
+                            <li>401(k) plan with company match</li>
+                            <li>Professional development budget</li>
+                            <li>Paid time off and parental leave</li>
+                            <li>Home office stipend</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+ 	<div th:replace="jobseeker/footer :: footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

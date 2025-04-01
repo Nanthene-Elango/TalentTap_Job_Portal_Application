@@ -1,0 +1,58 @@
+<nav th:fragment="navbar"
+	class="navbar navbar-expand-md navbar-light bg-white sticky-top">
+	<div class="container-fluid d-flex justify-content-between mx-4"
+		id="nav-container">
+		<a class="navbar-brand" th:href="@{/}"> <img
+			th:src="@{/img/LOGO_TRANSPARENT.png}" alt="Logo-TalentTap"
+			style="height: 45px;">
+		</a>
+
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+			data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item me-2">
+					<a class="nav-link navbar-link active" th:href="@{/}">Home</a>
+				</li>
+				<li class="nav-item me-2">
+					<a class="nav-link navbar-link" th:href="@{/aboutus}">About us</a>
+				</li>
+				<li class="nav-item me-2">
+					<a class="nav-link navbar-link" th:href="@{/jobs}">Jobs</a>
+				</li>
+				<li class="nav-item me-2">
+					<a class="nav-link navbar-link" th:href="@{/companies}">Companies</a>
+				</li>
+				<li class="nav-item me-2 mb-2 mb-md-0">
+					<a class="btn btn-violet" th:href="@{/login}">Login</a>
+				</li>
+				<li class="nav-item me-2">
+					<a class="btn btn-outline-violet" th:href="@{/register}">Register</a>
+				</li>
+				<span class="nav-item pt-2 d-none d-md-block">|</span>
+				<li class="nav-item me-2">
+					<a class="nav-link" id="employer-link" th:href="@{/employer/login}">Hire a Talent? <i class="fas fa-external-link"></i></a>
+				</li>
+				<li class="nav-item dropdown px-2 d-none" id="accountMenu"><a
+					class="nav-link d-flex text-dark" id="accountDropdown"
+					role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fa fa-user-circle fa-2x me-2"></i><span class="pt-1"
+						id="navUserName"></span><i class="fas fa-chevron-down mt-2 ms-1"></i>
+				</a>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item"
+							th:href="@{/jobseeker/profile.html}">Profile</a></li>
+						<li><a class="dropdown-item"
+							th:href="@{/jobseeker/appliedjobs.html}">Applied Jobs</a></li>
+						<li><a class="dropdown-item"
+							th:href="@{/jobseeker/savedJobs.html}">Saved Jobs</a></li>
+						<li><a class="dropdown-item text-danger" id="logoutBtn">Logout</a></li>
+					</ul></li>
+			</ul>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,158 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(120deg, #f1f5f9, #d8e2ef);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px; 
+    padding: 35px;
+}
+
+.back-button {
+	background: none;
+	border: none;
+	color: #5e17eb;
+	font-size: 1.2rem;
+	cursor: pointer;
+	padding: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #5e17eb;
+    outline: none;
+    box-shadow: 0 0 5px rgba(106, 90, 205, 0.2);
+}
+
+.form-control.error {
+    border: 1px solid #e74c3c;
+    background: #fff1f1;
+}
+
+.password-container {
+    position: relative;
+}
+
+/* Ensure the input wrapper contains the input and toggle icon */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1rem;
+    color: black;
+    user-select: none; /* Prevent text selection */
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+    font-weight: 500;
+}
+
+.error-message.visible {
+    display: block;
+}
+
+.btn {
+    padding: 12px 25px;
+    background: #5e17eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+}
+
+.btn:hover {
+    background: #4834d4;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: rgb(32, 32, 32);
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    font-size: 0.85rem;
+    color: #5e17eb;
+    text-decoration: underline;
+    margin-top: 5px;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.signup-link a {
+    color: #5e17eb;
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .login-container {
+        padding: 20px;
+        max-width: 100%;
+    }
+    .form-control {
+        font-size: 0.9rem;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+}
