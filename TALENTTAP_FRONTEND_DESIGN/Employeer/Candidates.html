@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Candidates</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <style>
+        * {
+            font-size: 0.92rem;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .text-violet {
+            color: #5e17eb;
+        }
+
+        .bg-violet {
+            background-color: #5e17eb;
+        }
+
+        .bg-violet-light {
+            background-color: #f8f5ff;
+        }
+
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-violet {
+            color: #5e17eb;
+            border-color: #5e17eb;
+            transition: all 0.3s ease;
+        }
+
+        .btn-violet:hover {
+            background-color: #4912b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .btn-outline-violet:hover {
+            background-color: #5e17eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-link {
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-link:hover {
+            color: #5e17eb;
+        }
+
+        .navbar-link.active {
+            color: #5e17eb;
+            font-weight: 600;
+        }
+
+        .navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #5e17eb;
+            border-radius: 3px;
+        }
+
+        .profile-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-dropdown:hover {
+            background-color: #f0f0f0;
+        }
+
+        .profile-circle {
+            width: 36px;
+            height: 36px;
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 0.5rem 0;
+            min-width: 220px;
+            margin-top: 10px;
+        }
+
+        .dropdown-item {
+            padding: 0.6rem 1.2rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f5ff;
+            color: #5e17eb;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            color: #666;
+        }
+
+        .dropdown-item:hover i {
+            color: #5e17eb;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #fff5f5;
+        }
+
+        .dropdown-item.text-danger:hover i {
+            color: #dc3545;
+        }
+
+        .dropdown-divider {
+            margin: 0.3rem 0;
+        }
+
+        .quick-actions {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .badge-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff5757;
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 50px;
+            border: 2px solid white;
+        }
+
+        .icon-button {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            color: #555;
+        }
+
+        .icon-button:hover {
+            background-color: #eee;
+            color: #5e17eb;
+            transform: translateY(-2px);
+        }
+
+        .post-job-btn {
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            padding: 0.35rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transform-origin: center;
+            border: none;
+        }
+
+        .post-job-btn i {
+            margin-right: 8px;
+        }
+
+        .post-job-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Candidate List Styling */
+        .candidate-list {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .candidate-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .candidate-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .candidate-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .candidate-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #5e17eb;
+        }
+
+        .candidate-details {
+            flex-grow: 1;
+        }
+
+        .candidate-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .candidate-title {
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .candidate-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .candidate-body {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .candidate-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-item i {
+            color: #5e17eb;
+            margin-right: 0.5rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        .candidate-skills {
+            margin-top: 1rem;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background-color: #f0f0f0;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            background-color: #e9ecef;
+        }
+
+        .candidate-footer {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+
+        .status-rejected {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .modal-header, .modal-footer {
+            border: none;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .action-btn {
+            border-radius: 50px;
+            padding: 0.35rem 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn i {
+            font-size: 0.9rem;
+        }
+
+        .btn-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approved:hover {
+            background-color: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .btn-pending {
+            background-color: #fff8e1;
+            color: #ffa000;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-pending:hover {
+            background-color: #ffecb3;
+            color: #ff8f00;
+        }
+
+        .btn-rejected {
+            background-color: #ffebee;
+            color: #c62828;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-rejected:hover {
+            background-color: #ffcdd2;
+            color: #b71c1c;
+        }
+
+        .btn-contact {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-contact:hover {
+            background-color: #bbdefb;
+            color: #0d47a1;
+        }
+        
+        @media (max-width: 992px) {
+            .quick-actions {
+                margin-right: 0;
+                margin-bottom: 15px;
+                justify-content: center;
+            }
+
+            .post-job-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar-collapse {
+                padding: 1rem 0;
+            }
+
+            .profile-dropdown {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./index.html">
+                <img src="./img/LOGO_TRANSPARENT.png" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            
+            <div class="d-flex align-items-center order-lg-3">
+                <div class="quick-actions d-flex">
+                    <a href="notifications.html" class="icon-button">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-notification">5</span>
+                    </a>
+                    <a href="messages.html" class="icon-button">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge-notification">3</span>
+                    </a>
+                </div>
+                
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">EP</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">EP</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                                <div class="small text-muted">Premium Plan</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="employer-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="company-profile.html"><i class="fas fa-building"></i>Company Profile</a></li>
+                        <li><a class="dropdown-item" href="manage-jobs.html"><i class="fas fa-briefcase"></i>Manage Jobs</a></li>
+                        <li><a class="dropdown-item" href="candidates.html"><i class="fas fa-users"></i>View Candidates</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="account-settings.html"><i class="fas fa-cog"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="subscription.html"><i class="fas fa-credit-card"></i>Subscription</a></li>
+                        <li><a class="dropdown-item" href="help.html"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="employer-dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="manage-jobs.html">
+                            <i class="fas fa-briefcase me-1"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link active" href="candidates.html">
+                            <i class="fas fa-users me-1"></i> Candidates
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="reports.html">
+                            <i class="fas fa-chart-bar me-1"></i> Reports
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                    <button class="btn btn-violet w-100">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0 fw-bold">Candidate Applications</h3>
+                    <div class="d-flex">
+                        <select class="form-select me-2">
+                            <option value="all">All Applications</option>
+                            <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <select class="form-select me-2">
+                            <option>Sort by: Newest</option>
+                            <option>Sort by: Oldest</option>
+                            <option>Sort by: A-Z</option>
+                        </select>
+                        <button class="btn btn-outline-violet">
+                            <i class="fas fa-filter me-1"></i> Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Candidate List -->
+                <div class="candidate-list">
+                    <!-- Candidate 1 -->
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-img">JS</div>
+                            <div class="candidate-details">
+                                <h5 class="candidate-name">John Smith</h5>
+                                <p class="candidate-title">Senior Frontend Developer</p>
+                            </div>
+                            <div class="candidate-actions">
+                                <a href="#" class="btn btn-sm btn-outline-violet">View Resume</a>
+                                <a href="#" class="btn btn-sm btn-outline-violet">Profile</a>
+                            </div>
+                        </div>
+                        <div class="candidate-body">
+                            <div class="candidate-info">
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>San Francisco, CA</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>5 years experience</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>BSc Computer Science</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>$110K - $130K</span>
+                                </div>
+                            </div>
+                            <p class="mb-0">Experienced frontend developer with expertise in React, TypeScript, and modern web technologies. Strong background in building responsive and accessible user interfaces.</p>
+                            <div class="candidate-skills">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">TypeScript</span>
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">HTML5/CSS3</span>
+                                <span class="skill-tag">Redux</span>
+                                <span class="skill-tag">Webpack</span>
+                            </div>
+                        </div>
+                        <div class="candidate-footer">
+                            <div class="d-flex align-items-center">
+                                <span class="status-badge status-approved">Approved</span>
+                                <span class="ms-3 text-muted small">Applied 3 days ago</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn action-btn btn-approved" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </button>
+                                <button class="btn action-btn btn-pending" data-bs-toggle="modal" data-bs-target="#pendingModal">
+                                    <i class="fas fa-clock"></i> Pending
+                                </button>
+                                <button class="btn action-btn btn-rejected" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                                <button class="btn action-btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                    <i class="fas fa-envelope"></i> Contact
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Candidate 2 -->
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-img">AJ</div>
+                            <div class="candidate-details">
+                                <h5 class="candidate-name">Amanda Johnson</h5>
+                                <p class="candidate-title">Product Designer</p>
+                            </div>
+                            <div class="candidate-actions">
+                                <a href="#" class="btn btn-sm btn-outline-violet">View Resume</a>
+                                <a href="#" class="btn btn-sm btn-outline-violet">Profile</a>
+                            </div>
+                        </div>
+                        <div class="candidate-body">
+                            <div class="candidate-info">
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>New York, NY</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>4 years experience</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>BFA Design</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>$90K - $110K</span>
+                                </div>
+                            </div>
+                            <p class="mb-0">Creative product designer with a passion for user-centered design. Experienced in conducting user research, creating wireframes, and developing high-fidelity prototypes.</p>
+                            <div class="candidate-skills">
+                                <span class="skill-tag">Figma</span>
+                                <span class="skill-tag">UI/UX</span>
+                                <span class="skill-tag">Adobe XD</span>
+                                <span class="skill-tag">Sketch</span>
+                                <span class="skill-tag">Prototyping</span>
+                                <span class="skill-tag">User Research</span>
+                            </div>
+                        </div>
+                        <div class="candidate-footer">
+                            <div class="d-flex align-items-center">
+                                <span class="status-badge status-pending">Pending</span>
+                                <span class="ms-3 text-muted small">Applied 2 days ago</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn action-btn btn-approved" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </button>
+                                <button class="btn action-btn btn-pending" data-bs-toggle="modal" data-bs-target="#pendingModal">
+                                    <i class="fas fa-clock"></i> Pending
+                                </button>
+                                <button class="btn action-btn btn-rejected" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                                <button class="btn action-btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                    <i class="fas fa-envelope"></i> Contact
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Candidate 3 -->
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-img">RK</div>
+                            <div class="candidate-details">
+                                <h5 class="candidate-name">Robert Kim</h5>
+                                <p class="candidate-title">Marketing Specialist</p>
+                            </div>
+                            <div class="candidate-actions">
+                                <a href="#" class="btn btn-sm btn-outline-violet">View Resume</a>
+                                <a href="#" class="btn btn-sm btn-outline-violet">Profile</a>
+                            </div>
+                        </div>
+                        <div class="candidate-body">
+                            <div class="candidate-info">
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Chicago, IL</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>3 years experience</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>BA Marketing</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>$75K - $90K</span>
+                                </div>
+                            </div>
+                            <p class="mb-0">Results-driven marketing specialist with experience in digital marketing, content creation, and campaign management. Strong analytical skills and a proven track record of increasing engagement.</p>
+                            <div class="candidate-skills">
+                                <span class="skill-tag">Digital Marketing</span>
+                                <span class="skill-tag">SEO</span>
+                                <span class="skill-tag">Google Analytics</span>
+                                <span class="skill-tag">Social Media</span>
+                                <span class="skill-tag">Content Creation</span>
+                            </div>
+                        </div>
+                        <div class="candidate-footer">
+                            <div class="d-flex align-items-center">
+                                <span class="status-badge status-rejected">Rejected</span>
+                                <span class="ms-3 text-muted small">Applied 5 days ago</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn action-btn btn-approved" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </button>
+                                <button class="btn action-btn btn-pending" data-bs-toggle="modal" data-bs-target="#pendingModal">
+                                    <i class="fas fa-clock"></i> Pending
+                                </button>
+                                <button class="btn action-btn btn-rejected" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                                <button class="btn action-btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                    <i class="fas fa-envelope"></i> Contact
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Candidate 4 -->
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-img">LP</div>
+                            <div class="candidate-details">
+                                <h5 class="candidate-name">Lisa Patel</h5>
+                                <p class="candidate-title">Backend Developer</p>
+                            </div>
+                            <div class="candidate-actions">
+                                <a href="#" class="btn btn-sm btn-outline-violet">View Resume</a>
+                                <a href="#" class="btn btn-sm btn-outline-violet">Profile</a>
+                            </div>
+                        </div>
+                        <div class="candidate-body">
+                            <div class="candidate-info">
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Seattle, WA</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>6 years experience</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>MSc Computer Science</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>$120K - $140K</span>
+                                </div>
+                            </div>
+                            <p class="mb-0">Skilled backend developer with extensive experience in designing and optimizing database architectures and API development. Passionate about creating scalable and maintainable systems.</p>
+                            <div class="candidate-skills">
+                                <span class="skill-tag">Node.js</span>
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">PostgreSQL</span>
+                                <span class="skill-tag">MongoDB</span>
+                                <span class="skill-tag">Docker</span>
+                                <span class="skill-tag">AWS</span>
+                            </div>
+                        </div>
+                        <div class="candidate-footer">
+                            <div class="d-flex align-items-center">
+                                <span class="status-badge status-approved">Approved</span>
+                                <span class="ms-3 text-muted small">Applied 1 day ago</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn action-btn btn-approved" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </button>
+                                <button class="btn action-btn btn-pending" data-bs-toggle="modal" data-bs-target="#pendingModal">
+                                    <i class="fas fa-clock"></i> Pending
+                                </button>
+                                <button class="btn action-btn btn-rejected" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                                <button class="btn action-btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                    <i class="fas fa-envelope"></i> Contact
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Candidate 5 -->
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-img">MG</div>
+                            <div class="candidate-details">
+                                <h5 class="candidate-name">Michael Garcia</h5>
+                                <p class="candidate-title">DevOps Engineer</p>
+                            </div>
+                            <div class="candidate-actions">
+                                <a href="#" class="btn btn-sm btn-outline-violet">View Resume</a>
+                                <a href="#" class="btn btn-sm btn-outline-violet">Profile</a>
+                            </div>
+                        </div>
+                        <div class="candidate-body">
+                            <div class="candidate-info">
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Austin, TX</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>4 years experience</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>BSc Information Technology</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>$100K - $120K</span>
+                                </div>
+                            </div>
+                            <p class="mb-0">Experienced DevOps engineer proficient in automating and optimizing critical deployments in cloud environments. Strong focus on CI/CD pipelines and infrastructure as code.</p>
+                            <div class="candidate-skills">
+                                <span class="skill-tag">Kubernetes</span>
+                                <span class="skill-tag">Terraform</span>
+                                <span class="skill-tag">Jenkins</span>
+                                <span class="skill-tag">AWS</span>
+                                <span class="skill-tag">Git</span>
+                                <span class="skill-tag">Linux</span>
+                            </div>
+                        </div>
+                        <div class="candidate-footer">
+                            <div class="d-flex align-items-center">
+                                <span class="status-badge status-pending">Pending</span>
+                                <span class="ms-3 text-muted small">Applied 4 days ago</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn action-btn btn-approved" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </button>
+                                <button class="btn action-btn btn-pending" data-bs-toggle="modal" data-bs-target="#pendingModal">
+                                    <i class="fas fa-clock"></i> Pending
+                                </button>
+                                <button class="btn action-btn btn-rejected" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </button>
+                                <button class="btn action-btn btn-contact" data-bs-toggle="modal" data-bs-target="#contactModal">
+                                    <i class="fas fa-envelope"></i> Contact
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        </div>
+        
+        <!-- Modals -->
+        <!-- Approve Modal -->
+        <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="approveModalLabel">Approve Candidate</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to approve this candidate? They will be notified about your decision.</p>
+                        <div class="mb-3">
+                            <label for="approveMessage" class="form-label">Message (optional)</label>
+                            <textarea class="form-control" id="approveMessage" rows="3" placeholder="Add a personalized message to the candidate..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-violet">Approve Candidate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Pending Modal -->
+        <div class="modal fade" id="pendingModal" tabindex="-1" aria-labelledby="pendingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="pendingModalLabel">Mark as Pending</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This candidate will be marked as pending. You can review their application later.</p>
+                        <div class="mb-3">
+                            <label for="pendingReason" class="form-label">Reason (optional)</label>
+                            <textarea class="form-control" id="pendingReason" rows="3" placeholder="Add a note about why this application is pending..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-violet">Mark as Pending</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Reject Modal -->
+        <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="rejectModalLabel">Reject Candidate</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to reject this candidate? They will be notified about your decision.</p>
+                        <div class="mb-3">
+                            <label for="rejectReason" class="form-label">Reason</label>
+                            <select class="form-select mb-3" id="rejectReason">
+                                <option>Not enough experience</option>
+                                <option>Skills don't match requirements</option>
+                                <option>Position already filled</option>
+                                <option>Salary expectations too high</option>
+                                <option>Other reason</option>
+                            </select>
+                            <textarea class="form-control" rows="3" placeholder="Add additional details..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-violet">Reject Candidate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Contact Modal -->
+        <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="contactModalLabel">Contact Candidate</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="messageSubject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="messageSubject" placeholder="Enter message subject">
+                        </div>
+                        <div class="mb-3">
+                            <label for="messageContent" class="form-label">Message</label>
+                            <textarea class="form-control" id="messageContent" rows="5" placeholder="Write your message here..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-violet">Send Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Bootstrap and JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Tooltips initialization
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        </script>
+    </body>
+    </html>

@@ -7,27 +7,392 @@
     <title>TalentTap - Employer Registration</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
-    <!-- Bootstrap CSS -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/employeerRegistration.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./js/employeerRegistration.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(120deg, #f1f5f9, #d8e2ef);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .registration-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 550px;
+            padding: 35px;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #5e17eb;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 35px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 20%;
+            background: #5e17eb;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes check {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #5e17eb;
+            outline: none;
+            box-shadow: 0 0 5px rgba(106, 90, 205, 0.2);
+        }
+
+        .form-control.error {
+            border-color: #e74c3c;
+            background: #fff1f1;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+            padding: 5px 0;
+        }
+
+        .error-message.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            position: relative;
+            padding: 12px 25px;
+            background: #5e17eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: #4834d4;
+        }
+
+        .btn-secondary {
+            background: #dcdcdc;
+            color: #34495e;
+        }
+
+        .btn-secondary:hover {
+            background: #b0b0b0;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .progress-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: width 0.3s linear;
+        }
+
+        .btn-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .otp-input {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            font-size: 1.1rem;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: #5e17eb;
+            outline: none;
+            box-shadow: 0 0 5px rgba(106, 90, 205, 0.2);
+        }
+
+        .otp-input.error {
+            border-color: #e74c3c;
+            background: #fff1f1;
+        }
+
+        .otp-input:disabled {
+            background: #f5f5f5;
+            border-color: #e0e0e0;
+            color: #555;
+        }
+
+        .verification-status {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #dcdcdc;
+            border-top: 3px solid #5e17eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        .verified {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .verified::after {
+            content: '✔';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            color: #27ae60;
+            animation: check 0.5s ease;
+        }
+
+        .resend-container {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: #5e17eb;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .resend-btn:disabled {
+            color: #7f8c8d;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+
+        .change-number-btn {
+            background: none;
+            border: none;
+            color: #5e17eb;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        #summaryDetails p {
+            font-size: 0.95rem;
+            color: #34495e;
+            margin: 8px 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #5e17eb;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .change-email-btn {
+            background: none;
+            border: none;
+            color: #5e17eb;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .login-link {
+            position: absolute;
+            top: 50px;
+            right: 175px;
+            color: #5e17eb;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            z-index: 1;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .registration-container { padding: 20px; max-width: 100%; }
+            .form-control, .otp-input { font-size: 0.9rem; }
+            .btn { padding: 10px 20px; font-size: 0.9rem; }
+            .otp-input { width: 40px; height: 40px; }
+            h2 { font-size: 1.3rem; }
+            .toast {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: calc(100% - 20px);
+            }
+            .login-link {
+                top: 15px;
+                right: 15px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
     <div class="registration-container">
-        <div style="display: flex;justify-content: center;margin: 40px;">
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div style="display: flex; justify-content: center; margin: 40px;">
             <img src="./img/LOGO_TRANSPARENT.png" alt="Logo" style="height: 60px;">
         </div>
-        <div class="progress-bar">
-            <div class="progress-step active">Basic Details</div>
-            <div class="progress-step">Phone</div>
-            <div class="progress-step">Email</div>
-            <div class="progress-step">Company</div>
-            <div class="progress-step">Confirm</div>
+        <div class="progress-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
 
         <form id="registrationForm">
@@ -50,7 +415,10 @@
                     <div class="error-message" id="passwordError"></div>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn next-btn" data-step="1">Next</button>
+                    <button type="button" class="btn next-btn progress-btn" data-step="1">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Next</span>
+                    </button>
                 </div>
             </div>
 
@@ -66,23 +434,30 @@
                     Code sent to: <span id="displayPhone"></span>
                 </p>
                 <div class="otp-container" id="phoneOtpContainer" style="display: none;">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp1">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp2">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp3">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp4">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp5">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp6">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp1" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp2" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp3" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp4" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp5" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp6" inputmode="numeric" pattern="[0-9]*">
                 </div>
-                <div class="error-message otp-error" id="otpPhoneError"></div>
+                <div class="error-message" id="otpPhoneError"></div>
                 <div class="resend-container" id="phoneResendContainer" style="display: none;">
                     <button type="button" class="resend-btn" id="phoneResendBtn" disabled>Resend OTP</button>
                     <span id="phoneTimer"></span>
                 </div>
                 <div class="verification-status" id="phoneStatus"></div>
+                <button type="button" class="change-number-btn" id="changePhoneBtn" style="display: none;">Change Number</button>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-btn" data-step="2">Previous</button>
-                    <button type="button" class="btn" id="phoneVerifyBtn" style="display: block;">Get OTP</button>
-                    <button type="button" class="btn" id="phoneNextBtn" style="display: none;">Verify</button>
+                    <button type="button" class="btn progress-btn" id="phoneVerifyBtn" style="display: block;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Get OTP</span>
+                    </button>
+                    <button type="button" class="btn progress-btn" id="phoneNextBtn" style="display: none;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Verify</span>
+                    </button>
                 </div>
             </div>
 
@@ -98,23 +473,30 @@
                     Code sent to: <span id="displayEmail"></span>
                 </p>
                 <div class="otp-container" id="emailOtpContainer" style="display: none;">
-                    <input type="text" maxlength="1" class="otp-input" id="otp1">
-                    <input type="text" maxlength="1" class="otp-input" id="otp2">
-                    <input type="text" maxlength="1" class="otp-input" id="otp3">
-                    <input type="text" maxlength="1" class="otp-input" id="otp4">
-                    <input type="text" maxlength="1" class="otp-input" id="otp5">
-                    <input type="text" maxlength="1" class="otp-input" id="otp6">
+                    <input type="text" maxlength="1" class="otp-input" id="otp1" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp2" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp3" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp4" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp5" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp6" inputmode="numeric" pattern="[0-9]*">
                 </div>
-                <div class="error-message otp-error" id="otpEmailError"></div>
+                <div class="error-message" id="otpEmailError"></div>
                 <div class="resend-container" id="emailResendContainer" style="display: none;">
                     <button type="button" class="resend-btn" id="emailResendBtn" disabled>Resend OTP</button>
                     <span id="emailTimer"></span>
                 </div>
                 <div class="verification-status" id="emailStatus"></div>
+                <button type="button" class="change-email-btn" id="changeEmailBtn" style="display: none;">Change Email</button>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-btn" data-step="3">Previous</button>
-                    <button type="button" class="btn" id="emailVerifyBtn" style="display: block;">Get OTP</button>
-                    <button type="button" class="btn" id="emailNextBtn" style="display: none;">Verify</button>
+                    <button type="button" class="btn progress-btn" id="emailVerifyBtn" style="display: block;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Get OTP</span>
+                    </button>
+                    <button type="button" class="btn progress-btn" id="emailNextBtn" style="display: none;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Verify</span>
+                    </button>
                 </div>
             </div>
 
@@ -124,33 +506,41 @@
                 <div class="form-group">
                     <label for="companyName">Company Name</label>
                     <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
-                    <div class="error-message company-error" id="companyNameError"></div>
+                    <div class="error-message" id="companyNameError"></div>
                 </div>
                 <div class="form-group">
-                    <label for="companyIndustry">Industry</label>
-                    <input type="text" class="form-control" id="companyIndustry" placeholder="Enter industry type">
-                    <div class="error-message company-error" id="companyIndustryError"></div>
+                    <label for="companyLogo">Company Logo</label>
+                    <input type="file" class="form-control" id="companyLogo" accept="image/*">
+                    <div class="error-message" id="companyLogoError"></div>
                 </div>
                 <div class="form-group">
-                    <label for="designation">Designation</label>
-                    <input type="text" class="form-control" id="designation" placeholder="Enter your Designation">
-                    <div class="error-message company-error" id="designationError"></div>
+                    <label for="companyIndustry">Industry Type</label>
+                    <select class="form-control" id="companyIndustry">
+                        <option value="" disabled selected>Select industry</option>
+                        <option value="technology">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="education">Education</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="retail">Retail</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="companyIndustryError"></div>
                 </div>
                 <div class="form-group">
-                    <label for="companyAbout">About the Company</label>
-                    <textarea class="form-control" id="companyAbout" placeholder="Describe your company"></textarea>
-                    <div class="error-message company-error" id="companyAboutError"></div>
+                    <label for="companyEmail">Company Email</label>
+                    <input type="email" class="form-control" id="companyEmail" placeholder="Enter company email">
+                    <div class="error-message" id="companyEmailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyPhone">Company Phone</label>
+                    <input type="tel" class="form-control" id="companyPhone" placeholder="Enter company phone">
+                    <div class="error-message" id="companyPhoneError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companySize">Company Size</label>
-                    <select class="form-control" id="companySize">
-                        <option value="" disabled selected>Select size</option>
-                        <option value="1-10">1-10 employees</option>
-                        <option value="11-50">11-50 employees</option>
-                        <option value="51-200">51-200 employees</option>
-                        <option value="201+">201+ employees</option>
-                    </select>
-                    <div class="error-message company-error" id="companySizeError"></div>
+                    <input type="text" class="form-control" id="companySize" placeholder="e.g., 0-100 employees">
+                    <div class="error-message" id="companySizeError"></div>
                 </div>
                 <div class="form-group">
                     <label for="location">Location</label>
@@ -161,11 +551,29 @@
                         <option value="india">India</option>
                         <option value="other">Other</option>
                     </select>
-                    <div class="error-message company-error" id="locationError"></div>
+                    <div class="error-message" id="locationError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="websiteUrl">Website URL</label>
+                    <input type="url" class="form-control" id="websiteUrl" placeholder="Enter website URL">
+                    <div class="error-message" id="websiteUrlError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="foundedAt">Founded At</label>
+                    <input type="number" class="form-control" id="foundedAt" placeholder="Enter founding year" min="1800" max="2025">
+                    <div class="error-message" id="foundedAtError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyAbout">About the Company</label>
+                    <textarea class="form-control" id="companyAbout" placeholder="Describe your company"></textarea>
+                    <div class="error-message" id="companyAboutError"></div>
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-btn" data-step="4">Previous</button>
-                    <button type="button" class="btn next-btn" data-step="4">Next</button>
+                    <button type="button" class="btn next-btn progress-btn" data-step="4">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Next</span>
+                    </button>
                 </div>
             </div>
 
@@ -175,10 +583,684 @@
                 <div id="summaryDetails"></div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-btn" data-step="5">Previous</button>
-                    <button type="submit" class="btn">Submit</button>
+                    <button type="submit" class="btn progress-btn" id="submitBtn">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Submit</span>
+                    </button>
                 </div>
             </div>
         </form>
     </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        $(document).ready(function() {
+            let currentStep = 1;
+            let emailVerified = false;
+            let phoneVerified = false;
+            let phoneResendTimer = 30;
+            let emailResendTimer = 30;
+            let phoneTimerInterval, emailTimerInterval;
+            let verifiedPhoneNumber = null;
+            let verifiedEmail = null;
+            let phoneAttempts = 0;
+            let emailAttempts = 0;
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&*])[A-Za-z\d@#$%^&*]{8,}$/;
+            const fullNameRegex = /^[A-Za-z\s]+$/;
+            const usernameRegex = /^[A-Za-z0-9]+$/;
+            const phoneRegex = /^[7-9]\d{9}$/;
+            const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+            const companySizeRegex = /^\d+-\d+$/; // Validates format like "0-100"
+
+            // Show toast notification
+            function showToast(message) {
+                const toast = $('#toast');
+                toast.text(message).addClass('show');
+                setTimeout(() => {
+                    toast.removeClass('show');
+                }, 3000);
+            }
+
+            // Prevent non-numeric input in OTP fields
+            $('.otp-input').on('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            function disableOTPInputs(type) {
+                const otpInputs = type === 'email' 
+                    ? ['otp1', 'otp2', 'otp3', 'otp4', 'otp5', 'otp6']
+                    : ['phoneOtp1', 'phoneOtp2', 'phoneOtp3', 'phoneOtp4', 'phoneOtp5', 'phoneOtp6'];
+                
+                otpInputs.forEach(id => {
+                    $(`#${id}`).prop('disabled', true).removeClass('error');
+                });
+            }
+
+            function resetVerification(type) {
+                if (type === 'phone') {
+                    phoneVerified = false;
+                    verifiedPhoneNumber = null;
+                    $('#phoneOtpContainer input').val('').prop('disabled', false);
+                    $('#phoneOtpContainer, #phoneResendContainer, #phoneNextBtn, #changePhoneBtn').hide();
+                    $('#phoneVerifyBtn').show();
+                    $('#phoneStatus').removeClass('verified').text('');
+                    $('#phoneOtpMessage').hide();
+                    clearInterval(phoneTimerInterval);
+                    phoneAttempts = 0;
+                } else {
+                    emailVerified = false;
+                    verifiedEmail = null;
+                    $('#emailOtpContainer input').val('').prop('disabled', false);
+                    $('#emailOtpContainer, #emailResendContainer, #emailNextBtn, #changeEmailBtn').hide();
+                    $('#emailVerifyBtn').show();
+                    $('#emailStatus').removeClass('verified').text('');
+                    $('#emailOtpMessage').hide();
+                    clearInterval(emailTimerInterval);
+                    emailAttempts = 0;
+                }
+            }
+
+            function updateProgressBar() {
+                const progressPercentage = (currentStep / 5) * 100;
+                $('#progressBarFill').css('width', `${progressPercentage}%`);
+            }
+
+            function showStep(stepNumber) {
+                $('.form-step').removeClass('active');
+                $(`#${getStepName(stepNumber)}Step`).addClass('active');
+                
+                if (stepNumber === 2) {
+                    if (phoneVerified && verifiedPhoneNumber === $('#phoneNumber').val()) {
+                        $('#phoneOtpContainer, #phoneResendContainer, #phoneVerifyBtn, #phoneNextBtn').hide();
+                        $('#changePhoneBtn').show();
+                        $('#phoneStatus').addClass('verified').text('Verified');
+                        disableOTPInputs('phone');
+                    }
+                }
+                
+                if (stepNumber === 3) {
+                    if (emailVerified && verifiedEmail === $('#email').val()) {
+                        $('#emailOtpContainer, #emailResendContainer, #emailVerifyBtn, #emailNextBtn').hide();
+                        $('#emailStatus').addClass('verified').text('Verified');
+                        $('#changeEmailBtn').show();
+                        disableOTPInputs('email');
+                    }
+                }
+            }
+
+            function getStepName(stepNumber) {
+                switch(stepNumber) {
+                    case 1: return 'basicDetails';
+                    case 2: return 'phoneVerification';
+                    case 3: return 'emailVerification';
+                    case 4: return 'companyDetails';
+                    case 5: return 'confirmation';
+                }
+            }
+
+            function animateProgressButton(button, callback) {
+                const progressFill = button.find('.progress-fill');
+                progressFill.css('width', '0%');
+                button.prop('disabled', true);
+                progressFill.animate({ width: '100%' }, 1000, function() {
+                    button.prop('disabled', false);
+                    if (callback) callback();
+                });
+            }
+
+            function startResendTimer(type) {
+                const timerElement = $(`#${type}Timer`);
+                const resendBtn = $(`#${type}ResendBtn`);
+                let timeLeft = type === 'phone' ? phoneResendTimer : emailResendTimer;
+                timerElement.text(` (Resend in ${timeLeft}s)`);
+                resendBtn.prop('disabled', true);
+
+                const interval = setInterval(() => {
+                    timeLeft--;
+                    timerElement.text(` (Resend in ${timeLeft}s)`);
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        timerElement.text('');
+                        resendBtn.prop('disabled', false);
+                        if (type === 'phone') phoneResendTimer = 30;
+                        else emailResendTimer = 30;
+                    }
+                }, 1000);
+
+                if (type === 'phone') phoneTimerInterval = interval;
+                else emailTimerInterval = interval;
+            }
+
+            function showError(element, message) {
+                const errorElement = $(`#${element}Error`);
+                errorElement.text(message).addClass('visible');
+                $(`#${element}`).addClass('error');
+            }
+
+            function clearError(element) {
+                const errorElement = $(`#${element}Error`);
+                errorElement.text('').removeClass('visible');
+                $(`#${element}`).removeClass('error');
+            }
+
+            function sendPhoneOTP() {
+                if (!validatePhoneNumber()) return;
+                const phoneVerifyBtn = $('#phoneVerifyBtn');
+                animateProgressButton(phoneVerifyBtn, function() {
+                    const phone = $('#phoneNumber').val();
+                    $('#displayPhone').text(phone.replace(/.(?=.{4})/g, '*'));
+                    $('#phoneOtpMessage, #phoneOtpContainer, #phoneResendContainer').show();
+                    $('#phoneVerifyBtn').hide();
+                    $('#phoneNextBtn').show();
+                    $('#phoneStatus').text('Enter the OTP');
+                    $('#phoneOtp1').focus();
+                    startResendTimer('phone');
+                    console.log('Phone OTP sent (to be implemented later)');
+                });
+            }
+
+            function sendEmailOTP() {
+                if (!validateEmail()) return;
+                const emailVerifyBtn = $('#emailVerifyBtn');
+                animateProgressButton(emailVerifyBtn, function() {
+                    const email = $('#email').val();
+                    $('#displayEmail').text(email.replace(/(?<=.{3}).(?=[^@]*@)/g, '*'));
+                    $('#emailOtpMessage, #emailOtpContainer, #emailResendContainer').show();
+                    $('#emailVerifyBtn').hide();
+                    $('#emailNextBtn').show();
+                    $('#emailStatus').text('Enter the OTP');
+                    $('#otp1').focus();
+                    startResendTimer('email');
+                    console.log('Email OTP sent (to be implemented later)');
+                });
+            }
+
+            function verifyOTP(type) {
+                if (!validateOTPInputs(type)) return;
+                
+                const verifyBtn = type === 'email' ? $('#emailNextBtn') : $('#phoneNextBtn');
+                
+                if (type === 'email') {
+                    emailAttempts++;
+                } else {
+                    phoneAttempts++;
+                }
+
+                if ((type === 'email' && emailAttempts > 3) || (type === 'phone' && phoneAttempts > 3)) {
+                    showToast('Maximum OTP attempts reached. Please request a new OTP.');
+                    verifyBtn.prop('disabled', true);
+                    return;
+                }
+
+                animateProgressButton(verifyBtn, function() {
+                    const otpInputs = type === 'email' 
+                        ? ['otp1', 'otp2', 'otp3', 'otp4', 'otp5', 'otp6']
+                        : ['phoneOtp1', 'phoneOtp2', 'phoneOtp3', 'phoneOtp4', 'phoneOtp5', 'phoneOtp6'];
+                    
+                    const statusElement = $(`#${type}Status`);
+                    statusElement.html('Verifying <span class="loading"></span>');
+
+                    setTimeout(() => {
+                        const isValidOTP = true; // For now, assume any OTP is valid
+                        
+                        if (isValidOTP) {
+                            if (type === 'phone') {
+                                phoneVerified = true;
+                                verifiedPhoneNumber = $('#phoneNumber').val();
+                                disableOTPInputs('phone');
+                            } else {
+                                emailVerified = true;
+                                verifiedEmail = $('#email').val();
+                                disableOTPInputs('email');
+                            }
+                            
+                            statusElement.addClass('verified').text('Verified');
+                            setTimeout(() => {
+                                currentStep++;
+                                showStep(currentStep);
+                                updateProgressBar();
+                            }, 1000);
+                        } else {
+                            $(`#otp${type === 'email' ? 'Email' : 'Phone'}Error`)
+                                .text('Invalid OTP. Please try again.')
+                                .addClass('visible');
+                            statusElement.text('');
+                        }
+                    }, 1500);
+                });
+            }
+
+            function validateOTPInputs(type) {
+                const otpInputs = type === 'email' 
+                    ? ['otp1', 'otp2', 'otp3', 'otp4', 'otp5', 'otp6']
+                    : ['phoneOtp1', 'phoneOtp2', 'phoneOtp3', 'phoneOtp4', 'phoneOtp5', 'phoneOtp6'];
+                const errorElement = $(`#otp${type === 'email' ? 'Email' : 'Phone'}Error`);
+                const enteredOTP = otpInputs.map(id => $(`#${id}`).val()).join('');
+
+                if (enteredOTP.length !== 6) {
+                    errorElement.text('Please enter all 6 digits of the OTP').addClass('visible');
+                    otpInputs.forEach(id => $(`#${id}`).addClass('error'));
+                    return false;
+                }
+                errorElement.text('').removeClass('visible');
+                otpInputs.forEach(id => $(`#${id}`).removeClass('error'));
+                return true;
+            }
+
+            function validateBasicDetails() {
+                let isValid = true;
+                const fullName = $('#fullName').val().trim();
+                const username = $('#username').val().trim();
+                const password = $('#password').val();
+
+                if (!fullName || !fullNameRegex.test(fullName) || fullName.length < 2) {
+                    showError('fullName', fullName ? (!fullNameRegex.test(fullName) ? 'Only letters and spaces allowed' : 'Minimum 2 characters') : 'Full name is required');
+                    isValid = false;
+                } else {
+                    clearError('fullName');
+                }
+
+                if (!username || !usernameRegex.test(username) || username.length < 3) {
+                    showError('username', username ? (!usernameRegex.test(username) ? 'Only letters and numbers allowed' : 'Minimum 3 characters') : 'Username is required');
+                    isValid = false;
+                } else {
+                    clearError('username');
+                }
+
+                if (!password || !passwordRegex.test(password)) {
+                    showError('password', password ? 'Must be 8+ characters with uppercase, lowercase, number, and special character' : 'Password is required');
+                    isValid = false;
+                } else {
+                    clearError('password');
+                }
+                return isValid;
+            }
+
+            function validatePhoneNumber() {
+                const phoneNumber = $('#phoneNumber').val().trim();
+                if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
+                    showError('phoneNumber', phoneNumber ? 'Must be 10 digits starting with 7-9' : 'Phone number is required');
+                    return false;
+                }
+                clearError('phoneNumber');
+                return true;
+            }
+
+            function validateEmail() {
+                const email = $('#email').val().trim();
+                if (!email || !emailRegex.test(email)) {
+                    showError('email', email ? 'Must be a valid email address' : 'Email is required');
+                    return false;
+                }
+                clearError('email');
+                return true;
+            }
+
+            function validateCompanyDetails() {
+                let isValid = true;
+                const companyName = $('#companyName').val().trim();
+                const companyLogo = $('#companyLogo')[0].files.length;
+                const companyIndustry = $('#companyIndustry').val();
+                const companyEmail = $('#companyEmail').val().trim();
+                const companyPhone = $('#companyPhone').val().trim();
+                const companySize = $('#companySize').val().trim();
+                const location = $('#location').val();
+                const websiteUrl = $('#websiteUrl').val().trim();
+                const foundedAt = $('#foundedAt').val();
+                const companyAbout = $('#companyAbout').val().trim();
+
+                if (!companyName || companyName.length < 2) {
+                    showError('companyName', companyName ? 'Minimum 2 characters' : 'Company name is required');
+                    isValid = false;
+                } else {
+                    clearError('companyName');
+                }
+
+                if (companyLogo === 0) {
+                    showError('companyLogo', 'Company logo is required');
+                    isValid = false;
+                } else {
+                    clearError('companyLogo');
+                }
+
+                if (!companyIndustry) {
+                    showError('companyIndustry', 'Please select an industry');
+                    isValid = false;
+                } else {
+                    clearError('companyIndustry');
+                }
+
+                if (!companyEmail || !emailRegex.test(companyEmail)) {
+                    showError('companyEmail', companyEmail ? 'Must be a valid email address' : 'Company email is required');
+                    isValid = false;
+                } else {
+                    clearError('companyEmail');
+                }
+
+                if (!companyPhone || !phoneRegex.test(companyPhone)) {
+                    showError('companyPhone', companyPhone ? 'Must be 10 digits starting with 7-9' : 'Company phone is required');
+                    isValid = false;
+                } else {
+                    clearError('companyPhone');
+                }
+
+                if (!companySize || !companySizeRegex.test(companySize)) {
+                    showError('companySize', companySize ? 'Must be a range like 0-100' : 'Company size is required');
+                    isValid = false;
+                } else {
+                    const [min, max] = companySize.split('-').map(Number);
+                    if (min < 0 || max <= min) {
+                        showError('companySize', 'Invalid range: min must be >= 0 and max must be greater than min');
+                        isValid = false;
+                    } else {
+                        clearError('companySize');
+                    }
+                }
+
+                if (!location) {
+                    showError('location', 'Please select a location');
+                    isValid = false;
+                } else {
+                    clearError('location');
+                }
+
+                if (!websiteUrl || !urlRegex.test(websiteUrl)) {
+                    showError('websiteUrl', websiteUrl ? 'Must be a valid URL' : 'Website URL is required');
+                    isValid = false;
+                } else {
+                    clearError('websiteUrl');
+                }
+
+                if (!foundedAt || foundedAt < 1800 || foundedAt > 2025) {
+                    showError('foundedAt', foundedAt ? 'Must be between 1800 and 2025' : 'Founding year is required');
+                    isValid = false;
+                } else {
+                    clearError('foundedAt');
+                }
+
+                if (!companyAbout || companyAbout.length < 10) {
+                    showError('companyAbout', companyAbout ? 'Minimum 10 characters required' : 'About company is required');
+                    isValid = false;
+                } else {
+                    clearError('companyAbout');
+                }
+
+                return isValid;
+            }
+
+            function prepareConfirmation() {
+                const fullName = $('#fullName').val().trim();
+                const username = $('#username').val().trim();
+                const phone = $('#phoneNumber').val().trim();
+                const email = $('#email').val().trim();
+                const companyName = $('#companyName').val().trim();
+                const companyIndustry = $('#companyIndustry option:selected').text();
+                const companyEmail = $('#companyEmail').val().trim();
+                const companyPhone = $('#companyPhone').val().trim();
+                const companySize = $('#companySize').val().trim();
+                const location = $('#location option:selected').text();
+                const websiteUrl = $('#websiteUrl').val().trim();
+                const foundedAt = $('#foundedAt').val();
+                const companyAbout = $('#companyAbout').val().trim();
+
+                let html = `
+                    <p><strong>Full Name:</strong> ${fullName}</p>
+                    <p><strong>Username:</strong> ${username}</p>
+                    <p><strong>Phone:</strong> ${phone}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Company Name:</strong> ${companyName}</p>
+                    <p><strong>Industry:</strong> ${companyIndustry}</p>
+                    <p><strong>Company Email:</strong> ${companyEmail}</p>
+                    <p><strong>Company Phone:</strong> ${companyPhone}</p>
+                    <p><strong>Company Size:</strong> ${companySize}</p>
+                    <p><strong>Location:</strong> ${location}</p>
+                    <p><strong>Website URL:</strong> ${websiteUrl}</p>
+                    <p><strong>Founded At:</strong> ${foundedAt}</p>
+                    <p><strong>About Company:</strong> ${companyAbout}</p>
+                `;
+                $('#summaryDetails').html(html);
+            }
+
+            $('.next-btn').click(function() {
+                const step = parseInt($(this).data('step'));
+                if (step === 1 && !validateBasicDetails()) return;
+                if (step === 4 && !validateCompanyDetails()) return;
+                animateProgressButton($(this), function() {
+                    if (step === 4) prepareConfirmation();
+                    currentStep = step + 1;
+                    showStep(currentStep);
+                    updateProgressBar();
+                });
+            });
+
+            $('.prev-btn').click(function() {
+                currentStep = parseInt($(this).data('step')) - 1;
+                showStep(currentStep);
+                updateProgressBar();
+            });
+
+            $('.otp-input').keyup(function() {
+                const maxLength = parseInt($(this).attr('maxlength'));
+                if ($(this).val().length >= maxLength) $(this).next('.otp-input').focus();
+            });
+
+            $('.otp-input').keydown(function(e) {
+                if (e.key === 'Backspace' && $(this).val().length === 0) $(this).prev('.otp-input').focus();
+            });
+
+            $('#phoneVerifyBtn').click(sendPhoneOTP);
+            $('#phoneNextBtn').click(function() { verifyOTP('phone'); });
+
+            $('#emailVerifyBtn').click(sendEmailOTP);
+            $('#emailNextBtn').click(function() { verifyOTP('email'); });
+
+            $('#phoneResendBtn').click(function() {
+                $('.otp-input').val('');
+                $('#phoneOtp1').focus();
+                $('#phoneStatus').text('Enter the OTP');
+                $('.otp-input').removeClass('error');
+                $('#otpPhoneError').text('').removeClass('visible');
+                phoneAttempts = 0;
+                $('#phoneNextBtn').prop('disabled', false);
+                startResendTimer('phone');
+                console.log('Phone OTP resent (to be implemented later)');
+            });
+
+            $('#emailResendBtn').click(function() {
+                $('.otp-input').val('');
+                $('#otp1').focus();
+                $('#emailStatus').text('Enter the OTP');
+                $('.otp-input').removeClass('error');
+                $('#otpEmailError').text('').removeClass('visible');
+                emailAttempts = 0;
+                $('#emailNextBtn').prop('disabled', false);
+                startResendTimer('email');
+                console.log('Email OTP resent (to be implemented later)');
+            });
+
+            $('#changePhoneBtn').click(function() {
+                resetVerification('phone');
+                $('#phoneNumber').val('').focus();
+            });
+
+            $('#changeEmailBtn').click(function() {
+                resetVerification('email');
+                $('#email').val('').focus();
+            });
+
+            $('#phoneNumber').on('input', function() {
+                const currentVal = $(this).val();
+                if (phoneVerified && verifiedPhoneNumber !== currentVal) {
+                    resetVerification('phone');
+                }
+            });
+
+            $('#email').on('input', function() {
+                const currentVal = $(this).val();
+                if (emailVerified && verifiedEmail !== currentVal) {
+                    resetVerification('email');
+                }
+            });
+
+            $('#registrationForm').submit(function(e) {
+                e.preventDefault();
+                animateProgressButton($('#submitBtn'), function() {
+                    $('#submitBtn .btn-text').text('Processing...');
+                    setTimeout(function() {
+                        showToast('Registration successful! Welcome to TalentTap.');
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                });
+            });
+
+            // Real-time validation for Basic Details
+            $('#fullName').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !fullNameRegex.test(val) || val.length < 2) {
+                    showError('fullName', val ? (!fullNameRegex.test(val) ? 'Only letters and spaces allowed' : 'Minimum 2 characters') : 'Full name is required');
+                } else {
+                    clearError('fullName');
+                }
+            });
+
+            $('#username').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !usernameRegex.test(val) || val.length < 3) {
+                    showError('username', val ? (!usernameRegex.test(val) ? 'Only letters and numbers allowed' : 'Minimum 3 characters') : 'Username is required');
+                } else {
+                    clearError('username');
+                }
+            });
+
+            $('#password').on('input', function() {
+                const val = $(this).val();
+                if (!val || !passwordRegex.test(val)) {
+                    showError('password', val ? 'Must be 8+ characters with uppercase, lowercase, number, and special character' : 'Password is required');
+                } else {
+                    clearError('password');
+                }
+            });
+
+            $('#phoneNumber').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !phoneRegex.test(val)) {
+                    showError('phoneNumber', val ? 'Must be 10 digits starting with 7-9' : 'Phone number is required');
+                } else {
+                    clearError('phoneNumber');
+                }
+            });
+
+            $('#email').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !emailRegex.test(val)) {
+                    showError('email', val ? 'Must be a valid email address' : 'Email is required');
+                } else {
+                    clearError('email');
+                }
+            });
+
+            // Real-time validation for Company Details
+            $('#companyName').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || val.length < 2) {
+                    showError('companyName', val ? 'Minimum 2 characters' : 'Company name is required');
+                } else {
+                    clearError('companyName');
+                }
+            });
+
+            $('#companyLogo').on('change', function() {
+                const files = $(this)[0].files.length;
+                if (files === 0) {
+                    showError('companyLogo', 'Company logo is required');
+                } else {
+                    clearError('companyLogo');
+                }
+            });
+
+            $('#companyIndustry').on('change', function() {
+                const val = $(this).val();
+                if (!val) {
+                    showError('companyIndustry', 'Please select an industry');
+                } else {
+                    clearError('companyIndustry');
+                }
+            });
+
+            $('#companyEmail').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !emailRegex.test(val)) {
+                    showError('companyEmail', val ? 'Must be a valid email address' : 'Company email is required');
+                } else {
+                    clearError('companyEmail');
+                }
+            });
+
+            $('#companyPhone').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !phoneRegex.test(val)) {
+                    showError('companyPhone', val ? 'Must be 10 digits starting with 7-9' : 'Company phone is required');
+                } else {
+                    clearError('companyPhone');
+                }
+            });
+
+            $('#companySize').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !companySizeRegex.test(val)) {
+                    showError('companySize', val ? 'Must be a range like 0-100' : 'Company size is required');
+                } else {
+                    const [min, max] = val.split('-').map(Number);
+                    if (min < 0 || max <= min) {
+                        showError('companySize', 'Invalid range: min must be >= 0 and max must be greater than min');
+                    } else {
+                        clearError('companySize');
+                    }
+                }
+            });
+
+            $('#location').on('change', function() {
+                const val = $(this).val();
+                if (!val) {
+                    showError('location', 'Please select a location');
+                } else {
+                    clearError('location');
+                }
+            });
+
+            $('#websiteUrl').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || !urlRegex.test(val)) {
+                    showError('websiteUrl', val ? 'Must be a valid URL' : 'Website URL is required');
+                } else {
+                    clearError('websiteUrl');
+                }
+            });
+
+            $('#foundedAt').on('input', function() {
+                const val = $(this).val();
+                if (!val || val < 1800 || val > 2025) {
+                    showError('foundedAt', val ? 'Must be between 1800 and 2025' : 'Founding year is required');
+                } else {
+                    clearError('foundedAt');
+                }
+            });
+
+            $('#companyAbout').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || val.length < 10) {
+                    showError('companyAbout', val ? 'Minimum 10 characters required' : 'About company is required');
+                } else {
+                    clearError('companyAbout');
+                }
+            });
+
+            updateProgressBar();
+        });
+    </script>
 </body>
 </html>
