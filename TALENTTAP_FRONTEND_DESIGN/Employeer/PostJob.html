@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap - Post a Job</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.92rem;
+        }
+
+        body {
+            background-color: #f8f5ff;
+            color: #333;
+        }
+
+        .text-violet {
+            color: #5e17eb;
+        }
+
+        .bg-violet {
+            background-color: #5e17eb;
+        }
+
+        .bg-violet-light {
+            background-color: #f8f5ff;
+        }
+
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-violet:hover {
+            background-color: #4912b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .btn-outline-violet {
+            color: #5e17eb;
+            border-color: #5e17eb;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-violet:hover {
+            background-color: #5e17eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        .form-container, .preview-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 35px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover, .preview-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-section h1, .preview-container h2 {
+            color: #5e17eb;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+
+        .form-section, .preview-section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .form-section h3, .preview-section h4 {
+            color: #333;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .form-control, .form-select {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #5e17eb;
+            box-shadow: 0 0 0 0.25rem rgba(94, 23, 235, 0.15);
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            min-height: 38px;
+            background-color: #fff;
+            padding: 5px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #5e17eb;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.3rem 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice:hover {
+            background-color: #4912b8;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white;
+            margin-right: 5px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: #f8f5ff;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #5e17eb;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #f8f5ff !important;
+            color: #5e17eb !important;
+        }
+
+        .select2-container--default .select2-results__option {
+            padding: 8px 12px;
+            font-weight: 500;
+        }
+
+        .section-badge {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            background: #f8f5ff;
+            color: #5e17eb;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .character-count {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .preview-container {
+            display: none;
+        }
+
+        .preview-item {
+            margin-bottom: 15px;
+        }
+
+        .preview-label {
+            font-weight: 500;
+            color: #666;
+            margin-right: 5px;
+        }
+
+        .preview-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .editable-field {
+            position: relative;
+            display: inline-block;
+        }
+
+        .edit-icon {
+            color: #5e17eb;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-icon:hover {
+            color: #4912b8;
+            transform: scale(1.1);
+        }
+
+        .skill-badge {
+            display: inline-block;
+            background: #f8f5ff;
+            color: #5e17eb;
+            padding: 0.3rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* Toast Styling */
+        .toast {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #5e17eb;
+            color: white;
+        }
+
+        .toast-header {
+            background-color: #4912b8;
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .toast-body {
+            font-weight: 500;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Job posted successfully!
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-container" id="formContainer">
+            <div class="header-section">
+                <h1>Post a New Job</h1>
+                <p>Create an engaging job posting to attract the best talent</p>
+            </div>
+
+            <form id="jobPostForm" class="needs-validation" novalidate>
+                <!-- Job Details -->
+                <div class="form-section">
+                    <span class="section-badge">Step 1</span>
+                    <h3>Job Details</h3>
+                    <div class="mb-3">
+                        <label for="jobRole" class="form-label">Job Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="jobRole" name="jobRole" placeholder="e.g. Front-end Developer" required>
+                        <div class="invalid-feedback">Please enter a job title</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="jobType" name="jobType" required>
+                            <option value="" selected disabled>Select employment type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                        <div class="invalid-feedback">Please select an employment type</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobCategory" class="form-label">Job Category <span class="text-danger">*</span></label>
+                        <select class="form-select" id="jobCategory" name="jobCategory" required>
+                            <option value="" selected disabled>Select job category</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Design">Design</option>
+                            <option value="Marketing">Marketing</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a job category</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Job Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="6" required></textarea>
+                        <div class="character-count"><span id="charCount">0</span>/3000 characters (minimum 100)</div>
+                        <div class="invalid-feedback">Please provide a description (minimum 100 characters)</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Required Skills <span class="text-danger">*</span></label>
+                        <select class="form-control" id="skills" name="skills" multiple required>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Python">Python</option>
+                            <option value="React">React</option>
+                            <option value="Node.js">Node.js</option>
+                            <option value="UI Design">UI Design</option>
+                            <option value="SEO">SEO</option>
+                        </select>
+                        <div class="help-text">Select up to 10 key skills</div>
+                        <div class="invalid-feedback">Please select at least one skill</div>
+                    </div>
+                </div>
+
+                <!-- Work Location -->
+                <div class="form-section">
+                    <span class="section-badge">Step 2</span>
+                    <h3>Work Location</h3>
+                    <div class="mb-3">
+                        <label for="workType" class="form-label">Work Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="workType" name="workType" required>
+                            <option value="" selected disabled>Select work arrangement</option>
+                            <option value="Remote">Remote only</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site only</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a work arrangement</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="locations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
+                        <select class="form-control" id="locations" name="locations" multiple required>
+                            <option value="New York, USA">New York, USA</option>
+                            <option value="San Francisco, USA">San Francisco, USA</option>
+                            <option value="London, UK">London, UK</option>
+                        </select>
+                        <div class="invalid-feedback">Please select at least one location</div>
+                    </div>
+                </div>
+
+                <!-- Internship Details -->
+                <div class="form-section" id="internshipFields" style="display: none;">
+                    <span class="section-badge">Step 3a</span>
+                    <h3>Internship Details</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="duration" class="form-label">Duration <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="duration" name="duration" min="1" max="24">
+                            <div class="invalid-feedback">Please enter a duration (1-24 months)</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="startDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="startDate" name="startDate">
+                            <div class="invalid-feedback">Please select a start date</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stipend" class="form-label">Stipend <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="stipend" name="stipend" min="0">
+                        <div class="invalid-feedback">Please enter a stipend amount</div>
+                    </div>
+                </div>
+
+                <!-- Full/Part-time Details -->
+                <div class="form-section" id="fullTimeFields" style="display: none;">
+                    <span class="section-badge">Step 3b</span>
+                    <h3>Experience & Compensation</h3>
+                    <div class="mb-3">
+                        <label for="experienceYears" class="form-label">Experience Required (Years) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="experienceYears" name="experienceYears" min="0" max="7" placeholder="0-7 years" required>
+                        <div class="help-text">Enter experience required (0 for freshers, up to 7 years)</div>
+                        <div class="invalid-feedback">Please enter experience between 0 and 7 years</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="salaryMin" class="form-label">Salary Range <span class="text-danger">*</span></label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" id="salaryMin" name="salaryMin" placeholder="Min" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" id="salaryMax" name="salaryMax" placeholder="Max" min="0">
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">Please enter a valid salary range</div>
+                    </div>
+                </div>
+
+                <!-- Application Details -->
+                <div class="form-section">
+                    <span class="section-badge">Final Step</span>
+                    <h3>Application Details</h3>
+                    <div class="mb-3">
+                        <label for="openings" class="form-label">Number of Positions <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="openings" name="openings" min="1" value="1" required>
+                        <div class="invalid-feedback">Please enter at least 1 position</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="deadline" name="deadline" required>
+                        <div class="invalid-feedback">Please select a deadline</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="applicationProcess" class="form-label">Application Process <span class="text-danger">*</span></label>
+                        <select class="form-select" id="applicationProcess" name="applicationProcess" required>
+                            <option value="" selected disabled>Select process</option>
+                            <option value="Apply via TalentTap">Apply via TalentTap</option>
+                            <option value="Apply via Email">Apply via Email</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a process</div>
+                    </div>
+                    <div class="mb-3" id="emailApplicationFields" style="display: none;">
+                        <label for="applicationEmail" class="form-label">Application Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="applicationEmail" name="applicationEmail">
+                        <div class="invalid-feedback">Please enter a valid email</div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-violet" id="draftBtn">
+                        <i class="fas fa-save me-1"></i> Save as Draft
+                    </button>
+                    <button type="button" class="btn btn-violet" id="previewBtn">
+                        <i class="fas fa-eye me-1"></i> Preview
+                    </button>
+                    <button type="submit" class="btn btn-violet">
+                        <i class="fas fa-check-circle me-1"></i> Post Job
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Preview Container -->
+        <div class="preview-container" id="previewContainer">
+            <h2>Job Posting Preview</h2>
+            <div class="preview-section">
+                <h4>Job Details</h4>
+                <div class="preview-item">
+                    <span class="preview-label">Job Title:</span>
+                    <span class="preview-value editable-field" id="previewJobRole">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="jobRole"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Employment Type:</span>
+                    <span class="preview-value editable-field" id="previewJobType">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="jobType"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Job Category:</span>
+                    <span class="preview-value editable-field" id="previewJobCategory">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="jobCategory"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Description:</span>
+                    <span class="preview-value editable-field" id="previewDescription">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="description"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Required Skills:</span>
+                    <span class="preview-value editable-field" id="previewSkills">
+                        <span id="skillsList"></span><i class="fas fa-pencil-alt edit-icon" data-field="skills"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="preview-section">
+                <div class="preview-item">
+                    <span class="preview-label">Work Type:</span>
+                    <span class="preview-value editable-field" id="previewWorkType">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="workType"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Location(s):</span>
+                    <span class="preview-value editable-field" id="previewLocations">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="locations"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="preview-section" id="previewInternshipFields" style="display: none;">
+                <h4>Internship Details</h4>
+                <div class="preview-item">
+                    <span class="preview-label">Duration:</span>
+                    <span class="preview-value editable-field" id="previewDuration">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="duration"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Start Date:</span>
+                    <span class="preview-value editable-field" id="previewStartDate">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="startDate"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Stipend:</span>
+                    <span class="preview-value editable-field" id="previewStipend">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="stipend"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="preview-section" id="previewFullTimeFields" style="display: none;">
+                <h4>Experience & Compensation</h4>
+                <div class="preview-item">
+                    <span class="preview-label">Experience Required:</span>
+                    <span class="preview-value editable-field" id="previewExperienceYears">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="experienceYears"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Salary Range:</span>
+                    <span class="preview-value editable-field" id="previewSalaryRange">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="salaryMin"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="preview-section">
+                <h4>Application Details</h4>
+                <div class="preview-item">
+                    <span class="preview-label">Number of Positions:</span>
+                    <span class="preview-value editable-field" id="previewOpenings">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="openings"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Deadline:</span>
+                    <span class="preview-value editable-field" id="previewDeadline">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="deadline"></i>
+                    </span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Application Process:</span>
+                    <span class="preview-value editable-field" id="previewApplicationProcess">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="applicationProcess"></i>
+                    </span>
+                </div>
+                <div class="preview-item" id="previewEmailApplicationFields" style="display: none;">
+                    <span class="preview-label">Application Email:</span>
+                    <span class="preview-value editable-field" id="previewApplicationEmail">
+                        <span></span><i class="fas fa-pencil-alt edit-icon" data-field="applicationEmail"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-outline-violet" id="backToFormBtn">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Edit
+                </button>
+                <button class="btn btn-violet" id="submitFromPreviewBtn">
+                    <i class="fas fa-check-circle me-1"></i> Post Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('#skills, #locations').select2({
+                placeholder: 'Search and select',
+                tags: true,
+                maximumSelectionLength: 10,
+                width: '100%'
+            });
+
+            const form = $('#jobPostForm');
+            const formContainer = $('#formContainer');
+            const previewContainer = $('#previewContainer');
+            const successToast = new bootstrap.Toast($('#successToast'));
+
+            // Character counter
+            $('#description').on('input', function() {
+                const count = this.value.length;
+                $('#charCount').text(count);
+                $('#charCount').toggleClass('text-danger', count < 100 || count > 3000);
+            });
+
+            // Toggle Internship/Full-time fields
+            $('#jobType').on('change', function() {
+                const value = $(this).val();
+                $('#internshipFields, #fullTimeFields').hide();
+                if (value === 'Internship') {
+                    $('#internshipFields').show();
+                    $('#duration, #startDate, #stipend').prop('required', true);
+                    $('#experienceYears, #salaryMin, #salaryMax').prop('required', false);
+                } else if (value === 'Full-time') {
+                    $('#fullTimeFields').show();
+                    $('#experienceYears, #salaryMin, #salaryMax').prop('required', true);
+                    $('#duration, #startDate, #stipend').prop('required', false);
+                } else {
+                    $('#duration, #startDate, #stipend, #experienceYears, #salaryMin, #salaryMax').prop('required', false);
+                }
+            });
+
+            // Toggle email application field
+            $('#applicationProcess').on('change', function() {
+                const value = $(this).val();
+                $('#emailApplicationFields').hide();
+                if (value === 'Apply via Email') {
+                    $('#emailApplicationFields').show();
+                    $('#applicationEmail').prop('required', true);
+                } else {
+                    $('#applicationEmail').prop('required', false);
+                }
+            });
+
+            // Preview button
+            $('#previewBtn').on('click', function() {
+                if (form[0].checkValidity()) {
+                    // Populate preview
+                    $('#previewJobRole span').text($('#jobRole').val());
+                    $('#previewJobType span').text($('#jobType').val());
+                    $('#previewJobCategory span').text($('#jobCategory').val());
+                    $('#previewDescription span').text($('#description').val());
+                    const skills = $('#skills').val() || [];
+                    $('#skillsList').html(skills.map(skill => `<span class="skill-badge">${skill}</span>`).join(''));
+                    $('#previewWorkType span').text($('#workType').val());
+                    const locations = $('#locations').val() || [];
+                    $('#previewLocations span').text(locations.join(', '));
+                    
+                    if ($('#jobType').val() === 'Internship') {
+                        $('#previewInternshipFields').show();
+                        $('#previewFullTimeFields').hide();
+                        $('#previewDuration span').text($('#duration').val() + ' months');
+                        $('#previewStartDate span').text($('#startDate').val());
+                        $('#previewStipend span').text('$' + $('#stipend').val());
+                    } else if ($('#jobType').val() === 'Full-time') {
+                        $('#previewInternshipFields').hide();
+                        $('#previewFullTimeFields').show();
+                        $('#previewExperienceYears span').text($('#experienceYears').val() + ' years');
+                        $('#previewSalaryRange span').text('$' + $('#salaryMin').val() + ' - $' + $('#salaryMax').val());
+                    } else {
+                        $('#previewInternshipFields, #previewFullTimeFields').hide();
+                    }
+
+                    $('#previewOpenings span').text($('#openings').val());
+                    $('#previewDeadline span').text($('#deadline').val());
+                    $('#previewApplicationProcess span').text($('#applicationProcess').val());
+                    if ($('#applicationProcess').val() === 'Apply via Email') {
+                        $('#previewEmailApplicationFields').show();
+                        $('#previewApplicationEmail span').text($('#applicationEmail').val());
+                    } else {
+                        $('#previewEmailApplicationFields').hide();
+                    }
+
+                    formContainer.hide();
+                    previewContainer.show();
+                } else {
+                    form.addClass('was-validated');
+                    alert('Please fill in all required fields correctly.');
+                }
+            });
+
+            // Edit fields from preview
+            $('.edit-icon').on('click', function() {
+                const field = $(this).data('field');
+                previewContainer.hide();
+                formContainer.show();
+                $(`#${field}`).focus();
+                if (field === 'skills' || field === 'locations') {
+                    $(`#${field}`).select2('open');
+                }
+            });
+
+            // Back to form
+            $('#backToFormBtn').on('click', function() {
+                previewContainer.hide();
+                formContainer.show();
+            });
+
+            // Form submission handler
+            function handleSubmission() {
+                if (form[0].checkValidity()) {
+                    // Show toast notification
+                    successToast.show();
+                    // Reset form after a delay (optional)
+                    setTimeout(() => {
+                        form.trigger('reset');
+                        form.removeClass('was-validated');
+                        previewContainer.hide();
+                        formContainer.show();
+                        $('#internshipFields, #fullTimeFields, #emailApplicationFields').hide();
+                        $('#skills, #locations').val(null).trigger('change');
+                        $('#charCount').text('0');
+                    }, 2000); // Delay to allow toast to be seen
+                }
+                form.addClass('was-validated');
+            }
+
+            // Submit from form
+            form.on('submit', function(e) {
+                e.preventDefault();
+                handleSubmission();
+            });
+
+            // Submit from preview
+            $('#submitFromPreviewBtn').on('click', function() {
+                handleSubmission();
+            });
+
+            // Save as draft
+            $('#draftBtn').on('click', function() {
+                alert('Job draft saved successfully!');
+            });
+        });
+    </script>
+</body>
+</html>

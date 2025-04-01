@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | All Jobs</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.92rem;
+        }
+
+        body {
+            background-color: #f8f5ff;
+            color: #333;
+        }
+
+        .text-violet { color: #5e17eb; }
+        .bg-violet { background-color: #5e17eb; }
+        .bg-violet-light { background-color: #f8f5ff; }
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-violet:hover {
+            background-color: #4912b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+        .btn-outline-violet {
+            color: #5e17eb;
+            border-color: #5e17eb;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-violet:hover {
+            background-color: #5e17eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(94, 23, 235, 0.2);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+            background-color: #fff;
+        }
+        .navbar-link {
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500;
+            color: #444;
+            transition: all 0.3s ease;
+        }
+        .navbar-link:hover { color: #5e17eb; }
+        .navbar-link.active { color: #5e17eb; font-weight: 600; }
+        .navbar-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #5e17eb;
+            border-radius: 3px;
+        }
+        .profile-dropdown { display: flex; align-items: center; cursor: pointer; padding: 0.5rem 0.75rem; border-radius: 50px; transition: all 0.3s ease; }
+        .profile-dropdown:hover { background-color: #f0f0f0; }
+        .profile-circle { width: 36px; height: 36px; background-color: #5e17eb; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 0.85rem; border: 2px solid white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        .dropdown-menu { border: none; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); border-radius: 10px; padding: 0.5rem 0; min-width: 220px; margin-top: 10px; }
+        .dropdown-item { padding: 0.6rem 1.2rem; transition: all 0.2s ease; font-weight: 500; }
+        .dropdown-item:hover { background-color: #f8f5ff; color: #5e17eb; }
+        .dropdown-item i { width: 20px; text-align: center; margin-right: 10px; color: #666; }
+        .dropdown-item:hover i { color: #5e17eb; }
+        .quick-actions { display: flex; align-items: center; margin-right: 15px; }
+        .badge-notification { position: absolute; top: -5px; right: -5px; background-color: #ff5757; color: white; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 50px; border: 2px solid white; }
+        .icon-button { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background-color: #f5f5f5; margin-left: 8px; transition: all 0.3s ease; color: #555; }
+        .icon-button:hover { background-color: #eee; color: #5e17eb; transform: translateY(-2px); }
+        .post-job-btn { margin-left: 15px; display: flex; align-items: center; padding: 0.35rem 1.25rem; border-radius: 50px; font-weight: 600; transform-origin: center; border: none; }
+        .post-job-btn:hover { transform: translateY(-2px) scale(1.02); }
+
+        /* Main Content */
+        .container { max-width: 1200px; margin: 40px auto; }
+        .job-card { background-color: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); padding: 24px; margin-bottom: 24px; transition: all 0.3s ease; border-left: 5px solid #5e17eb; position: relative; }
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+        .job-title { font-weight: 700; font-size: 1.2rem; color: #333; margin-bottom: 8px; }
+        .job-info { color: #666; font-size: 0.9rem; display: flex; align-items: center; margin-bottom: 3px; }
+        .job-info i { margin-right: 8px; color: #5e17eb; font-size: 0.85rem; width: 18px; text-align: center; }
+        .status-badge { padding: 0.35rem 0.85rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
+        .status-open { background-color: #e8f5e9; color: #2e7d32; }
+        .status-closing { background-color: #fff3e0; color: #e65100; }
+        .status-closed { background-color: #ffebee; color: #c62828; }
+        .status-expired { background-color: #f5f5f5; color: #757575; }
+
+        /* Filter Section */
+        .filter-section { background-color: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); padding: 20px; margin-bottom: 30px; }
+        .filter-title { font-weight: 600; color: #333; margin-bottom: 20px; font-size: 1.1rem; display: flex; align-items: center; }
+        .filter-title i { margin-right: 10px; color: #5e17eb; font-size: 1.2rem; }
+        .form-control, .form-select { padding: 10px 15px; border-radius: 6px; border: 1px solid #ced4da; transition: all 0.3s ease; }
+        .form-control:focus, .form-select:focus { border-color: #5e17eb; box-shadow: 0 0 0 0.25rem rgba(94, 23, 235, 0.15); }
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1rem; }
+        .search-box input { padding-left: 40px; }
+        .filter-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; }
+
+        /* Tabs */
+        .job-tabs { background-color: #fff; border-radius: 50px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: inline-flex; padding: 5px; margin-bottom: 20px; }
+        .job-tab { color: #666; font-weight: 600; padding: 10px 20px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        .job-tab.active { background-color: #5e17eb; color: white; box-shadow: 0 4px 8px rgba(94, 23, 235, 0.3); }
+        .job-tab:not(.active):hover { background-color: #f0e6ff; color: #5e17eb; }
+
+        /* Empty State */
+        .empty-state { background-color: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); padding: 40px; text-align: center; margin: 30px 0; display: none; }
+        .empty-state i { font-size: 4rem; color: #e0e0e0; margin-bottom: 20px; }
+        .empty-state h4 { color: #666; font-weight: 600; margin-bottom: 15px; }
+        .empty-state p { color: #999; margin-bottom: 25px; }
+
+        /* Action Buttons */
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .action-btn { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; padding: 8px 15px; border-radius: 50px; transition: all 0.3s ease; font-size: 0.85rem; }
+
+        /* Select2 Styling */
+        .select2-container--default .select2-selection--multiple {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            min-height: 38px;
+            background-color: #fff;
+            padding: 5px;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #5e17eb;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.3rem 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice:hover {
+            background-color: #4912b8;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white;
+            margin-right: 5px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: #f8f5ff;
+        }
+        .select2-dropdown { border: 1px solid #5e17eb; border-radius: 6px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .select2-results__option--highlighted { background-color: #f8f5ff !important; color: #5e17eb !important; }
+        .select2-container--default .select2-results__option { padding: 8px 12px; font-weight: 500; }
+
+        /* Modal Styling (Matched with Post a Job) */
+        .modal-content { border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .modal-header { background-color: #f8f5ff; border-bottom: 1px solid #eee; border-radius: 12px 12px 0 0; padding: 20px; }
+        .modal-title { color: #5e17eb; font-weight: 700; font-size: 1.8rem; }
+        .form-section { margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #f0f0f0; position: relative; }
+        .form-section h6 { color: #333; font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; }
+        .form-label { font-weight: 500; color: #444; margin-bottom: 8px; }
+        .help-text { font-size: 0.85rem; color: #666; margin-top: 6px; }
+        .section-badge { position: absolute; top: -10px; right: 0; background: #f8f5ff; color: #5e17eb; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+        .character-count { font-size: 0.8rem; color: #666; text-align: right; margin-top: 5px; }
+
+        /* Toast Styling */
+        .toast {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #5e17eb;
+            color: white;
+        }
+        .toast-header {
+            background-color: #4912b8;
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+        .toast-body {
+            font-weight: 500;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Job updated successfully!
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./index.html">
+                <img src="./img/LOGO_TRANSPARENT.png" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            <div class="d-flex align-items-center order-lg-3">
+                <div class="quick-actions d-flex">
+                    <a href="notifications.html" class="icon-button">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-notification">5</span>
+                    </a>
+                    <a href="messages.html" class="icon-button">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge-notification">3</span>
+                    </a>
+                </div>
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex" data-bs-toggle="modal" data-bs-target="#createJobModal">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">EP</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">EP</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                                <div class="small text-muted">Premium Plan</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="employer-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="company-profile.html"><i class="fas fa-building"></i>Company Profile</a></li>
+                        <li><a class="dropdown-item" href="manage-jobs.html"><i class="fas fa-briefcase"></i>Manage Jobs</a></li>
+                        <li><a class="dropdown-item" href="candidates.html"><i class="fas fa-users"></i>View Candidates</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="account-settings.html"><i class="fas fa-cog"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="subscription.html"><i class="fas fa-credit-card"></i>Subscription</a></li>
+                        <li><a class="dropdown-item" href="help.html"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link navbar-link" href="employer-dashboard.html"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link navbar-link active" href="manage-jobs.html"><i class="fas fa-briefcase me-1"></i> Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link navbar-link" href="candidates.html"><i class="fas fa-users me-1"></i> Candidates</a></li>
+                    <li class="nav-item"><a class="nav-link navbar-link" href="reports.html"><i class="fas fa-chart-bar me-1"></i> Reports</a></li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                    <button class="btn btn-violet w-100" data-bs-toggle="modal" data-bs-target="#createJobModal">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="text-violet mb-4 fw-bold">Job Management</h2>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title"><i class="fas fa-filter"></i> Filter Jobs</div>
+            <div class="row g-3 align-items-center">
+                <div class="col-md-3">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search by title or location">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="typeFilter">
+                        <option value="">All Employment Types</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Freelance">Freelance</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="Open">Open</option>
+                        <option value="Closing">Closing</option>
+                        <option value="Closed">Closed</option>
+                        <option value="Expired">Expired</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-outline-secondary" id="resetFilters"><i class="fas fa-sync-alt"></i> Reset</button>
+            </div>
+        </div>
+
+        <!-- Job Tabs -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="job-tabs">
+                <div class="job-tab active" data-tab="activeJobs">Active Jobs</div>
+                <div class="job-tab" data-tab="archivedJobs">Archived Jobs</div>
+            </div>
+            <button class="btn btn-violet" data-bs-toggle="modal" data-bs-target="#createJobModal">
+                <i class="fas fa-plus"></i> Post New Job
+            </button>
+        </div>
+
+        <!-- Active Jobs Section -->
+        <div id="activeJobs" class="job-list-section">
+            <div class="job-card" data-job-id="1" data-job-type="Full-time" data-job-status="Open" data-job-category="Engineering" data-skills='["JavaScript", "React"]' data-locations='["San Francisco, USA"]'>
+                <div class="row">
+                    <div class="col-md-7">
+                        <h5 class="job-title">Senior Frontend Developer</h5>
+                        <div class="job-info"><i class="fas fa-map-marker-alt"></i> San Francisco, USA</div>
+                        <div class="job-info"><i class="fas fa-briefcase"></i> Full-time</div>
+                        <div class="job-info"><i class="fas fa-users"></i> 18 Applicants</div>
+                    </div>
+                    <div class="col-md-5 text-md-end">
+                        <span class="status-badge status-open mb-2"><i class="fas fa-circle"></i> Open</span>
+                        <div class="job-info"><i class="fas fa-calendar-alt"></i> Expires: Apr 13, 2025</div>
+                        <div class="job-info"><i class="fas fa-clock"></i> Posted: Mar 13, 2025</div>
+                    </div>
+                </div>
+                <div class="action-buttons mt-3">
+                    <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="1"><i class="fas fa-eye"></i> View</button>
+                    <button class="btn btn-outline-violet action-btn edit-job" data-bs-toggle="modal" data-bs-target="#editModal" data-job-id="1"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-outline-warning action-btn toggle-status" data-job-id="1" data-current-status="Open"><i class="fas fa-pause-circle"></i> Set Closing</button>
+                    <button class="btn btn-outline-danger action-btn archive-job" data-job-id="1"><i class="fas fa-archive"></i> Archive</button>
+                    <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="1"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+            <div class="job-card" data-job-id="2" data-job-type="Remote" data-job-status="Open" data-job-category="Design" data-skills='["UI Design", "SEO"]' data-locations='["Remote"]'>
+                <div class="row">
+                    <div class="col-md-7">
+                        <h5 class="job-title">Product Designer</h5>
+                        <div class="job-info"><i class="fas fa-map-marker-alt"></i> Remote</div>
+                        <div class="job-info"><i class="fas fa-briefcase"></i> Remote</div>
+                        <div class="job-info"><i class="fas fa-users"></i> 12 Applicants</div>
+                    </div>
+                    <div class="col-md-5 text-md-end">
+                        <span class="status-badge status-open mb-2"><i class="fas fa-circle"></i> Open</span>
+                        <div class="job-info"><i class="fas fa-calendar-alt"></i> Expires: Apr 19, 2025</div>
+                        <div class="job-info"><i class="fas fa-clock"></i> Posted: Mar 19, 2025</div>
+                    </div>
+                </div>
+                <div class="action-buttons mt-3">
+                    <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="2"><i class="fas fa-eye"></i> View</button>
+                    <button class="btn btn-outline-violet action-btn edit-job" data-bs-toggle="modal" data-bs-target="#editModal" data-job-id="2"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-outline-warning action-btn toggle-status" data-job-id="2" data-current-status="Open"><i class="fas fa-pause-circle"></i> Set Closing</button>
+                    <button class="btn btn-outline-danger action-btn archive-job" data-job-id="2"><i class="fas fa-archive"></i> Archive</button>
+                    <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="2"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archived Jobs Section -->
+        <div id="archivedJobs" class="job-list-section" style="display: none;"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-folder-open"></i>
+            <h4>No jobs found</h4>
+            <p>Try adjusting your filters or create a new job posting.</p>
+            <button class="btn btn-violet" data-bs-toggle="modal" data-bs-target="#createJobModal">
+                <i class="fas fa-plus"></i> Post New Job
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Job Modal (Fully Matched with Post a Job) -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content form-container">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Job Posting</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editJobForm" class="needs-validation" novalidate>
+                        <input type="hidden" id="editJobId">
+                        <!-- Job Details -->
+                        <div class="form-section">
+                            <span class="section-badge">Step 1</span>
+                            <h6>Job Details</h6>
+                            <div class="mb-3">
+                                <label for="editJobRole" class="form-label">Job Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editJobRole" placeholder="e.g. Front-end Developer" required>
+                                <div class="invalid-feedback">Please enter a job title</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editJobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editJobType" required>
+                                    <option value="" selected disabled>Select employment type</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Freelance">Freelance</option>
+                                    <option value="Internship">Internship</option>
+                                </select>
+                                <div class="invalid-feedback">Please select an employment type</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editJobCategory" class="form-label">Job Category <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editJobCategory" required>
+                                    <option value="" selected disabled>Select job category</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Design">Design</option>
+                                    <option value="Marketing">Marketing</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a job category</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDescription" class="form-label">Job Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="editDescription" rows="6" required></textarea>
+                                <div class="character-count"><span id="editCharCount">0</span>/3000 characters (minimum 100)</div>
+                                <div class="invalid-feedback">Please provide a description (minimum 100 characters)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editSkills" class="form-label">Required Skills <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editSkills" multiple required>
+                                    <option value="JavaScript">JavaScript</option>
+                                    <option value="Python">Python</option>
+                                    <option value="React">React</option>
+                                    <option value="Node.js">Node.js</option>
+                                    <option value="UI Design">UI Design</option>
+                                    <option value="SEO">SEO</option>
+                                </select>
+                                <div class="help-text">Select up to 10 key skills</div>
+                                <div class="invalid-feedback">Please select at least one skill</div>
+                            </div>
+                        </div>
+
+                        <!-- Work Location -->
+                        <div class="form-section">
+                            <span class="section-badge">Step 2</span>
+                            <h6>Work Location</h6>
+                            <div class="mb-3">
+                                <label for="editWorkType" class="form-label">Work Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editWorkType" required>
+                                    <option value="" selected disabled>Select work arrangement</option>
+                                    <option value="Remote">Remote only</ personally-owned>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="On-site">On-site only</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a work arrangement</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editLocations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
+                                <select class="form-control" id="editLocations" multiple required>
+                                    <option value="New York, USA">New York, USA</option>
+                                    <option value="San Francisco, USA">San Francisco, USA</option>
+                                    <option value="London, UK">London, UK</option>
+                                </select>
+                                <div class="invalid-feedback">Please select at least one location</div>
+                            </div>
+                        </div>
+
+                        <!-- Internship Details -->
+                        <div class="form-section" id="editInternshipFields" style="display: none;">
+                            <span class="section-badge">Step 3a</span>
+                            <h6>Internship Details</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editDuration" class="form-label">Duration <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="editDuration" min="1" max="24">
+                                    <div class="invalid-feedback">Please enter a duration (1-24 months)</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editStartDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="editStartDate">
+                                    <div class="invalid-feedback">Please select a start date</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editStipend" class="form-label">Stipend <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="editStipend" min="0">
+                                <div class="invalid-feedback">Please enter a stipend amount</div>
+                            </div>
+                        </div>
+
+                        <!-- Full/Part-time Details -->
+                        <div class="form-section" id="editFullTimeFields" style="display: none;">
+                            <span class="section-badge">Step 3b</span>
+                            <h6>Experience & Compensation</h6>
+                            <div class="mb-3">
+                                <label for="editExperienceYears" class="form-label">Experience Required (Years) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="editExperienceYears" min="0" max="7" placeholder="0-7 years">
+                                <div class="help-text">Enter experience required (0 for freshers, up to 7 years)</div>
+                                <div class="invalid-feedback">Please enter experience between 0 and 7 years</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editSalaryMin" class="form-label">Salary Range <span class="text-danger">*</span></label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" id="editSalaryMin" placeholder="Min" min="0">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" id="editSalaryMax" placeholder="Max" min="0">
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback">Please enter a valid salary range</div>
+                            </div>
+                        </div>
+
+                        <!-- Application Details -->
+                        <div class="form-section">
+                            <span class="section-badge">Final Step</span>
+                            <h6>Application Details</h6>
+                            <div class="mb-3">
+                                <label for="editOpenings" class="form-label">Number of Positions <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="editOpenings" min="1" value="1" required>
+                                <div class="invalid-feedback">Please enter at least 1 position</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDeadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="editDeadline" required>
+                                <div class="invalid-feedback">Please select a deadline</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editApplicationProcess" class="form-label">Application Process <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editApplicationProcess" required>
+                                    <option value="" selected disabled>Select process</option>
+                                    <option value="Apply via TalentTap">Apply via TalentTap</option>
+                                    <option value="Apply via Email">Apply via Email</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a process</div>
+                            </div>
+                            <div class="mb-3" id="editEmailApplicationFields" style="display: none;">
+                                <label for="editApplicationEmail" class="form-label">Application Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="editApplicationEmail">
+                                <div class="invalid-feedback">Please enter a valid email</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
+                            <button type="submit" class="btn btn-violet"><i class="fas fa-save me-1"></i> Update Job</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Job Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Job</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="deleteJobForm">
+                        <input type="hidden" id="deleteJobId">
+                        <div class="form-section">
+                            <h6>Confirm Deletion</h6>
+                            <p class="text-muted">Are you sure you want to delete the job "<span id="deleteJobTitle" class="fw-bold"></span>"? This action cannot be undone.</p>
+                            <div class="mb-3">
+                                <label for="deleteReason" class="form-label">Reason for Deletion <span class="text-danger">*</span></label>
+                                <select class="form-select" id="deleteReason" required>
+                                    <option value="" selected disabled>Select a reason</option>
+                                    <option value="Position Filled">Position Filled</option>
+                                    <option value="Job Cancelled">Job Cancelled</option>
+                                    <option value="Duplicate Posting">Duplicate Posting</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a reason</div>
+                            </div>
+                            <div class="mb-3" id="deleteOtherReasonField" style="display: none;">
+                                <label for="deleteOtherReason" class="form-label">Specify Reason <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="deleteOtherReason" rows="3"></textarea>
+                                <div class="invalid-feedback">Please specify a reason</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete"><i class="fas fa-trash-alt me-1"></i> Delete Job</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Job Modal (Omitted for brevity) -->
+    <div class="modal fade" id="createJobModal" tabindex="-1" aria-labelledby="createJobModalLabel" aria-hidden="true">
+        <!-- Placeholder for consistency; assume it matches Post a Job -->
+    </div>
+
+    <!-- View Job Modal (Omitted for brevity) -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <!-- Placeholder for consistency -->
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('#editSkills, #editLocations').select2({
+                placeholder: 'Search and select',
+                tags: true,
+                maximumSelectionLength: 10,
+                width: '100%'
+            });
+
+            const editForm = $('#editJobForm');
+            const successToast = new bootstrap.Toast($('#successToast'));
+
+            // Tab navigation
+            $('.job-tab').click(function() {
+                $('.job-tab').removeClass('active');
+                $(this).addClass('active');
+                $('.job-list-section').hide();
+                $('#' + $(this).data('tab')).show();
+                filterJobs();
+            });
+
+            // Filter functionality
+            function filterJobs() {
+                const searchTerm = $('#searchInput').val().toLowerCase();
+                const statusFilter = $('#statusFilter').val();
+                const typeFilter = $('#typeFilter').val();
+                const categoryFilter = $('#categoryFilter').val();
+                const activeTab = $('.job-tab.active').data('tab');
+                let visibleCount = 0;
+
+                $('#' + activeTab + ' .job-card').each(function() {
+                    const jobTitle = $(this).find('.job-title').text().toLowerCase();
+                    const jobLocation = $(this).find('.job-info').first().text().toLowerCase();
+                    const jobType = $(this).data('job-type');
+                    const jobStatus = $(this).data('job-status');
+                    const jobCategory = $(this).data('job-category');
+
+                    const matchesSearch = jobTitle.includes(searchTerm) || jobLocation.includes(searchTerm);
+                    const matchesStatus = !statusFilter || jobStatus === statusFilter;
+                    const matchesType = !typeFilter || jobType === typeFilter;
+                    const matchesCategory = !categoryFilter || jobCategory === categoryFilter;
+
+                    if (matchesSearch && matchesStatus && matchesType && matchesCategory) {
+                        $(this).show();
+                        visibleCount++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                $('#emptyState').toggle(visibleCount === 0);
+            }
+
+            $('#searchInput').on('input', filterJobs);
+            $('#statusFilter, #typeFilter, #categoryFilter').on('change', filterJobs);
+            $('#resetFilters').click(function() {
+                $('#searchInput').val('');
+                $('#statusFilter').val('');
+                $('#typeFilter').val('');
+                $('#categoryFilter').val('');
+                filterJobs();
+            });
+
+            // Toggle job status
+            $(document).on('click', '.toggle-status', function() {
+                const $btn = $(this);
+                const jobId = $btn.data('job-id');
+                const currentStatus = $btn.data('current-status');
+                const $card = $btn.closest('.job-card');
+                const $badge = $card.find('.status-badge');
+
+                if (currentStatus === 'Open') {
+                    $btn.data('current-status', 'Closing');
+                    $btn.html('<i class="fas fa-play-circle"></i> Set Open');
+                    $badge.removeClass('status-open').addClass('status-closing').html('<i class="fas fa-circle"></i> Closing');
+                    $card.data('job-status', 'Closing');
+                } else {
+                    $btn.data('current-status', 'Open');
+                    $btn.html('<i class="fas fa-pause-circle"></i> Set Closing');
+                    $badge.removeClass('status-closing').addClass('status-open').html('<i class="fas fa-circle"></i> Open');
+                    $card.data('job-status', 'Open');
+                }
+                filterJobs();
+            });
+
+            // Archive job
+            $(document).on('click', '.archive-job', function() {
+                const $btn = $(this);
+                const jobId = $btn.data('job-id');
+                const $card = $btn.closest('.job-card');
+                $card.fadeOut(300, function() {
+                    $card.data('job-status', 'Expired').find('.status-badge')
+                        .removeClass('status-open status-closing').addClass('status-expired')
+                        .html('<i class="fas fa-circle"></i> Expired');
+                    $card.find('.action-buttons').html(`
+                        <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="${jobId}"><i class="fas fa-eye"></i> View</button>
+                        <button class="btn btn-outline-success action-btn restore-job" data-job-id="${jobId}"><i class="fas fa-redo"></i> Restore</button>
+                        <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="${jobId}"><i class="fas fa-trash-alt"></i> Delete</button>
+                    `);
+                    $('#archivedJobs').append($card);
+                    $card.fadeIn(300);
+                    filterJobs();
+                });
+            });
+
+            // Restore job
+            $(document).on('click', '.restore-job', function() {
+                const $btn = $(this);
+                const jobId = $btn.data('job-id');
+                const $card = $btn.closest('.job-card');
+                $card.fadeOut(300, function() {
+                    $card.data('job-status', 'Open').find('.status-badge')
+                        .removeClass('status-expired').addClass('status-open')
+                        .html('<i class="fas fa-circle"></i> Open');
+                    $card.find('.action-buttons').html(`
+                        <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="${jobId}"><i class="fas fa-eye"></i> View</button>
+                        <button class="btn btn-outline-violet action-btn edit-job" data-bs-toggle="modal" data-bs-target="#editModal" data-job-id="${jobId}"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-outline-warning action-btn toggle-status" data-job-id="${jobId}" data-current-status="Open"><i class="fas fa-pause-circle"></i> Set Closing</button>
+                        <button class="btn btn-outline-danger action-btn archive-job" data-job-id="${jobId}"><i class="fas fa-archive"></i> Archive</button>
+                        <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="${jobId}"><i class="fas fa-trash-alt"></i> Delete</button>
+                    `);
+                    $('#activeJobs').append($card);
+                    $card.fadeIn(300);
+                    filterJobs();
+                });
+            });
+
+            // Edit job modal population
+            $(document).on('click', '.edit-job', function() {
+                const jobId = $(this).data('job-id');
+                const $card = $(this).closest('.job-card');
+                
+                $('#editJobId').val(jobId);
+                $('#editJobRole').val($card.find('.job-title').text());
+                $('#editJobType').val($card.data('job-type'));
+                $('#editJobCategory').val($card.data('job-category'));
+                $('#editDescription').val(''); // Placeholder; update if description stored elsewhere
+                const skills = JSON.parse($card.attr('data-skills') || '[]');
+                const locations = JSON.parse($card.attr('data-locations') || '[]');
+                $('#editSkills').val(skills).trigger('change');
+                $('#editWorkType').val($card.data('job-type') === 'Remote' ? 'Remote' : 'On-site'); // Simplified; adjust as needed
+                $('#editLocations').val(locations).trigger('change');
+                $('#editOpenings').val(1); // Default; update if stored
+                $('#editDeadline').val($card.find('.job-info:contains("Expires")').text().split(': ')[1]); // Extract from card
+                $('#editApplicationProcess').val('Apply via TalentTap'); // Default; update if stored
+                
+                $('#editJobType').trigger('change');
+                $('#editApplicationProcess').trigger('change');
+                $('#editModal').modal('show');
+            });
+
+            // Edit form logic
+            $('#editDescription').on('input', function() {
+                const count = this.value.length;
+                $('#editCharCount').text(count).toggleClass('text-danger', count < 100 || count > 3000);
+            });
+
+            $('#editJobType').on('change', function() {
+                const value = $(this).val();
+                $('#editInternshipFields, #editFullTimeFields').hide();
+                if (value === 'Internship') {
+                    $('#editInternshipFields').show();
+                    $('#editDuration, #editStartDate, #editStipend').prop('required', true);
+                    $('#editExperienceYears, #editSalaryMin, #editSalaryMax').prop('required', false);
+                } else if (value === 'Full-time' || value === 'Part-time') {
+                    $('#editFullTimeFields').show();
+                    $('#editExperienceYears, #editSalaryMin, #editSalaryMax').prop('required', true);
+                    $('#editDuration, #editStartDate, #editStipend').prop('required', false);
+                } else {
+                    $('#editDuration, #editStartDate, #editStipend, #editExperienceYears, #editSalaryMin, #editSalaryMax').prop('required', false);
+                }
+            });
+
+            $('#editApplicationProcess').on('change', function() {
+                const showEmail = $(this).val() === 'Apply via Email';
+                $('#editEmailApplicationFields').toggle(showEmail);
+                $('#editApplicationEmail').prop('required', showEmail);
+            });
+
+            editForm.on('submit', function(e) {
+                e.preventDefault();
+                if (this.checkValidity() && $('#editDescription').val().length >= 100) {
+                    const jobId = $('#editJobId').val();
+                    const $card = $(`.job-card[data-job-id="${jobId}"]`);
+                    $card.find('.job-title').text($('#editJobRole').val());
+                    $card.data('job-type', $('#editJobType').val());
+                    $card.find('.job-info').eq(1).text($('#editJobType').val());
+                    $card.data('job-category', $('#editJobCategory').val());
+                    $card.attr('data-skills', JSON.stringify($('#editSkills').val() || []));
+                    $card.attr('data-locations', JSON.stringify($('#editLocations').val() || []));
+                    $card.find('.job-info').eq(0).text($('#editLocations').val().join(', '));
+                    $card.find('.job-info:contains("Expires")').text(`Expires: ${$('#editDeadline').val()}`);
+                    
+                    successToast.show();
+                    $('#editModal').modal('hide');
+                    setTimeout(() => {
+                        editForm.trigger('reset');
+                        editForm.removeClass('was-validated');
+                        $('#editSkills, #editLocations').val(null).trigger('change');
+                        $('#editCharCount').text('0');
+                    }, 2000);
+                } else {
+                    editForm.addClass('was-validated');
+                    if ($('#editDescription').val().length < 100) {
+                        $('#editDescription').siblings('.invalid-feedback').text('Description must be at least 100 characters');
+                    }
+                }
+            });
+
+            // Delete job modal
+            $(document).on('click', '.delete-job-btn', function() {
+                const jobId = $(this).data('job-id');
+                const $card = $(this).closest('.job-card');
+                $('#deleteJobId').val(jobId);
+                $('#deleteJobTitle').text($card.find('.job-title').text());
+                $('#deleteModal').modal('show');
+            });
+
+            $('#deleteReason').on('change', function() {
+                const showOther = $(this).val() === 'Other';
+                $('#deleteOtherReasonField').toggle(showOther);
+                $('#deleteOtherReason').prop('required', showOther);
+            });
+
+            $('#confirmDelete').click(function() {
+                if ($('#deleteJobForm')[0].checkValidity()) {
+                    const jobId = $('#deleteJobId').val();
+                    const $card = $(`.job-card[data-job-id="${jobId}"]`);
+                    $card.fadeOut(300, function() {
+                        $card.remove();
+                        filterJobs();
+                        $('#deleteModal').modal('hide');
+                    });
+                    alert('Job deleted successfully!');
+                } else {
+                    $('#deleteJobForm').addClass('was-validated');
+                }
+            });
+
+            // Initial filter
+            filterJobs();
+        });
+    </script>
+</body>
+</html>
