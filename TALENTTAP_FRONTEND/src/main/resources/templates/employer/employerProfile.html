@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Settings Panel | TalentTap</title>
+    
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSB7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" th:href="@{/employer/css/employerprofile.css}"/>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./index.html">
+                <img th:src="@{./img/LOGO_TRANSPARENT.png}" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            <div class="d-flex align-items-center order-lg-3">
+                <div class="quick-actions d-flex">
+                    <a href="notifications.html" class="icon-button">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-notification">5</span>
+                    </a>
+                    <a href="messages.html" class="icon-button">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge-notification">3</span>
+                    </a>
+                </div>
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">JD</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">JD</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                                <div class="small text-muted">Premium Plan</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="employer-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="company-profile.html"><i class="fas fa-building"></i>Company Profile</a></li>
+                        <li><a class="dropdown-item" href="manage-jobs.html"><i class="fas fa-briefcase"></i>Manage Jobs</a></li>
+                        <li><a class="dropdown-item" href="candidates.html"><i class="fas fa-users"></i>View Candidates</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="account-settings.html"><i class="fas fa-cog"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="subscription.html"><i class="fas fa-credit-card"></i>Subscription</a></li>
+                        <li><a class="dropdown-item" href="help.html"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="employer-dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="manage-jobs.html">
+                            <i class="fas fa-briefcase me-1"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" href="candidates.html">
+                            <i class="fas fa-users me-1"></i> Candidates
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link active" href="account-settings.html">
+                            <i class="fas fa-cog me-1"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                    <button class="btn btn-violet w-100">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2 class="sidebar-heading">Settings</h2>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="sidebar-link active" data-section="my-info"><i class="fas fa-user"></i> My Info</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="password"><i class="fas fa-lock"></i> Password & Security</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="identity"><i class="fas fa-id-card"></i> Identity Verification</a></li>
+                </ul>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- My Info Section -->
+                <div id="my-info" class="content-section" style="display: block;">
+                    <h2 class="content-title">My Info</h2>
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h3 class="content-title">Account Details</h3>
+                            <button class="edit-button" id="editAccountBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Full Name</div>
+                            <div class="field-value" id="fullName">John Doe</div>
+                            <input type="text" class="form-control edit-field" id="fullNameInput" style="display: none;" value="John Doe">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Username</div>
+                            <div class="field-value" id="username">johndoe123</div>
+                            <input type="text" class="form-control edit-field" id="usernameInput" style="display: none;" value="johndoe123">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Email</div>
+                            <div class="field-value" id="email">john.doe@example.com<span class="verified-badge" id="emailVerified" style="display: inline-block;">Verified</span></div>
+                            <input type="email" class="form-control edit-field" id="emailInput" style="display: none;" value="john.doe@example.com" readonly>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Phone Number</div>
+                            <div class="field-value" id="phoneNumber">9876543210<span class="verified-badge" id="phoneVerified" style="display: inline-block;">Verified</span></div>
+                            <input type="tel" class="form-control edit-field" id="phoneNumberInput" style="display: none;" value="9876543210" readonly>
+                        </div>
+                        <button class="btn btn-primary" id="saveAccountBtn" style="display: none;">Save Changes</button>
+                    </div>
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h3 class="content-title">Company Details</h3>
+                            <button class="edit-button" id="editCompanyBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                        </div>
+                        <div class="info-field text-center" id="companyLogoDisplay">
+                            <img src="./img/default-logo.png" alt="Company Logo" class="company-logo" id="companyLogoImg">
+                        </div>
+                        <div class="info-field" id="editCompanyLogoField" style="display: none;">
+                            <div class="file-upload">
+                                <label for="companyLogo">Change Logo</label>
+                                <input type="file" class="form-control edit-field" id="companyLogo" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Name</div>
+                            <div class="field-value" id="companyName">Acme Inc.</div>
+                            <input type="text" class="form-control edit-field" id="companyNameInput" style="display: none;" value="Acme Inc.">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Industry Type</div>
+                            <div class="field-value" id="companyIndustry">Technology</div>
+                            <select class="form-control edit-field" id="companyIndustryInput" style="display: none;">
+                                <option value="technology" selected>Technology</option>
+                                <option value="finance">Finance</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="education">Education</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="retail">Retail</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Email</div>
+                            <div class="field-value" id="companyEmail">contact@acme.com</div>
+                            <input type="email" class="form-control edit-field" id="companyEmailInput" style="display: none;" value="contact@acme.com">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Phone</div>
+                            <div class="field-value" id="companyPhone">9876543210</div>
+                            <input type="tel" class="form-control edit-field" id="companyPhoneInput" style="display: none;" value="9876543210">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Designation</div>
+                            <div class="field-value" id="designation">HR Manager</div>
+                            <input type="text" class="form-control edit-field" id="designationInput" style="display: none;" value="HR Manager">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">About the Company</div>
+                            <div class="field-value" id="companyAbout">A leading tech solutions provider.</div>
+                            <textarea class="form-control edit-field" id="companyAboutInput" style="display: none;">A leading tech solutions provider.</textarea>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Size</div>
+                            <div class="field-value" id="companySize">51-200</div>
+                            <input type="text" class="form-control edit-field" id="companySizeInput" style="display: none;" value="51-200">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Location</div>
+                            <div class="field-value" id="location">USA</div>
+                            <select class="form-control edit-field" id="locationInput" style="display: none;">
+                                <option value="usa" selected>USA</option>
+                                <option value="uk">UK</option>
+                                <option value="india">India</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" id="saveCompanyBtn" style="display: none;">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Password & Security Section -->
+                <div id="password" class="content-section" style="display: none;">
+                    <h2 class="content-title">Password & Security</h2>
+                    <div class="content-card">
+                        <div id="passwordStatus" class="info-field">
+                            <div class="field-label">Password</div>
+                            <div class="field-value">Current Password Set</div>
+                        </div>
+                        <div id="changePasswordFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="currentPassword" class="form-label">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password">
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+                                <div class="error-message"></div>
+                                <div class="password-requirements">
+                                    <ul>
+                                        <li id="length">At least 8 characters</li>
+                                        <li id="uppercase">At least one uppercase letter</li>
+                                        <li id="lowercase">At least one lowercase letter</li>
+                                        <li id="number">At least one number</li>
+                                        <li id="special">At least one special character</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+                                <div class="error-message"></div>
+                            </div>
+                            <button class="btn btn-primary" id="savePasswordBtn">Save Password</button>
+                        </div>
+                        <button class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                    </div>
+                </div>
+
+                <!-- Identity Verification Section -->
+                <div id="identity" class="content-section" style="display: none;">
+                    <h2 class="content-title">Identity Verification</h2>
+                    <div class="content-card">
+                        <div class="form-group">
+                            <label class="form-label">Government-Issued ID</label>
+                            <div class="file-upload">
+                                <label for="govId">Upload ID</label>
+                                <input type="file" id="govId" accept="image/*,application/pdf">
+                                <span id="govIdVerified" class="verified-badge">Verified</span>
+                            </div>
+                            <img id="govIdPreview" class="file-preview" alt="Government ID Preview">
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Company ID Card (or use Company Email below)</label>
+                            <div class="file-upload">
+                                <label for="companyId">Upload ID</label>
+                                <input type="file" id="companyId" accept="image/*,application/pdf">
+                                <span id="companyIdVerified" class="verified-badge">Verified</span>
+                            </div>
+                            <img id="companyIdPreview" class="file-preview" alt="Company ID Preview">
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyEmailVerification" class="form-label">Company Email (or use Company ID above)</label>
+                            <input type="email" id="companyEmailVerification" class="form-control" placeholder="Enter company email">
+                            <div class="error-message"></div>
+                        </div>
+                        <button class="btn btn-primary" id="submitVerificationBtn">Submit for Verification</button>
+                        <p class="verification-status" id="verificationStatus">Status: Not Submitted</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Confirmation Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Password</h3>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your password to continue editing your information.</p>
+                <div class="form-group">
+                    <label for="confirmPasswordInput" class="form-label">Password</label>
+                    <input type="password" id="confirmPasswordInput" class="form-control" placeholder="Enter your password">
+                    <div class="error-message"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script th:src="@{employer/js/employerprofile.js}"></script>
+</body>
+</html>

@@ -42,8 +42,44 @@ public class PageRenderController {
 		return "jobseeker/register";
 	}
 	
+    //	employer controller
 	@GetMapping("/employer/login")
 	public String LoadEmployerLogin() {
 		return "employer/login";
+	}
+	
+	@GetMapping("/employer/register")
+	public String LoadEmployerResiter() {
+		return "employer/register";
+	}
+	
+	@GetMapping("/employer/employerDashboard")
+	public String loadEmployerDashboard() {
+		return "employer/employerDashboard";
+	}
+	
+	@GetMapping("/employer/jobs")
+	public String loadJobs(){
+		return "employer/jobs";
+	}
+	
+	@GetMapping("/employer/candidates")
+	public String loadCandidates() {
+		return "employer/candidates"; // goes to static/template/employer/candidates
+	}
+	
+	@GetMapping("/employer/profile")
+	public String loademployerProfile() {
+		return "employer/employerProfile";
+	}
+	
+	@GetMapping("/employer/viewProfile")
+	public String loadEmployerProfile() {
+		return "employer/candidateProfile";
+	}
+	
+	@GetMapping("/employer/postjob")
+	public String loadPostJob() {
+		return "employer/postjob";
 	}
 }

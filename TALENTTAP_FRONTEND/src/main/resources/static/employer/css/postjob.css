@@ -1,0 +1,196 @@
+ * {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        body {
+            background: linear-gradient(120deg, #f1f5f9, #d8e2ef);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .form-container, .preview-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover, .preview-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-violet { color: #5e17eb; }
+        .btn-violet {
+            background-color: #5e17eb;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-violet:hover {
+            background-color: #4834d4;
+            transform: translateY(-2px);
+        }
+        .btn-outline-violet {
+            color: #5e17eb;
+            border-color: #5e17eb;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-violet:hover {
+            background-color: #5e17eb;
+            color: white;
+        }
+
+        .form-section, .preview-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #dcdcdc;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #5e17eb;
+            box-shadow: 0 0 5px rgba(106, 90, 205, 0.2);
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            border-radius: 8px;
+            border: 1px solid #dcdcdc;
+            min-height: 38px;
+        }
+
+        .select2-selection__choice {
+            background-color: #5e17eb !important;
+            color: white !important;
+            border-radius: 20px !important;
+            padding: 2px 8px !important;
+        }
+
+        .character-count {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .preview-container {
+            display: none;
+        }
+
+        .preview-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .preview-label {
+            font-weight: 500;
+            color: #666;
+            min-width: 150px;
+            margin-right: 15px;
+        }
+
+        .preview-value {
+            flex: 1;
+            color: #333;
+            max-width: 600px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .edit-icon {
+            color: #5e17eb;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-icon:hover {
+            color: #4834d4;
+        }
+
+        .requirements-list, .benefits-list {
+            margin: 10px 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            background: #f8f5ff;
+            color: #5e17eb;
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .list-item:hover {
+            background: #efe8ff;
+        }
+
+        .list-item button {
+            margin-left: 10px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            background: #f8f5ff;
+            color: #5e17eb;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 3px;
+            font-size: 0.9rem;
+        }
+
+        .invalid-feedback, .valid-feedback {
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        .is-valid ~ .valid-feedback {
+            display: block;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .is-valid {
+            border-color: #28a745 !important;
+        }
