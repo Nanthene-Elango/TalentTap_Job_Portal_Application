@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (isUsernameValid && isPasswordValid) {
 			// Here you would typically send the data to your server
 			console.log('Form is valid, submitting...');
-			window.location.href = "../Employeer/EmployerDashboard.html";
+			window.location.href = "/employer/employerDashboard";
 		}
 	});
 });

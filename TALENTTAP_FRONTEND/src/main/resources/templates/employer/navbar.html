@@ -1,0 +1,68 @@
+ <nav th:fragment ="navbar"
+ class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container-fluid d-flex justify-content-between mx-2 mx-md-4" id="nav-container">
+            <a class="navbar-brand" href="./EmployerDashboard.html">
+                <img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="Logo-TalentTap" style="height: 45px;">
+            </a>
+            
+            <div class="d-flex align-items-center order-lg-3">
+                
+                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                    <i class="fas fa-plus-circle"></i> Post a Job
+                </button>
+                
+                <div class="dropdown ms-3">
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">EP</div>
+                        <span class="d-none d-lg-inline">Acme Inc.</span>
+                        <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        <li class="px-3 py-2 d-flex align-items-center">
+                            <div class="profile-circle me-2">EP</div>
+                            <div>
+                                <div class="fw-bold">Acme Inc.</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/employer/employerProfile}"><i class="fas fa-cog"></i>Profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/employer/help}"><i class="fas fa-question-circle"></i>Help Center</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                    </ul>
+                </div>
+                
+                <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link active" th:href="@{/employer/employerDashboard}">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" th:href="@{/employer/jobs}">
+                            <i class="fas fa-briefcase me-1"></i> Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbar-link" th:href="@{/employer/candidates}">
+                            <i class="fas fa-users me-1"></i> Candidates
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-block d-lg-none mt-3">
+                	<a class="nav-link navbar-link" th:href="@{/employer/postjob}">
+                    <button class="btn btn-violet w-100">
+                        <i class="fas fa-plus-circle me-2"></i> Post a Job
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>  

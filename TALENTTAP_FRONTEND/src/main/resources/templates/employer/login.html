@@ -9,9 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<link rel="stylesheet" th:href="@{/jobseeker/css/style.css}">
     <link rel="stylesheet" th:href="@{/employer/css/login.css}">
-    <script th:src="@{employer/js/login.js}"></script>
+    <script th:src="@{/employer/js/login.js}"></script>
 
 </head>
 <body>
@@ -63,7 +63,7 @@
 
             <div class="signup-link">
                 <p>
-                    Don't have an account? <a href="./EmployerRegistration.html">Sign Up</a>
+                    Don't have an account? <a th:href="@{employer/register}">Sign Up</a>
                 </p>
             </div>
         </form>

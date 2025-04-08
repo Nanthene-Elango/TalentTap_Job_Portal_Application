@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TalentTap | All Jobs</title>
     <link rel="icon" type="image/x-icon" href="./img/favicon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSS7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
         * {
             font-family: 'Poppins', sans-serif;
@@ -177,6 +178,54 @@
         .section-badge { position: absolute; top: -10px; right: 0; background: #f8f5ff; color: #5e17eb; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
         .character-count { font-size: 0.8rem; color: #666; text-align: right; margin-top: 5px; }
 
+        /* Requirements and Benefits List */
+        .requirements-list, .benefits-list {
+            margin: 10px 0;
+            padding: 0;
+            list-style: none;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            background: #f8f5ff;
+            color: #5e17eb;
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+        .list-item:hover {
+            background: #efe8ff;
+        }
+        .list-item button {
+            margin-left: 10px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Validation Feedback */
+        .invalid-feedback, .valid-feedback {
+            font-size: 0.85rem;
+            display: none;
+        }
+        .is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+        .is-valid ~ .valid-feedback {
+            display: block;
+        }
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        .is-valid {
+            border-color: #28a745 !important;
+        }
+
         /* Toast Styling */
         .toast {
             border: none;
@@ -301,6 +350,7 @@
                         <option value="Contract">Contract</option>
                         <option value="Freelance">Freelance</option>
                         <option value="Internship">Internship</option>
+                        <option value="Remote">Remote</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -339,7 +389,7 @@
 
         <!-- Active Jobs Section -->
         <div id="activeJobs" class="job-list-section">
-            <div class="job-card" data-job-id="1" data-job-type="Full-time" data-job-status="Open" data-job-category="Engineering" data-skills='["JavaScript", "React"]' data-locations='["San Francisco, USA"]'>
+            <div class="job-card" data-job-id="1" data-job-type="Full-time" data-job-status="Open" data-job-category="Engineering" data-skills='["JavaScript", "React"]' data-locations='["San Francisco, USA"]' data-requirements='["Must have 3 years of experience", "Proficient in JavaScript"]' data-benefits='["Health insurance", "Flexible hours"]' data-description="We are looking for a Senior Frontend Developer to join our team in San Francisco." data-experience-years="3" data-salary-min="80000" data-salary-max="120000" data-openings="2" data-deadline="2025-04-13" data-application-email="hr@acme.com">
                 <div class="row">
                     <div class="col-md-7">
                         <h5 class="job-title">Senior Frontend Developer</h5>
@@ -357,11 +407,10 @@
                     <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="1"><i class="fas fa-eye"></i> View</button>
                     <button class="btn btn-outline-violet action-btn edit-job" data-bs-toggle="modal" data-bs-target="#editModal" data-job-id="1"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-outline-warning action-btn toggle-status" data-job-id="1" data-current-status="Open"><i class="fas fa-pause-circle"></i> Set Closing</button>
-                    <button class="btn btn-outline-danger action-btn archive-job" data-job-id="1"><i class="fas fa-archive"></i> Archive</button>
                     <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="1"><i class="fas fa-trash-alt"></i> Delete</button>
                 </div>
             </div>
-            <div class="job-card" data-job-id="2" data-job-type="Remote" data-job-status="Open" data-job-category="Design" data-skills='["UI Design", "SEO"]' data-locations='["Remote"]'>
+            <div class="job-card" data-job-id="2" data-job-type="Remote" data-job-status="Open" data-job-category="Design" data-skills='["UI Design", "SEO"]' data-locations='["Remote"]' data-requirements='["Must have 2 years of experience", "Proficient in UI Design"]' data-benefits='["Remote work", "Paid time off"]' data-description="We are seeking a Product Designer to work remotely on our design team." data-openings="1" data-deadline="2025-04-19" data-application-email="design@acme.com">
                 <div class="row">
                     <div class="col-md-7">
                         <h5 class="job-title">Product Designer</h5>
@@ -379,7 +428,6 @@
                     <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="2"><i class="fas fa-eye"></i> View</button>
                     <button class="btn btn-outline-violet action-btn edit-job" data-bs-toggle="modal" data-bs-target="#editModal" data-job-id="2"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-outline-warning action-btn toggle-status" data-job-id="2" data-current-status="Open"><i class="fas fa-pause-circle"></i> Set Closing</button>
-                    <button class="btn btn-outline-danger action-btn archive-job" data-job-id="2"><i class="fas fa-archive"></i> Archive</button>
                     <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="2"><i class="fas fa-trash-alt"></i> Delete</button>
                 </div>
             </div>
@@ -397,238 +445,341 @@
                 <i class="fas fa-plus"></i> Post New Job
             </button>
         </div>
-    </div>
 
-    <!-- Edit Job Modal (Fully Matched with Post a Job) -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content form-container">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Job Posting</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Edit Job Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content form-container">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Job Posting</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="editJobForm" class="needs-validation" novalidate>
+                            <input type="hidden" id="editJobId">
+                            <!-- Job Details -->
+                            <div class="form-section">
+                                <span class="section-badge">Step 1</span>
+                                <h6>Job Details</h6>
+                                <div class="mb-3">
+                                    <label for="editJobRole" class="form-label">Job Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editJobRole" required>
+                                    <div class="invalid-feedback">Please enter a job title (at least 3 characters).</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editJobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editJobType" required>
+                                        <option value="" selected disabled>Select type</option>
+                                        <option value="Full-time">Full-time</option>
+                                        <option value="Part-time">Part-time</option>
+                                        <option value="Internship">Internship</option>
+                                        <option value="Contract">Contract</option>
+                                        <option value="Freelance">Freelance</option>
+                                        <option value="Remote">Remote</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select an employment type.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editJobCategory" class="form-label">Job Category <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editJobCategory" required>
+                                        <option value="" selected disabled>Select category</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="Design">Design</option>
+                                        <option value="Marketing">Marketing</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a job category.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editDescription" class="form-label">Job Description <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="editDescription" rows="4" required></textarea>
+                                    <div class="character-count"><span id="editCharCount">0</span>/3000 characters (minimum 100)</div>
+                                    <div class="invalid-feedback">Description must be between 100 and 3000 characters.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editSkills" class="form-label">Required Skills <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="editSkills" multiple required>
+                                        <option value="JavaScript">JavaScript</option>
+                                        <option value="Python">Python</option>
+                                        <option value="React">React</option>
+                                        <option value="Node.js">Node.js</option>
+                                        <option value="UI Design">UI Design</option>
+                                        <option value="SEO">SEO</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select at least one skill.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Requirements <span class="text-danger">*</span></label>
+                                    <ul class="requirements-list" id="editRequirementsList"></ul>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="editRequirementInput" placeholder="Enter requirement">
+                                        <button type="button" class="btn btn-violet" id="editAddRequirementBtn">Add</button>
+                                    </div>
+                                    <div class="invalid-feedback">Please add at least one requirement.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Benefits</label>
+                                    <ul class="benefits-list" id="editBenefitsList"></ul>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="editBenefitInput" placeholder="Enter benefit">
+                                        <button type="button" class="btn btn-violet" id="editAddBenefitBtn">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Work Location -->
+                            <div class="form-section">
+                                <span class="section-badge">Step 2</span>
+                                <h6>Work Location</h6>
+                                <div class="mb-3">
+                                    <label for="editWorkType" class="form-label">Work Type <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editWorkType" required>
+                                        <option value="" selected disabled>Select work arrangement</option>
+                                        <option value="Remote">Remote</option>
+                                        <option value="Hybrid">Hybrid</option>
+                                        <option value="On-site">On-site</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a work arrangement.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editLocations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="editLocations" multiple required>
+                                        <option value="New York, USA">New York, USA</option>
+                                        <option value="San Francisco, USA">San Francisco, USA</option>
+                                        <option value="London, UK">London, UK</option>
+                                        <option value="Remote">Remote</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select at least one location.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+
+                            <!-- Employment Specific Details -->
+                            <div class="form-section" id="editFullTimeFields" style="display: none;">
+                                <span class="section-badge">Step 3a</span>
+                                <h6>Full-time Details</h6>
+                                <div class="mb-3">
+                                    <label for="editExperienceYears" class="form-label">Experience Required <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editExperienceYears" placeholder="e.g., 0 or 4-5" required>
+                                    <div class="invalid-feedback">Enter 0 or a range (e.g., 4-5).</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Salary Range <span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="number" class="form-control" id="editSalaryMinFT" placeholder="Minimum" min="0" required>
+                                            <div class="invalid-feedback">Please enter a valid minimum salary (at least 0).</div>
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <input type="number" class="form-control" id="editSalaryMaxFT" placeholder="Maximum" min="0" required>
+                                            <div class="invalid-feedback">Please enter a valid maximum salary (greater than minimum).</div>
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section" id="editPartTimeFields" style="display: none;">
+                                <span class="section-badge">Step 3b</span>
+                                <h6>Part-time Details</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Salary Range <span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="number" class="form-control" id="editSalaryMinPT" placeholder="Minimum" min="0" required>
+                                            <div class="invalid-feedback">Please enter a valid minimum salary (at least 0).</div>
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <input type="number" class="form-control" id="editSalaryMaxPT" placeholder="Maximum" min="0" required>
+                                            <div class="invalid-feedback">Please enter a valid maximum salary (greater than minimum).</div>
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section" id="editInternshipFields" style="display: none;">
+                                <span class="section-badge">Step 3c</span>
+                                <h6>Internship Details</h6>
+                                <div class="mb-3">
+                                    <label for="editDuration" class="form-label">Duration (months) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="editDuration" min="1" max="24" required>
+                                    <div class="invalid-feedback">Enter a duration between 1 and 24 months.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editStipend" class="form-label">Stipend <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="editStipend" min="0" required>
+                                    <div class="invalid-feedback">Enter a valid stipend (at least 0).</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+
+                            <!-- Application Details -->
+                            <div class="form-section">
+                                <span class="section-badge">Final Step</span>
+                                <h6>Application Details</h6>
+                                <div class="mb-3">
+                                    <label for="editOpenings" class="form-label">Number of Positions <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="editOpenings" min="1" value="1" required>
+                                    <div class="invalid-feedback">Enter at least 1 position.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editDeadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="editDeadline" required>
+                                    <div class="invalid-feedback">Select a future date.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editApplicationProcess" class="form-label">Application Process <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editApplicationProcess" required>
+                                        <option value="" selected disabled>Select process</option>
+                                        <option value="Apply via TalentTap">Apply via TalentTap</option>
+                                        <option value="Apply via Email">Apply via Email</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a process.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="mb-3" id="editEmailApplicationFields" style="display: none;">
+                                    <label for="editApplicationEmail" class="form-label">Application Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="editApplicationEmail" required>
+                                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
+                                <button type="submit" class="btn btn-violet"><i class="fas fa-save me-1"></i> Update Job</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body p-4">
-                    <form id="editJobForm" class="needs-validation" novalidate>
-                        <input type="hidden" id="editJobId">
-                        <!-- Job Details -->
+            </div>
+        </div>
+
+        <!-- View Job Modal -->
+        <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewModalLabel">Job Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
                         <div class="form-section">
-                            <span class="section-badge">Step 1</span>
                             <h6>Job Details</h6>
-                            <div class="mb-3">
-                                <label for="editJobRole" class="form-label">Job Title <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editJobRole" placeholder="e.g. Front-end Developer" required>
-                                <div class="invalid-feedback">Please enter a job title</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editJobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editJobType" required>
-                                    <option value="" selected disabled>Select employment type</option>
-                                    <option value="Full-time">Full-time</option>
-                                    <option value="Part-time">Part-time</option>
-                                    <option value="Contract">Contract</option>
-                                    <option value="Freelance">Freelance</option>
-                                    <option value="Internship">Internship</option>
-                                </select>
-                                <div class="invalid-feedback">Please select an employment type</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editJobCategory" class="form-label">Job Category <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editJobCategory" required>
-                                    <option value="" selected disabled>Select job category</option>
-                                    <option value="Engineering">Engineering</option>
-                                    <option value="Design">Design</option>
-                                    <option value="Marketing">Marketing</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a job category</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editDescription" class="form-label">Job Description <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="editDescription" rows="6" required></textarea>
-                                <div class="character-count"><span id="editCharCount">0</span>/3000 characters (minimum 100)</div>
-                                <div class="invalid-feedback">Please provide a description (minimum 100 characters)</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editSkills" class="form-label">Required Skills <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editSkills" multiple required>
-                                    <option value="JavaScript">JavaScript</option>
-                                    <option value="Python">Python</option>
-                                    <option value="React">React</option>
-                                    <option value="Node.js">Node.js</option>
-                                    <option value="UI Design">UI Design</option>
-                                    <option value="SEO">SEO</option>
-                                </select>
-                                <div class="help-text">Select up to 10 key skills</div>
-                                <div class="invalid-feedback">Please select at least one skill</div>
-                            </div>
+                            <p><strong>Job Title:</strong> <span id="viewJobRole"></span></p>
+                            <p><strong>Employment Type:</strong> <span id="viewJobType"></span></p>
+                            <p><strong>Job Category:</strong> <span id="viewJobCategory"></span></p>
+                            <p><strong>Description:</strong> <span id="viewDescription"></span></p>
+                            <p><strong>Required Skills:</strong> <span id="viewSkills"></span></p>
+                            <p><strong>Requirements:</strong></p>
+                            <ul id="viewRequirementsList" class="requirements-list"></ul>
+                            <p><strong>Benefits:</strong></p>
+                            <ul id="viewBenefitsList" class="benefits-list"></ul>
                         </div>
 
-                        <!-- Work Location -->
                         <div class="form-section">
-                            <span class="section-badge">Step 2</span>
                             <h6>Work Location</h6>
-                            <div class="mb-3">
-                                <label for="editWorkType" class="form-label">Work Type <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editWorkType" required>
-                                    <option value="" selected disabled>Select work arrangement</option>
-                                    <option value="Remote">Remote only</ personally-owned>
-                                    <option value="Hybrid">Hybrid</option>
-                                    <option value="On-site">On-site only</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a work arrangement</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editLocations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
-                                <select class="form-control" id="editLocations" multiple required>
-                                    <option value="New York, USA">New York, USA</option>
-                                    <option value="San Francisco, USA">San Francisco, USA</option>
-                                    <option value="London, UK">London, UK</option>
-                                </select>
-                                <div class="invalid-feedback">Please select at least one location</div>
-                            </div>
+                            <p><strong>Work Type:</strong> <span id="viewWorkType"></span></p>
+                            <p><strong>Location(s):</strong> <span id="viewLocations"></span></p>
                         </div>
 
-                        <!-- Internship Details -->
-                        <div class="form-section" id="editInternshipFields" style="display: none;">
-                            <span class="section-badge">Step 3a</span>
+                        <div class="form-section" id="viewFullTimeFields" style="display: none;">
+                            <h6>Full-time Details</h6>
+                            <p><strong>Experience Required:</strong> <span id="viewExperienceYears"></span></p>
+                            <p><strong>Salary Range:</strong> $<span id="viewSalaryMinFT"></span> - $<span id="viewSalaryMaxFT"></span></p>
+                        </div>
+
+                        <div class="form-section" id="viewPartTimeFields" style="display: none;">
+                            <h6>Part-time Details</h6>
+                            <p><strong>Salary Range:</strong> $<span id="viewSalaryMinPT"></span> - $<span id="viewSalaryMaxPT"></span></p>
+                        </div>
+
+                        <div class="form-section" id="viewInternshipFields" style="display: none;">
                             <h6>Internship Details</h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="editDuration" class="form-label">Duration <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="editDuration" min="1" max="24">
-                                    <div class="invalid-feedback">Please enter a duration (1-24 months)</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="editStartDate" class="form-label">Start Date <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" id="editStartDate">
-                                    <div class="invalid-feedback">Please select a start date</div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editStipend" class="form-label">Stipend <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="editStipend" min="0">
-                                <div class="invalid-feedback">Please enter a stipend amount</div>
-                            </div>
+                            <p><strong>Duration (months):</strong> <span id="viewDuration"></span></p>
+                            <p><strong>Stipend:</strong> $<span id="viewStipend"></span></p>
                         </div>
 
-                        <!-- Full/Part-time Details -->
-                        <div class="form-section" id="editFullTimeFields" style="display: none;">
-                            <span class="section-badge">Step 3b</span>
-                            <h6>Experience & Compensation</h6>
-                            <div class="mb-3">
-                                <label for="editExperienceYears" class="form-label">Experience Required (Years) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="editExperienceYears" min="0" max="7" placeholder="0-7 years">
-                                <div class="help-text">Enter experience required (0 for freshers, up to 7 years)</div>
-                                <div class="invalid-feedback">Please enter experience between 0 and 7 years</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editSalaryMin" class="form-label">Salary Range <span class="text-danger">*</span></label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="number" class="form-control" id="editSalaryMin" placeholder="Min" min="0">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="number" class="form-control" id="editSalaryMax" placeholder="Max" min="0">
-                                    </div>
-                                </div>
-                                <div class="invalid-feedback">Please enter a valid salary range</div>
-                            </div>
-                        </div>
-
-                        <!-- Application Details -->
                         <div class="form-section">
-                            <span class="section-badge">Final Step</span>
                             <h6>Application Details</h6>
-                            <div class="mb-3">
-                                <label for="editOpenings" class="form-label">Number of Positions <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="editOpenings" min="1" value="1" required>
-                                <div class="invalid-feedback">Please enter at least 1 position</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editDeadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="editDeadline" required>
-                                <div class="invalid-feedback">Please select a deadline</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editApplicationProcess" class="form-label">Application Process <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editApplicationProcess" required>
-                                    <option value="" selected disabled>Select process</option>
-                                    <option value="Apply via TalentTap">Apply via TalentTap</option>
-                                    <option value="Apply via Email">Apply via Email</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a process</div>
-                            </div>
-                            <div class="mb-3" id="editEmailApplicationFields" style="display: none;">
-                                <label for="editApplicationEmail" class="form-label">Application Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="editApplicationEmail">
-                                <div class="invalid-feedback">Please enter a valid email</div>
-                            </div>
+                            <p><strong>Number of Positions:</strong> <span id="viewOpenings"></span></p>
+                            <p><strong>Application Deadline:</strong> <span id="viewDeadline"></span></p>
+                            <p><strong>Application Process:</strong> <span id="viewApplicationProcess"></span></p>
+                            <p id="viewEmailApplicationFields" style="display: none;"><strong>Application Email:</strong> <span id="viewApplicationEmail"></span></p>
                         </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
-                            <button type="submit" class="btn btn-violet"><i class="fas fa-save me-1"></i> Update Job</button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Delete Job Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Job</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="deleteJobForm">
-                        <input type="hidden" id="deleteJobId">
-                        <div class="form-section">
-                            <h6>Confirm Deletion</h6>
-                            <p class="text-muted">Are you sure you want to delete the job "<span id="deleteJobTitle" class="fw-bold"></span>"? This action cannot be undone.</p>
-                            <div class="mb-3">
-                                <label for="deleteReason" class="form-label">Reason for Deletion <span class="text-danger">*</span></label>
-                                <select class="form-select" id="deleteReason" required>
-                                    <option value="" selected disabled>Select a reason</option>
-                                    <option value="Position Filled">Position Filled</option>
-                                    <option value="Job Cancelled">Job Cancelled</option>
-                                    <option value="Duplicate Posting">Duplicate Posting</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a reason</div>
+        <!-- Delete Job Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Job</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form id="deleteJobForm">
+                            <input type="hidden" id="deleteJobId">
+                            <div class="form-section">
+                                <h6>Confirm Deletion</h6>
+                                <p class="text-muted">Are you sure you want to delete the job "<span id="deleteJobTitle" class="fw-bold"></span>"? This action cannot be undone.</p>
+                                <div class="mb-3">
+                                    <label for="deleteReason" class="form-label">Reason for Deletion <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="deleteReason" required>
+                                        <option value="" selected disabled>Select a reason</option>
+                                        <option value="Position Filled">Position Filled</option>
+                                        <option value="Job Cancelled">Job Cancelled</option>
+                                        <option value="Duplicate Posting">Duplicate Posting</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a reason</div>
+                                </div>
+                                <div class="mb-3" id="deleteOtherReasonField" style="display: none;">
+                                    <label for="deleteOtherReason" class="form-label">Specify Reason <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" id="deleteOtherReason" rows="3"></textarea>
+                                    <div class="invalid-feedback">Please specify a reason</div>
+                                </div>
                             </div>
-                            <div class="mb-3" id="deleteOtherReasonField" style="display: none;">
-                                <label for="deleteOtherReason" class="form-label">Specify Reason <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="deleteOtherReason" rows="3"></textarea>
-                                <div class="invalid-feedback">Please specify a reason</div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete"><i class="fas fa-trash-alt me-1"></i> Delete Job</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-violet" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete"><i class="fas fa-trash-alt me-1"></i> Delete Job</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Create Job Modal (Omitted for brevity) -->
-    <div class="modal fade" id="createJobModal" tabindex="-1" aria-labelledby="createJobModalLabel" aria-hidden="true">
-        <!-- Placeholder for consistency; assume it matches Post a Job -->
-    </div>
-
-    <!-- View Job Modal (Omitted for brevity) -->
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-        <!-- Placeholder for consistency -->
+        <!-- Create Job Modal (Omitted for brevity) -->
+        <div class="modal fade" id="createJobModal" tabindex="-1" aria-labelledby="createJobModalLabel" aria-hidden="true">
+            <!-- Placeholder for consistency; assume it matches Post a Job -->
+        </div>
     </div>
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             // Initialize Select2
@@ -641,6 +792,32 @@
 
             const editForm = $('#editJobForm');
             const successToast = new bootstrap.Toast($('#successToast'));
+            let editingRequirementIndex = null;
+            let editingBenefitIndex = null;
+
+            // Check for expired jobs and move them to Archived Jobs
+            function checkExpiredJobs() {
+                const today = new Date().toISOString().split('T')[0];
+                $('#activeJobs .job-card').each(function() {
+                    const $card = $(this);
+                    const deadline = $card.data('deadline');
+                    if (deadline && deadline < today) {
+                        $card.fadeOut(300, function() {
+                            $card.data('job-status', 'Expired').find('.status-badge')
+                                .removeClass('status-open status-closing').addClass('status-expired')
+                                .html('<i class="fas fa-circle"></i> Expired');
+                            $card.find('.action-buttons').html(`
+                                <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="${$card.data('job-id')}"><i class="fas fa-eye"></i> View</button>
+                                <button class="btn btn-outline-success action-btn restore-job" data-job-id="${$card.data('job-id')}"><i class="fas fa-redo"></i> Restore</button>
+                                <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="${$card.data('job-id')}"><i class="fas fa-trash-alt"></i> Delete</button>
+                            `);
+                            $('#archivedJobs').append($card);
+                            $card.fadeIn(300);
+                            filterJobs();
+                        });
+                    }
+                });
+            }
 
             // Tab navigation
             $('.job-tab').click(function() {
@@ -715,26 +892,6 @@
                 filterJobs();
             });
 
-            // Archive job
-            $(document).on('click', '.archive-job', function() {
-                const $btn = $(this);
-                const jobId = $btn.data('job-id');
-                const $card = $btn.closest('.job-card');
-                $card.fadeOut(300, function() {
-                    $card.data('job-status', 'Expired').find('.status-badge')
-                        .removeClass('status-open status-closing').addClass('status-expired')
-                        .html('<i class="fas fa-circle"></i> Expired');
-                    $card.find('.action-buttons').html(`
-                        <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="${jobId}"><i class="fas fa-eye"></i> View</button>
-                        <button class="btn btn-outline-success action-btn restore-job" data-job-id="${jobId}"><i class="fas fa-redo"></i> Restore</button>
-                        <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="${jobId}"><i class="fas fa-trash-alt"></i> Delete</button>
-                    `);
-                    $('#archivedJobs').append($card);
-                    $card.fadeIn(300);
-                    filterJobs();
-                });
-            });
-
             // Restore job
             $(document).on('click', '.restore-job', function() {
                 const $btn = $(this);
@@ -748,7 +905,6 @@
                         <button class="btn btn-outline-violet action-btn view-details" data-bs-toggle="modal" data-bs-target="#viewModal" data-job-id="${jobId}"><i class="fas fa-eye"></i> View</button>
                         <button class="btn btn-outline-violet action-btn edit-job" data-bs-toggle="modal" data-bs-target="#editModal" data-job-id="${jobId}"><i class="fas fa-edit"></i> Edit</button>
                         <button class="btn btn-outline-warning action-btn toggle-status" data-job-id="${jobId}" data-current-status="Open"><i class="fas fa-pause-circle"></i> Set Closing</button>
-                        <button class="btn btn-outline-danger action-btn archive-job" data-job-id="${jobId}"><i class="fas fa-archive"></i> Archive</button>
                         <button class="btn btn-outline-danger action-btn delete-job-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" data-job-id="${jobId}"><i class="fas fa-trash-alt"></i> Delete</button>
                     `);
                     $('#activeJobs').append($card);
@@ -757,95 +913,419 @@
                 });
             });
 
-            // Edit job modal population
+            // View Job Modal Population
+            $(document).on('click', '.view-details', function() {
+                const jobId = $(this).data('job-id');
+                const $card = $(this).closest('.job-card');
+
+                // Populate view modal fields
+                $('#viewJobRole').text($card.find('.job-title').text());
+                $('#viewJobType').text($card.data('job-type'));
+                $('#viewJobCategory').text($card.data('job-category'));
+                $('#viewDescription').text($card.data('description') || '');
+                const skills = JSON.parse($card.attr('data-skills') || '[]');
+                $('#viewSkills').text(skills.join(', ') || 'None');
+                const requirements = JSON.parse($card.attr('data-requirements') || '[]');
+                $('#viewRequirementsList').empty();
+                requirements.forEach(req => $('#viewRequirementsList').append(`<li class="list-item">${req}</li>`));
+                const benefits = JSON.parse($card.attr('data-benefits') || '[]');
+                $('#viewBenefitsList').empty();
+                benefits.forEach(ben => $('#viewBenefitsList').append(`<li class="list-item">${ben}</li>`));
+                $('#viewWorkType').text($card.data('job-type') === 'Remote' ? 'Remote' : 'On-site');
+                const locations = JSON.parse($card.attr('data-locations') || '[]');
+                $('#viewLocations').text(locations.join(', ') || 'None');
+                
+                // Employment type specific fields
+                $('#viewFullTimeFields, #viewPartTimeFields, #viewInternshipFields').hide();
+                if ($card.data('job-type') === 'Full-time') {
+                    $('#viewFullTimeFields').show();
+                    $('#viewExperienceYears').text($card.data('experience-years') || 'Not specified');
+                    $('#viewSalaryMinFT').text($card.data('salary-min') || '0');
+                    $('#viewSalaryMaxFT').text($card.data('salary-max') || '0');
+                } else if ($card.data('job-type') === 'Part-time') {
+                    $('#viewPartTimeFields').show();
+                    $('#viewSalaryMinPT').text($card.data('salary-min') || '0');
+                    $('#viewSalaryMaxPT').text($card.data('salary-max') || '0');
+                } else if ($card.data('job-type') === 'Internship') {
+                    $('#viewInternshipFields').show();
+                    $('#viewDuration').text($card.data('duration') || 'Not specified');
+                    $('#viewStipend').text($card.data('stipend') || '0');
+                }
+                
+                $('#viewOpenings').text($card.data('openings') || '1');
+                $('#viewDeadline').text(new Date($card.data('deadline')).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+                const appProcess = $card.data('application-email') ? 'Apply via Email' : 'Apply via TalentTap';
+                $('#viewApplicationProcess').text(appProcess);
+                $('#viewEmailApplicationFields').toggle(appProcess === 'Apply via Email');
+                $('#viewApplicationEmail').text($card.data('application-email') || '');
+
+                $('#viewModal').modal('show');
+            });
+
+            // Edit Job Modal Population and Validation
             $(document).on('click', '.edit-job', function() {
                 const jobId = $(this).data('job-id');
                 const $card = $(this).closest('.job-card');
-                
+
+                // Populate form fields
                 $('#editJobId').val(jobId);
                 $('#editJobRole').val($card.find('.job-title').text());
                 $('#editJobType').val($card.data('job-type'));
                 $('#editJobCategory').val($card.data('job-category'));
-                $('#editDescription').val(''); // Placeholder; update if description stored elsewhere
+                $('#editDescription').val($card.data('description') || '');
+                $('#editCharCount').text($('#editDescription').val().length);
                 const skills = JSON.parse($card.attr('data-skills') || '[]');
-                const locations = JSON.parse($card.attr('data-locations') || '[]');
                 $('#editSkills').val(skills).trigger('change');
-                $('#editWorkType').val($card.data('job-type') === 'Remote' ? 'Remote' : 'On-site'); // Simplified; adjust as needed
+                const requirements = JSON.parse($card.attr('data-requirements') || '[]');
+                $('#editRequirementsList').empty();
+                requirements.forEach(req => {
+                    $('#editRequirementsList').append(`<li class="list-item">${req}<button type="button" class="btn btn-outline-violet edit-requirement-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-requirement-btn">Remove</button></li>`);
+                });
+                const benefits = JSON.parse($card.attr('data-benefits') || '[]');
+                $('#editBenefitsList').empty();
+                benefits.forEach(ben => {
+                    $('#editBenefitsList').append(`<li class="list-item">${ben}<button type="button" class="btn btn-outline-violet edit-benefit-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-benefit-btn">Remove</button></li>`);
+                });
+                $('#editWorkType').val($card.data('job-type') === 'Remote' ? 'Remote' : 'On-site');
+                const locations = JSON.parse($card.attr('data-locations') || '[]');
                 $('#editLocations').val(locations).trigger('change');
-                $('#editOpenings').val(1); // Default; update if stored
-                $('#editDeadline').val($card.find('.job-info:contains("Expires")').text().split(': ')[1]); // Extract from card
-                $('#editApplicationProcess').val('Apply via TalentTap'); // Default; update if stored
-                
+                if ($card.data('job-type') === 'Full-time') {
+                    $('#editExperienceYears').val($card.data('experience-years'));
+                    $('#editSalaryMinFT').val($card.data('salary-min'));
+                    $('#editSalaryMaxFT').val($card.data('salary-max'));
+                } else if ($card.data('job-type') === 'Part-time') {
+                    $('#editSalaryMinPT').val($card.data('salary-min'));
+                    $('#editSalaryMaxPT').val($card.data('salary-max'));
+                } else if ($card.data('job-type') === 'Internship') {
+                    $('#editDuration').val($card.data('duration'));
+                    $('#editStipend').val($card.data('stipend'));
+                }
+                $('#editOpenings').val($card.data('openings') || 1);
+                $('#editDeadline').val($card.data('deadline'));
+                $('#editApplicationProcess').val($card.data('application-email') ? 'Apply via Email' : 'Apply via TalentTap');
+                $('#editApplicationEmail').val($card.data('application-email') || '');
+
+                // Trigger change events to update UI
                 $('#editJobType').trigger('change');
                 $('#editApplicationProcess').trigger('change');
                 $('#editModal').modal('show');
             });
 
-            // Edit form logic
-            $('#editDescription').on('input', function() {
-                const count = this.value.length;
-                $('#editCharCount').text(count).toggleClass('text-danger', count < 100 || count > 3000);
-            });
+            // Dynamic Validation Functions
+            function validateJobRole() {
+                const jobRole = $('#editJobRole');
+                const value = jobRole.val().trim();
+                return value.length >= 3 ? (jobRole.removeClass('is-invalid').addClass('is-valid'), true) : (jobRole.removeClass('is-valid').addClass('is-invalid'), false);
+            }
 
+            function validateJobType() {
+                const jobType = $('#editJobType');
+                const value = jobType.val();
+                return value ? (jobType.removeClass('is-invalid').addClass('is-valid'), true) : (jobType.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateJobCategory() {
+                const jobCategory = $('#editJobCategory');
+                const value = jobCategory.val();
+                return value ? (jobCategory.removeClass('is-invalid').addClass('is-valid'), true) : (jobCategory.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateDescription() {
+                const description = $('#editDescription');
+                const value = description.val().trim();
+                const count = value.length;
+                $('#editCharCount').text(count);
+                return (count >= 100 && count <= 3000) ? (description.removeClass('is-invalid').addClass('is-valid'), true) : (description.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateSkills() {
+                const skills = $('#editSkills');
+                const value = skills.val();
+                return (value && value.length > 0) ? (skills.removeClass('is-invalid').addClass('is-valid'), true) : (skills.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateRequirements() {
+                const requirementsList = $('#editRequirementsList');
+                const items = requirementsList.find('li').length;
+                return items > 0 ? (requirementsList.next('.input-group').next('.invalid-feedback').hide(), requirementsList.next('.input-group').next('.valid-feedback').show(), true) : (requirementsList.next('.input-group').next('.invalid-feedback').show(), requirementsList.next('.input-group').next('.valid-feedback').hide(), false);
+            }
+
+            function validateWorkType() {
+                const workType = $('#editWorkType');
+                const value = workType.val();
+                return value ? (workType.removeClass('is-invalid').addClass('is-valid'), true) : (workType.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateLocations() {
+                const locations = $('#editLocations');
+                const value = locations.val();
+                return (value && value.length > 0) ? (locations.removeClass('is-invalid').addClass('is-valid'), true) : (locations.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateExperienceYears() {
+                const experienceYears = $('#editExperienceYears');
+                const value = experienceYears.val().trim();
+                const regex = /^(0|[0-9]+(-[0-9]+)?)$/;
+                return regex.test(value) ? (experienceYears.removeClass('is-invalid').addClass('is-valid'), true) : (experienceYears.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateSalaryRange(minField, maxField) {
+                const min = $(minField);
+                const max = $(maxField);
+                const minValue = parseFloat(min.val());
+                const maxValue = parseFloat(max.val());
+                let isValid = true;
+
+                if (isNaN(minValue) || minValue < 0) {
+                    min.removeClass('is-valid').addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    min.removeClass('is-invalid').addClass('is-valid');
+                }
+
+                if (isNaN(maxValue) || maxValue < 0 || maxValue <= minValue) {
+                    max.removeClass('is-valid').addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    max.removeClass('is-invalid').addClass('is-valid');
+                }
+
+                return isValid;
+            }
+
+            function validateDuration() {
+                const duration = $('#editDuration');
+                const value = parseInt(duration.val());
+                return (!isNaN(value) && value >= 1 && value <= 24) ? (duration.removeClass('is-invalid').addClass('is-valid'), true) : (duration.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateStipend() {
+                const stipend = $('#editStipend');
+                const value = parseFloat(stipend.val());
+                return (!isNaN(value) && value >= 0) ? (stipend.removeClass('is-invalid').addClass('is-valid'), true) : (stipend.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateOpenings() {
+                const openings = $('#editOpenings');
+                const value = parseInt(openings.val());
+                return (!isNaN(value) && value >= 1) ? (openings.removeClass('is-invalid').addClass('is-valid'), true) : (openings.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateDeadline() {
+                const deadline = $('#editDeadline');
+                const value = deadline.val();
+                const today = new Date().toISOString().split('T')[0];
+                return (value && value >= today) ? (deadline.removeClass('is-invalid').addClass('is-valid'), true) : (deadline.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateApplicationProcess() {
+                const applicationProcess = $('#editApplicationProcess');
+                const value = applicationProcess.val();
+                return value ? (applicationProcess.removeClass('is-invalid').addClass('is-valid'), true) : (applicationProcess.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            function validateApplicationEmail() {
+                const applicationEmail = $('#editApplicationEmail');
+                const value = applicationEmail.val().trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return ($('#editApplicationProcess').val() !== 'Apply via Email' || emailRegex.test(value)) ? (applicationEmail.removeClass('is-invalid').addClass('is-valid'), true) : (applicationEmail.removeClass('is-valid').addClass('is-invalid'), false);
+            }
+
+            // Attach event listeners for dynamic validation
+            $('#editJobRole').on('input blur', validateJobRole);
+            $('#editJobType').on('change blur', validateJobType);
+            $('#editJobCategory').on('change blur', validateJobCategory);
+            $('#editDescription').on('input blur', validateDescription);
+            $('#editSkills').on('change blur', validateSkills);
+            $('#editRequirementsList').on('DOMSubtreeModified', validateRequirements);
+            $('#editWorkType').on('change blur', validateWorkType);
+            $('#editLocations').on('change blur', validateLocations);
+            $('#editExperienceYears').on('input blur', validateExperienceYears);
+            $('#editSalaryMinFT, #editSalaryMaxFT').on('input blur', () => validateSalaryRange('#editSalaryMinFT', '#editSalaryMaxFT'));
+            $('#editSalaryMinPT, #editSalaryMaxPT').on('input blur', () => validateSalaryRange('#editSalaryMinPT', '#editSalaryMaxPT'));
+            $('#editDuration').on('input blur', validateDuration);
+            $('#editStipend').on('input blur', validateStipend);
+            $('#editOpenings').on('input blur', validateOpenings);
+            $('#editDeadline').on('change blur', validateDeadline);
+            $('#editApplicationProcess').on('change blur', validateApplicationProcess);
+            $('#editApplicationEmail').on('input blur', validateApplicationEmail);
+
+            // Employment type toggle
             $('#editJobType').on('change', function() {
                 const value = $(this).val();
-                $('#editInternshipFields, #editFullTimeFields').hide();
-                if (value === 'Internship') {
-                    $('#editInternshipFields').show();
-                    $('#editDuration, #editStartDate, #editStipend').prop('required', true);
-                    $('#editExperienceYears, #editSalaryMin, #editSalaryMax').prop('required', false);
-                } else if (value === 'Full-time' || value === 'Part-time') {
+                $('#editFullTimeFields, #editPartTimeFields, #editInternshipFields').hide();
+                if (value === 'Full-time') {
                     $('#editFullTimeFields').show();
-                    $('#editExperienceYears, #editSalaryMin, #editSalaryMax').prop('required', true);
-                    $('#editDuration, #editStartDate, #editStipend').prop('required', false);
+                    $('#editExperienceYears, #editSalaryMinFT, #editSalaryMaxFT').prop('required', true);
+                    $('#editSalaryMinPT, #editSalaryMaxPT, #editDuration, #editStipend').prop('required', false);
+                } else if (value === 'Part-time') {
+                    $('#editPartTimeFields').show();
+                    $('#editSalaryMinPT, #editSalaryMaxPT').prop('required', true);
+                    $('#editExperienceYears, #editSalaryMinFT, #editSalaryMaxFT, #editDuration, #editStipend').prop('required', false);
+                } else if (value === 'Internship') {
+                    $('#editInternshipFields').show();
+                    $('#editDuration, #editStipend').prop('required', true);
+                    $('#editExperienceYears, #editSalaryMinFT, #editSalaryMaxFT, #editSalaryMinPT, #editSalaryMaxPT').prop('required', false);
                 } else {
-                    $('#editDuration, #editStartDate, #editStipend, #editExperienceYears, #editSalaryMin, #editSalaryMax').prop('required', false);
+                    $('#editExperienceYears, #editSalaryMinFT, #editSalaryMaxFT, #editSalaryMinPT, #editSalaryMaxPT, #editDuration, #editStipend').prop('required', false);
                 }
             });
 
+            // Application process toggle
             $('#editApplicationProcess').on('change', function() {
                 const showEmail = $(this).val() === 'Apply via Email';
                 $('#editEmailApplicationFields').toggle(showEmail);
                 $('#editApplicationEmail').prop('required', showEmail);
+                validateApplicationEmail();
             });
 
+            // Add/Edit Requirement
+            $('#editAddRequirementBtn').on('click', function() {
+                const input = $('#editRequirementInput');
+                const value = input.val().trim();
+                if (!value) return;
+
+                if (editingRequirementIndex !== null) {
+                    $(`#editRequirementsList li:eq(${editingRequirementIndex})`).html(`${value}<button type="button" class="btn btn-outline-violet edit-requirement-btn">
+                                        edit-requirement-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-requirement-btn">Remove</button>`);
+                    editingRequirementIndex = null;
+                } else {
+                    $('#editRequirementsList').append(`<li class="list-item">${value}<button type="button" class="btn btn-outline-violet edit-requirement-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-requirement-btn">Remove</button></li>`);
+                }
+                input.val('');
+                validateRequirements();
+            });
+
+            // Edit Requirement
+            $(document).on('click', '.edit-requirement-btn', function() {
+                const $li = $(this).closest('li');
+                editingRequirementIndex = $li.index();
+                const currentText = $li.text().replace('EditRemove', '').trim();
+                $('#editRequirementInput').val(currentText);
+            });
+
+            // Remove Requirement
+            $(document).on('click', '.remove-requirement-btn', function() {
+                $(this).closest('li').remove();
+                validateRequirements();
+            });
+
+            // Add/Edit Benefit
+            $('#editAddBenefitBtn').on('click', function() {
+                const input = $('#editBenefitInput');
+                const value = input.val().trim();
+                if (!value) return;
+
+                if (editingBenefitIndex !== null) {
+                    $(`#editBenefitsList li:eq(${editingBenefitIndex})`).html(`${value}<button type="button" class="btn btn-outline-violet edit-benefit-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-benefit-btn">Remove</button>`);
+                    editingBenefitIndex = null;
+                } else {
+                    $('#editBenefitsList').append(`<li class="list-item">${value}<button type="button" class="btn btn-outline-violet edit-benefit-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-benefit-btn">Remove</button></li>`);
+                }
+                input.val('');
+            });
+
+            // Edit Benefit
+            $(document).on('click', '.edit-benefit-btn', function() {
+                const $li = $(this).closest('li');
+                editingBenefitIndex = $li.index();
+                const currentText = $li.text().replace('EditRemove', '').trim();
+                $('#editBenefitInput').val(currentText);
+            });
+
+            // Remove Benefit
+            $(document).on('click', '.remove-benefit-btn', function() {
+                $(this).closest('li').remove();
+            });
+
+            // Form Submission for Edit Job
             editForm.on('submit', function(e) {
                 e.preventDefault();
-                if (this.checkValidity() && $('#editDescription').val().length >= 100) {
-                    const jobId = $('#editJobId').val();
-                    const $card = $(`.job-card[data-job-id="${jobId}"]`);
-                    $card.find('.job-title').text($('#editJobRole').val());
-                    $card.data('job-type', $('#editJobType').val());
-                    $card.find('.job-info').eq(1).text($('#editJobType').val());
-                    $card.data('job-category', $('#editJobCategory').val());
-                    $card.attr('data-skills', JSON.stringify($('#editSkills').val() || []));
-                    $card.attr('data-locations', JSON.stringify($('#editLocations').val() || []));
-                    $card.find('.job-info').eq(0).text($('#editLocations').val().join(', '));
-                    $card.find('.job-info:contains("Expires")').text(`Expires: ${$('#editDeadline').val()}`);
-                    
-                    successToast.show();
-                    $('#editModal').modal('hide');
-                    setTimeout(() => {
-                        editForm.trigger('reset');
-                        editForm.removeClass('was-validated');
-                        $('#editSkills, #editLocations').val(null).trigger('change');
-                        $('#editCharCount').text('0');
-                    }, 2000);
-                } else {
-                    editForm.addClass('was-validated');
-                    if ($('#editDescription').val().length < 100) {
-                        $('#editDescription').siblings('.invalid-feedback').text('Description must be at least 100 characters');
-                    }
+
+                // Run all validations
+                const validations = [
+                    validateJobRole(),
+                    validateJobType(),
+                    validateJobCategory(),
+                    validateDescription(),
+                    validateSkills(),
+                    validateRequirements(),
+                    validateWorkType(),
+                    validateLocations(),
+                    validateOpenings(),
+                    validateDeadline(),
+                    validateApplicationProcess(),
+                    validateApplicationEmail()
+                ];
+
+                const jobType = $('#editJobType').val();
+                if (jobType === 'Full-time') {
+                    validations.push(validateExperienceYears());
+                    validations.push(validateSalaryRange('#editSalaryMinFT', '#editSalaryMaxFT'));
+                } else if (jobType === 'Part-time') {
+                    validations.push(validateSalaryRange('#editSalaryMinPT', '#editSalaryMaxPT'));
+                } else if (jobType === 'Internship') {
+                    validations.push(validateDuration());
+                    validations.push(validateStipend());
                 }
+
+                if (!validations.every(Boolean)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please correct the errors in the form before submitting.',
+                    });
+                    return;
+                }
+
+                // Update job card data
+                const jobId = $('#editJobId').val();
+                const $card = $(`.job-card[data-job-id="${jobId}"]`);
+                $card.find('.job-title').text($('#editJobRole').val());
+                $card.data('job-type', $('#editJobType').val());
+                $card.find('.job-info:eq(1)').text(`<i class="fas fa-briefcase"></i> ${$('#editJobType').val()}`);
+                $card.data('job-category', $('#editJobCategory').val());
+                $card.data('description', $('#editDescription').val());
+                $card.attr('data-skills', JSON.stringify($('#editSkills').val() || []));
+                const requirements = $('#editRequirementsList li').map((_, el) => $(el).text().replace('EditRemove', '').trim()).get();
+                $card.attr('data-requirements', JSON.stringify(requirements));
+                const benefits = $('#editBenefitsList li').map((_, el) => $(el).text().replace('EditRemove', '').trim()).get();
+                $card.attr('data-benefits', JSON.stringify(benefits));
+                $card.data('work-type', $('#editWorkType').val());
+                const locations = $('#editLocations').val() || [];
+                $card.attr('data-locations', JSON.stringify(locations));
+                $card.find('.job-info:eq(0)').html(`<i class="fas fa-map-marker-alt"></i> ${locations.join(', ')}`);
+                if (jobType === 'Full-time') {
+                    $card.data('experience-years', $('#editExperienceYears').val());
+                    $card.data('salary-min', $('#editSalaryMinFT').val());
+                    $card.data('salary-max', $('#editSalaryMaxFT').val());
+                } else if (jobType === 'Part-time') {
+                    $card.data('salary-min', $('#editSalaryMinPT').val());
+                    $card.data('salary-max', $('#editSalaryMaxPT').val());
+                } else if (jobType === 'Internship') {
+                    $card.data('duration', $('#editDuration').val());
+                    $card.data('stipend', $('#editStipend').val());
+                }
+                $card.data('openings', $('#editOpenings').val());
+                $card.data('deadline', $('#editDeadline').val());
+                $card.find('.job-info:eq(3)').html(`<i class="fas fa-calendar-alt"></i> Expires: ${new Date($('#editDeadline').val()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`);
+                if ($('#editApplicationProcess').val() === 'Apply via Email') {
+                    $card.data('application-email', $('#editApplicationEmail').val());
+                } else {
+                    $card.removeData('application-email');
+                }
+
+                $('#editModal').modal('hide');
+                successToast.show();
+                filterJobs();
             });
 
-            // Delete job modal
+            // Delete Job Modal
             $(document).on('click', '.delete-job-btn', function() {
                 const jobId = $(this).data('job-id');
                 const $card = $(this).closest('.job-card');
                 $('#deleteJobId').val(jobId);
                 $('#deleteJobTitle').text($card.find('.job-title').text());
-                $('#deleteModal').modal('show');
             });
 
             $('#deleteReason').on('change', function() {
@@ -854,22 +1334,36 @@
                 $('#deleteOtherReason').prop('required', showOther);
             });
 
-            $('#confirmDelete').click(function() {
-                if ($('#deleteJobForm')[0].checkValidity()) {
-                    const jobId = $('#deleteJobId').val();
-                    const $card = $(`.job-card[data-job-id="${jobId}"]`);
-                    $card.fadeOut(300, function() {
-                        $card.remove();
-                        filterJobs();
-                        $('#deleteModal').modal('hide');
+            $('#confirmDelete').on('click', function() {
+                const jobId = $('#deleteJobId').val();
+                const reason = $('#deleteReason').val();
+                const otherReason = $('#deleteOtherReason').val().trim();
+
+                if (!reason || (reason === 'Other' && !otherReason)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please provide a reason for deletion.',
                     });
-                    alert('Job deleted successfully!');
-                } else {
-                    $('#deleteJobForm').addClass('was-validated');
+                    return;
                 }
+
+                $(`.job-card[data-job-id="${jobId}"]`).fadeOut(300, function() {
+                    $(this).remove();
+                    filterJobs();
+                    $('#deleteModal').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Job Deleted',
+                        text: 'The job has been successfully deleted.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                });
             });
 
-            // Initial filter
+            // Initialize
+            checkExpiredJobs();
             filterJobs();
         });
     </script>

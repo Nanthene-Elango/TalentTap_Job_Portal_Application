@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap - Employer Registration</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" th:href=@{/employer/css/register.css}>
+</head>
+
+<body>
+    <div class="registration-container">
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div style="display: flex; justify-content: center; margin: 40px;">
+            <img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="Logo" style="height: 60px;">
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+
+        <form id="registrationForm" novalidate>
+            <!-- Step 1: Basic Details -->
+            <div class="form-step active" id="basicDetailsStep">
+                <h2>Basic Details</h2>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
+                    <div class="error-message" id="fullNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Choose a username">
+                    <div class="error-message" id="usernameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn next-btn progress-btn" data-step="1">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Phone Verification -->
+            <div class="form-step" id="phoneVerificationStep">
+                <h2>Phone Verification</h2>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your phone number">
+                    <div class="error-message" id="phoneNumberError"></div>
+                </div>
+                <p id="phoneOtpMessage" style="display: none;">
+                    Code sent to: <span id="displayPhone"></span>
+                </p>
+                <div class="otp-container" id="phoneOtpContainer" style="display: none;">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp1" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp2" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp3" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp4" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp5" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp6" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="error-message" id="otpPhoneError"></div>
+                <div class="resend-container" id="phoneResendContainer" style="display: none;">
+                    <button type="button" class="resend-btn" id="phoneResendBtn" disabled>Resend OTP</button>
+                    <span id="phoneTimer"></span>
+                </div>
+                <div class="verification-status" id="phoneStatus"></div>
+                <button type="button" class="change-number-btn" id="changePhoneBtn" style="display: none;">Change Number</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary prev-btn" data-step="2">Previous</button>
+                    <button type="button" class="btn progress-btn" id="phoneVerifyBtn" style="display: block;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Get OTP</span>
+                    </button>
+                    <button type="button" class="btn next-btn progress-btn" id="phoneNextBtn" data-step="2" style="display: none;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Email Verification -->
+            <div class="form-step" id="emailVerificationStep">
+                <h2>Email Verification</h2>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                <p id="emailOtpMessage" style="display: none;">
+                    Code sent to: <span id="displayEmail"></span>
+                </p>
+                <div class="otp-container" id="emailOtpContainer" style="display: none;">
+                    <input type="text" maxlength="1" class="otp-input" id="otp1" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp2" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp3" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp4" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp5" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" maxlength="1" class="otp-input" id="otp6" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="error-message" id="otpEmailError"></div>
+                <div class="resend-container" id="emailResendContainer" style="display: none;">
+                    <button type="button" class="resend-btn" id="emailResendBtn" disabled>Resend OTP</button>
+                    <span id="emailTimer"></span>
+                </div>
+                <div class="verification-status" id="emailStatus"></div>
+                <button type="button" class="change-email-btn" id="changeEmailBtn" style="display: none;">Change Email</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary prev-btn" data-step="3">Previous</button>
+                    <button type="button" class="btn progress-btn" id="emailVerifyBtn" style="display: block;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Get OTP</span>
+                    </button>
+                    <button type="button" class="btn next-btn progress-btn" id="emailNextBtn" data-step="3" style="display: none;">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Company Details -->
+            <div class="form-step" id="companyDetailsStep">
+                <h2>Company Details</h2>
+                <div class="form-group">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
+                    <div class="error-message" id="companyNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyLogo">Company Logo</label>
+                    <input type="file" class="form-control" id="companyLogo" accept="image/*">
+                    <div class="error-message" id="companyLogoError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyIndustry">Industry Type</label>
+                    <select class="form-control" id="companyIndustry">
+                        <option value="" disabled selected>Select industry</option>
+                        <option value="technology">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="education">Education</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="retail">Retail</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="companyIndustryError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyEmail">Company Email</label>
+                    <input type="email" class="form-control" id="companyEmail" placeholder="Enter company email">
+                    <div class="error-message" id="companyEmailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyPhone">Company Phone</label>
+                    <input type="tel" class="form-control" id="companyPhone" placeholder="Enter company phone">
+                    <div class="error-message" id="companyPhoneError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companySize">Company Size</label>
+                    <input type="text" class="form-control" id="companySize" placeholder="e.g., 0-100 employees">
+                    <div class="error-message" id="companySizeError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <select class="form-control" id="location">
+                        <option value="" disabled selected>Select location</option>
+                        <option value="usa">USA</option>
+                        <option value="uk">UK</option>
+                        <option value="india">India</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="locationError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="websiteUrl">Website URL</label>
+                    <input type="url" class="form-control" id="websiteUrl" placeholder="Enter website URL">
+                    <div class="error-message" id="websiteUrlError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="foundedAt">Founded At</label>
+                    <input type="number" class="form-control" id="foundedAt" placeholder="Enter founding year" min="1800" max="2025">
+                    <div class="error-message" id="foundedAtError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="companyAbout">About the Company</label>
+                    <textarea class="form-control" id="companyAbout" placeholder="Describe your company"></textarea>
+                    <div class="error-message" id="companyAboutError"></div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary prev-btn" data-step="4">Previous</button>
+                    <button type="button" class="btn next-btn progress-btn" data-step="4">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Confirmation -->
+            <div class="form-step" id="confirmationStep">
+                <h2>Review Details</h2>
+                <div id="summaryDetails"></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary prev-btn" data-step="5">Previous</button>
+                    <button type="submit" class="btn progress-btn" id="submitBtn">
+                        <div class="progress-fill"></div>
+                        <span class="btn-text">Submit</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script th:src=@{/employer/js/register.js}></script>
+</body>
+</html>

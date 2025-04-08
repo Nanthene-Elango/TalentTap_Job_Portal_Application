@@ -1,0 +1,35 @@
+ * { font-family: 'Poppins', sans-serif; font-size: 0.92rem; }
+        .container { max-width: 1200px; margin: 2rem auto; }
+        .applicant-card { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 1.5rem; transition: all 0.3s ease; }
+        .applicant-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .applicant-header { padding: 1rem; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+        .applicant-info { display: flex; align-items: center; }
+        .applicant-avatar { width: 40px; height: 40px; background: #5e17eb; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
+        .applicant-name { font-size: 1rem; font-weight: 600; margin: 0; }
+        .applicant-job { color: #666; font-size: 0.85rem; margin: 0; }
+        .applicant-body { padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .details-group { display: flex; gap: 2rem; }
+        .detail-item { display: flex; align-items: center; gap: 0.5rem; }
+        .detail-item i { color: #5e17eb; width: 16px; }
+        .action-buttons { display: flex; gap: 0.75rem; }
+        .btn-draft { padding: 0.4rem 1.2rem; border-radius: 20px; font-weight: 500; transition: all 0.3s ease; border: none; }
+        .btn-view { background: #e3f2fd; color: #1976d2; }
+        .btn-view:hover { background: #bbdefb; transform: translateY(-1px); }
+        .btn-resume { background: #f8f5ff; color: #5e17eb; }
+        .btn-resume:hover { background: #e8e1ff; transform: translateY(-1px); }
+        .btn-approve { background: #e8f5e9; color: #2e7d32; }
+        .btn-approve:hover { background: #c8e6c9; transform: translateY(-1px); }
+        .btn-pending { background: #fff8e1; color: #ffa000; }
+        .btn-pending:hover { background: #ffecb3; transform: translateY(-1px); }
+        .btn-reject { background: #ffebee; color: #c62828; }
+        .btn-reject:hover { background: #ffcdd2; transform: translateY(-1px); }
+        .btn-email { background: #fff3e0; color: #f57c00; }
+        .btn-email:hover { background: #ffe0b2; transform: translateY(-1px); }
+        .last-updated { font-size: 0.8rem; color: #666; margin-top: 0.5rem; }
+        .status-badge { padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; }
+        .status-approved { background: #e8f5e9; color: #2e7d32; }
+        .status-pending { background: #fff8e1; color: #ffa000; }
+        .status-rejected { background: #ffebee; color: #c62828; }
+        .history-tooltip { position: relative; }
+        .history-tooltip .tooltip-text { visibility: hidden; width: 200px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -100px; opacity: 0; transition: opacity 0.3s; }
+        .history-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }

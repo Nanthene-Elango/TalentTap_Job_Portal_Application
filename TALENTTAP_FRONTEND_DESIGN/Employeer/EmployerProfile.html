@@ -6,13 +6,14 @@
     <title>Settings Panel | TalentTap</title>
     <link rel="icon" type="image/x-icon" href="../img/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSB7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         * {
             font-size: 0.92rem;
@@ -300,7 +301,9 @@
         .file-upload {
             position: relative;
             margin-top: 10px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .file-upload label {
             display: inline-block;
@@ -323,17 +326,26 @@
             display: none;
         }
         .verified-badge {
-            display: inline-block;
+            display: none;
             padding: 6px 12px;
-            background-color: #e8f5e9;
-            color: #2e7d32;
+            background-color: #28a745;
+            color: white;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 500;
-            margin-top: 10px;
-            display: none;
         }
         .verification-status { color: #666; margin-top: 10px; }
+        .company-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #5e17eb;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
         @media (max-width: 992px) {
             .main-content { flex-direction: column; }
             .sidebar {
@@ -347,61 +359,42 @@
             .profile-dropdown { justify-content: center; margin-top: 15px; }
         }
         .form-control.error {
-    border: 1px solid #e74c3c;
-    background: #fff1f1;
-}
-
-.error-message {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 5px;
-    display: none;
-    font-weight: 500;
-}
-
-.error-message.visible {
-    display: block;
-}
-/* Add these styles to your existing CSS */
-.verified-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-left: 10px;
-    vertical-align: middle;
-}
-
-.field-value {
-    display: flex;
-    align-items: center;
-}
-
-.field-value #emailVerified,
-.field-value #phoneVerified {
-    margin-left: 10px;
-}
-
-/* Improved validation styling */
-.form-control.error {
-    border: 1px solid #e74c3c;
-    background: #fff1f1;
-}
-
-.error-message {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 5px;
-    display: none;
-    font-weight: 500;
-}
-
-.error-message.visible {
-    display: block;
-}
+            border: 1px solid #e74c3c;
+            background: #fff1f1;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+        }
+        .error-message.visible { display: block; }
+        .field-value { display: flex; align-items: center; }
+        .field-value .verified-badge { margin-left: 10px; }
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        .password-requirements ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .password-requirements li {
+            display: flex;
+            align-items: center;
+        }
+        .password-requirements li.valid::before {
+            content: '\2713';
+            color: #28a745;
+            margin-right: 5px;
+        }
+        .password-requirements li.invalid::before {
+            content: '\2717';
+            color: #e74c3c;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -515,22 +508,22 @@
                         <div class="info-field">
                             <div class="field-label">Full Name</div>
                             <div class="field-value" id="fullName">John Doe</div>
-                            <input type="text" class="form-control edit-field" id="editFullName" style="display: none;" value="John Doe">
+                            <input type="text" class="form-control edit-field" id="fullNameInput" style="display: none;" value="John Doe">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Username</div>
                             <div class="field-value" id="username">johndoe123</div>
-                            <input type="text" class="form-control edit-field" id="editUsername" style="display: none;" value="johndoe123">
+                            <input type="text" class="form-control edit-field" id="usernameInput" style="display: none;" value="johndoe123">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Email</div>
-                            <div class="field-value" id="email">john.doe@example.com</div>
-                            <input type="email" class="form-control edit-field" id="editEmail" style="display: none;" value="john.doe@example.com">
+                            <div class="field-value" id="email">john.doe@example.com<span class="verified-badge" id="emailVerified" style="display: inline-block;">Verified</span></div>
+                            <input type="email" class="form-control edit-field" id="emailInput" style="display: none;" value="john.doe@example.com" readonly>
                         </div>
                         <div class="info-field">
                             <div class="field-label">Phone Number</div>
-                            <div class="field-value" id="phoneNumber">+1-555-123-4567</div>
-                            <input type="tel" class="form-control edit-field" id="editPhoneNumber" style="display: none;" value="+1-555-123-4567">
+                            <div class="field-value" id="phoneNumber">9876543210<span class="verified-badge" id="phoneVerified" style="display: inline-block;">Verified</span></div>
+                            <input type="tel" class="form-control edit-field" id="phoneNumberInput" style="display: none;" value="9876543210" readonly>
                         </div>
                         <button class="btn btn-primary" id="saveAccountBtn" style="display: none;">Save Changes</button>
                     </div>
@@ -539,40 +532,62 @@
                             <h3 class="content-title">Company Details</h3>
                             <button class="edit-button" id="editCompanyBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
                         </div>
+                        <div class="info-field text-center" id="companyLogoDisplay">
+                            <img src="./img/default-logo.png" alt="Company Logo" class="company-logo" id="companyLogoImg">
+                        </div>
+                        <div class="info-field" id="editCompanyLogoField" style="display: none;">
+                            <div class="file-upload">
+                                <label for="companyLogo">Change Logo</label>
+                                <input type="file" class="form-control edit-field" id="companyLogo" accept="image/*">
+                            </div>
+                        </div>
                         <div class="info-field">
                             <div class="field-label">Company Name</div>
                             <div class="field-value" id="companyName">Acme Inc.</div>
-                            <input type="text" class="form-control edit-field" id="editCompanyName" style="display: none;" value="Acme Inc.">
+                            <input type="text" class="form-control edit-field" id="companyNameInput" style="display: none;" value="Acme Inc.">
                         </div>
                         <div class="info-field">
-                            <div class="field-label">Industry</div>
+                            <div class="field-label">Industry Type</div>
                             <div class="field-value" id="companyIndustry">Technology</div>
-                            <input type="text" class="form-control edit-field" id="editCompanyIndustry" style="display: none;" value="Technology">
+                            <select class="form-control edit-field" id="companyIndustryInput" style="display: none;">
+                                <option value="technology" selected>Technology</option>
+                                <option value="finance">Finance</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="education">Education</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="retail">Retail</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Email</div>
+                            <div class="field-value" id="companyEmail">contact@acme.com</div>
+                            <input type="email" class="form-control edit-field" id="companyEmailInput" style="display: none;" value="contact@acme.com">
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Company Phone</div>
+                            <div class="field-value" id="companyPhone">9876543210</div>
+                            <input type="tel" class="form-control edit-field" id="companyPhoneInput" style="display: none;" value="9876543210">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Designation</div>
                             <div class="field-value" id="designation">HR Manager</div>
-                            <input type="text" class="form-control edit-field" id="editDesignation" style="display: none;" value="HR Manager">
+                            <input type="text" class="form-control edit-field" id="designationInput" style="display: none;" value="HR Manager">
                         </div>
                         <div class="info-field">
                             <div class="field-label">About the Company</div>
                             <div class="field-value" id="companyAbout">A leading tech solutions provider.</div>
-                            <textarea class="form-control edit-field" id="editCompanyAbout" style="display: none;">A leading tech solutions provider.</textarea>
+                            <textarea class="form-control edit-field" id="companyAboutInput" style="display: none;">A leading tech solutions provider.</textarea>
                         </div>
                         <div class="info-field">
                             <div class="field-label">Company Size</div>
-                            <div class="field-value" id="companySize">51-200 employees</div>
-                            <select class="form-control edit-field" id="editCompanySize" style="display: none;">
-                                <option value="1-10">1-10 employees</option>
-                                <option value="11-50">11-50 employees</option>
-                                <option value="51-200" selected>51-200 employees</option>
-                                <option value="201+">201+ employees</option>
-                            </select>
+                            <div class="field-value" id="companySize">51-200</div>
+                            <input type="text" class="form-control edit-field" id="companySizeInput" style="display: none;" value="51-200">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Location</div>
                             <div class="field-value" id="location">USA</div>
-                            <select class="form-control edit-field" id="editLocation" style="display: none;">
+                            <select class="form-control edit-field" id="locationInput" style="display: none;">
                                 <option value="usa" selected>USA</option>
                                 <option value="uk">UK</option>
                                 <option value="india">India</option>
@@ -595,14 +610,26 @@
                             <div class="form-group">
                                 <label for="currentPassword" class="form-label">Current Password</label>
                                 <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password">
+                                <div class="error-message"></div>
                             </div>
                             <div class="form-group">
                                 <label for="newPassword" class="form-label">New Password</label>
                                 <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+                                <div class="error-message"></div>
+                                <div class="password-requirements">
+                                    <ul>
+                                        <li id="length">At least 8 characters</li>
+                                        <li id="uppercase">At least one uppercase letter</li>
+                                        <li id="lowercase">At least one lowercase letter</li>
+                                        <li id="number">At least one number</li>
+                                        <li id="special">At least one special character</li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="confirmPassword" class="form-label">Confirm New Password</label>
                                 <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+                                <div class="error-message"></div>
                             </div>
                             <button class="btn btn-primary" id="savePasswordBtn">Save Password</button>
                         </div>
@@ -619,25 +646,28 @@
                             <div class="file-upload">
                                 <label for="govId">Upload ID</label>
                                 <input type="file" id="govId" accept="image/*,application/pdf">
-                                <img id="govIdPreview" class="file-preview" alt="Government ID Preview">
                                 <span id="govIdVerified" class="verified-badge">Verified</span>
                             </div>
+                            <img id="govIdPreview" class="file-preview" alt="Government ID Preview">
+                            <div class="error-message"></div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Company ID Card (or use Company Email below)</label>
                             <div class="file-upload">
                                 <label for="companyId">Upload ID</label>
                                 <input type="file" id="companyId" accept="image/*,application/pdf">
-                                <img id="companyIdPreview" class="file-preview" alt="Company ID Preview">
                                 <span id="companyIdVerified" class="verified-badge">Verified</span>
                             </div>
+                            <img id="companyIdPreview" class="file-preview" alt="Company ID Preview">
+                            <div class="error-message"></div>
                         </div>
                         <div class="form-group">
-                            <label for="companyEmail" class="form-label">Company Email (or use Company ID above)</label>
-                            <input type="email" id="companyEmail" class="form-control" placeholder="Enter company email">
+                            <label for="companyEmailVerification" class="form-label">Company Email (or use Company ID above)</label>
+                            <input type="email" id="companyEmailVerification" class="form-control" placeholder="Enter company email">
+                            <div class="error-message"></div>
                         </div>
                         <button class="btn btn-primary" id="submitVerificationBtn">Submit for Verification</button>
-                        <p class="verification-status" id="verificationStatus">Status: Pending</p>
+                        <p class="verification-status" id="verificationStatus">Status: Not Submitted</p>
                     </div>
                 </div>
             </div>
@@ -655,6 +685,7 @@
                 <div class="form-group">
                     <label for="confirmPasswordInput" class="form-label">Password</label>
                     <input type="password" id="confirmPasswordInput" class="form-control" placeholder="Enter your password">
+                    <div class="error-message"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -665,350 +696,452 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-       document.addEventListener('DOMContentLoaded', () => {
-    // Existing sidebar navigation code remains unchanged
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    const contentSections = document.querySelectorAll('.content-section');
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            sidebarLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            const section = this.getAttribute('data-section');
-            contentSections.forEach(s => s.style.display = 'none');
-            document.getElementById(section).style.display = 'block';
-        });
-    });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar navigation
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    const section = this.getAttribute('data-section');
+                    contentSections.forEach(s => s.style.display = 'none');
+                    document.getElementById(section).style.display = 'block';
+                });
+            });
 
-    // Validation regex patterns
-    const nameRegex = /^[A-Za-z\s]{2,}$/;
-    const usernameRegex = /^[A-Za-z0-9]{3,}$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // Updated phone regex for 10 digit numbers starting with 7, 8, or 9 only
-    const phoneRegex = /^[7-9]\d{9}$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&*])[A-Za-z\d@#$%^&*]{8,}$/;
-    const companyNameRegex = /^[A-Za-z0-9\s\-.&]{2,}$/;
-    const industryRegex = /^[A-Za-z\s]{2,}$/;
-    const designationRegex = /^[A-Za-z\s]{2,}$/;
+            // Validation regex patterns
+            const nameRegex = /^[A-Za-z\s]+$/;
+            const usernameRegex = /^[A-Za-z0-9]+$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^[7-9]\d{9}$/;
+            const companyNameRegex = /^[A-Za-z0-9\s\-.&]+$/;
+            const industryRegex = /^[A-Za-z\s]+$/;
+            const designationRegex = /^[A-Za-z\s]+$/;
+            const companySizeRegex = /^\d+-\d+$/;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-    // Function to set field state (similar to login form)
-    function setFieldState(field, isValid, errorMessage) {
-        let errorElement = field.nextElementSibling;
-        if (!errorElement || !errorElement.classList.contains('error-message')) {
-            errorElement = document.createElement('div');
-            errorElement.className = 'error-message';
-            field.parentNode.insertBefore(errorElement, field.nextSibling);
-        }
-        
-        if (isValid) {
-            field.classList.remove('error');
-            errorElement.textContent = '';
-            errorElement.classList.remove('visible');
-        } else {
-            field.classList.add('error');
-            errorElement.textContent = errorMessage;
-            errorElement.classList.add('visible');
-        }
-        return isValid;
-    }
-
-    // Validation functions
-    function validateField(field) {
-        const value = field.value.trim();
-        switch(field.id) {
-            case 'editFullName':
-                return setFieldState(field, nameRegex.test(value), 'Full name must be at least 2 characters (letters only)');
-            case 'editUsername':
-                return setFieldState(field, usernameRegex.test(value), 'Username must be at least 3 characters (letters and numbers only)');
-            case 'editEmail':
-                return setFieldState(field, emailRegex.test(value), 'Please enter a valid email address');
-            case 'editPhoneNumber':
-                return setFieldState(field, phoneRegex.test(value), 'Phone number must be 10 digits and start with 7, 8, or 9');
-            case 'editCompanyName':
-                return setFieldState(field, companyNameRegex.test(value), 'Company name must be at least 2 characters');
-            case 'editCompanyIndustry':
-                return setFieldState(field, industryRegex.test(value), 'Industry must be at least 2 characters (letters only)');
-            case 'editDesignation':
-                return setFieldState(field, designationRegex.test(value), 'Designation must be at least 2 characters (letters only)');
-            case 'editCompanyAbout':
-                return setFieldState(field, value.length >= 10, 'Company description must be at least 10 characters');
-            case 'currentPassword':
-            case 'newPassword':
-            case 'confirmPassword':
-                return setFieldState(field, passwordRegex.test(value), 'Must be 8+ characters with uppercase, lowercase, number, and special character');
-            case 'companyEmail':
-                return setFieldState(field, emailRegex.test(value) || !value, 'Please enter a valid email address');
-            default:
-                return true;
-        }
-    }
-
-    // Add real-time validation to all inputs
-    const inputs = document.querySelectorAll('.edit-field, #currentPassword, #newPassword, #confirmPassword, #companyEmail');
-    inputs.forEach(input => {
-        input.addEventListener('input', () => validateField(input));
-    });
-    
-    // Phone number input - restrict to numbers only and enforce 10 digit limit
-    const phoneInput = document.getElementById('editPhoneNumber');
-    if (phoneInput) {
-        phoneInput.addEventListener('keypress', function(e) {
-            // Allow only numbers
-            if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
+            // Function to set field state
+            function setFieldState(field, isValid, errorMessage) {
+                let errorElement = field.nextElementSibling;
+                if (!errorElement || !errorElement.classList.contains('error-message')) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'error-message';
+                    field.parentNode.insertBefore(errorElement, field.nextSibling);
+                }
+                
+                if (isValid) {
+                    field.classList.remove('error');
+                    errorElement.textContent = '';
+                    errorElement.classList.remove('visible');
+                } else {
+                    field.classList.add('error');
+                    errorElement.textContent = errorMessage;
+                    errorElement.classList.add('visible');
+                }
+                return isValid;
             }
-            
-            // Limit to 10 digits
-            if (this.value.length >= 10 && e.key !== 'Backspace' && e.key !== 'Delete') {
-                e.preventDefault();
+
+            // Validation function
+            function validateField(field) {
+                const value = field.value.trim();
+                switch(field.id) {
+                    case 'fullNameInput':
+                        return setFieldState(field, nameRegex.test(value) && value.length >= 2, 'Full name must be at least 2 characters (letters only)');
+                    case 'usernameInput':
+                        return setFieldState(field, usernameRegex.test(value) && value.length >= 3, 'Username must be at least 3 characters (letters and numbers only)');
+                    case 'emailInput':
+                    case 'companyEmailInput':
+                    case 'companyEmailVerification':
+                        return setFieldState(field, emailRegex.test(value), 'Please enter a valid email address');
+                    case 'phoneNumberInput':
+                    case 'companyPhoneInput':
+                        return setFieldState(field, phoneRegex.test(value), 'Phone number must be 10 digits starting with 7, 8, or 9');
+                    case 'companyNameInput':
+                        return setFieldState(field, companyNameRegex.test(value) && value.length >= 2, 'Company name must be at least 2 characters');
+                    case 'companyIndustryInput':
+                        return setFieldState(field, value !== '', 'Please select an industry');
+                    case 'designationInput':
+                        return setFieldState(field, designationRegex.test(value) && value.length >= 2, 'Designation must be at least 2 characters (letters only)');
+                    case 'companyAboutInput':
+                        return setFieldState(field, value.length >= 10, 'Company description must be at least 10 characters');
+                    case 'companySizeInput':
+                        if (!companySizeRegex.test(value)) {
+                            return setFieldState(field, false, 'Must be a range like 0-100');
+                        } else {
+                            const [min, max] = value.split('-').map(Number);
+                            return setFieldState(field, min >= 0 && max > min, 'Invalid range: min must be >= 0 and max must be greater than min');
+                        }
+                    case 'locationInput':
+                        return setFieldState(field, value !== '', 'Please select a location');
+                    case 'currentPassword':
+                        return setFieldState(field, value.length > 0, 'Current password cannot be empty');
+                    case 'newPassword':
+                        return setFieldState(field, passwordRegex.test(value), 'Password must meet all requirements');
+                    case 'confirmPassword':
+                        return setFieldState(field, value === document.getElementById('newPassword').value, 'Passwords do not match');
+                    case 'confirmPasswordInput':
+                        return setFieldState(field, value.length > 0, 'Password cannot be empty');
+                    case 'govId':
+                        return setFieldState(field, field.files.length > 0, 'Please upload a Government-Issued ID');
+                    case 'companyId':
+                        return setFieldState(field, field.files.length > 0 || document.getElementById('companyEmailVerification').value.trim(), 'Please provide either a Company ID or email');
+                    default:
+                        return true;
+                }
             }
-            
-            // Enforce first digit as 7, 8, or 9
-            if (this.value.length === 0 && !['7','8','9'].includes(e.key)) {
-                e.preventDefault();
-            }
-        });
-        
-        // Handle paste events to enforce phone number rules
-        phoneInput.addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pasteData = (e.clipboardData || window.clipboardData).getData('text');
-            const filteredData = pasteData.replace(/[^0-9]/g, '').substring(0, 10);
-            
-            if (filteredData.length === 10 && /^[7-9]/.test(filteredData)) {
-                this.value = filteredData;
-            }
-        });
-    }
 
-    // Add verification badges to display for email and phone
-    // Update the HTML structure to include verification badges
-    const emailContainer = document.querySelector('.info-field:has(#email)');
-    const phoneContainer = document.querySelector('.info-field:has(#phoneNumber)');
-    
-    if (emailContainer) {
-        const verifiedBadge = document.createElement('span');
-        verifiedBadge.className = 'verified-badge';
-        verifiedBadge.id = 'emailVerified';
-        verifiedBadge.textContent = 'Verified';
-        verifiedBadge.style.display = 'inline-block';
-        emailContainer.appendChild(verifiedBadge);
-    }
-    
-    if (phoneContainer) {
-        const verifiedBadge = document.createElement('span');
-        verifiedBadge.className = 'verified-badge';
-        verifiedBadge.id = 'phoneVerified';
-        verifiedBadge.textContent = 'Verified';
-        verifiedBadge.style.display = 'inline-block';
-        phoneContainer.appendChild(verifiedBadge);
-    }
+            // Real-time validation
+            const inputs = document.querySelectorAll('.edit-field, #currentPassword, #newPassword, #confirmPassword, #confirmPasswordInput, #companyEmailVerification');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+            });
 
-    // Edit functionality
-    let isEditingAccount = false;
-    let isEditingCompany = false;
+            // Password requirements real-time validation
+            const newPasswordInput = document.getElementById('newPassword');
+            newPasswordInput.addEventListener('input', () => {
+                const value = newPasswordInput.value;
+                document.getElementById('length').className = value.length >= 8 ? 'valid' : 'invalid';
+                document.getElementById('uppercase').className = /[A-Z]/.test(value) ? 'valid' : 'invalid';
+                document.getElementById('lowercase').className = /[a-z]/.test(value) ? 'valid' : 'invalid';
+                document.getElementById('number').className = /\d/.test(value) ? 'valid' : 'invalid';
+                document.getElementById('special').className = /[!@#$%^&*]/.test(value) ? 'valid' : 'invalid';
+                validateField(newPasswordInput);
+            });
 
-    document.getElementById('editAccountBtn').addEventListener('click', () => {
-        document.getElementById('passwordOverlay').style.display = 'flex';
-        isEditingAccount = true;
-    });
+            // Phone number input restrictions
+            const phoneInputs = [document.getElementById('phoneNumberInput'), document.getElementById('companyPhoneInput')];
+            phoneInputs.forEach(phoneInput => {
+                if (phoneInput) {
+                    phoneInput.addEventListener('keypress', function(e) {
+                        if (!/[0-9]/.test(e.key)) e.preventDefault();
+                        if (this.value.length >= 10 && e.key !== 'Backspace' && e.key !== 'Delete') e.preventDefault();
+                        if (this.value.length === 0 && !['7','8','9'].includes(e.key)) e.preventDefault();
+                    });
+                    phoneInput.addEventListener('paste', function(e) {
+                        e.preventDefault();
+                        const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                        const filteredData = pasteData.replace(/[^0-9]/g, '').substring(0, 10);
+                        if (filteredData.length === 10 && /^[7-9]/.test(filteredData)) {
+                            this.value = filteredData;
+                        }
+                    });
+                }
+            });
 
-    document.getElementById('editCompanyBtn').addEventListener('click', () => {
-        document.getElementById('passwordOverlay').style.display = 'flex';
-        isEditingCompany = true;
-    });
+            // Edit functionality with password confirmation
+            let isEditingAccount = false;
+            let isEditingCompany = false;
 
-    document.getElementById('cancelBtn').addEventListener('click', () => {
-        document.getElementById('passwordOverlay').style.display = 'none';
-        isEditingAccount = false;
-        isEditingCompany = false;
-    });
+            document.getElementById('editAccountBtn').addEventListener('click', () => {
+                document.getElementById('passwordOverlay').style.display = 'flex';
+                isEditingAccount = true;
+            });
 
-    document.getElementById('confirmBtn').addEventListener('click', () => {
-        const password = document.getElementById('confirmPasswordInput').value;
-        if (password) {
-            if (password === "password123") { // Simulated correct password
+            document.getElementById('editCompanyBtn').addEventListener('click', () => {
+                document.getElementById('passwordOverlay').style.display = 'flex';
+                isEditingCompany = true;
+            });
+
+            document.getElementById('cancelBtn').addEventListener('click', () => {
                 document.getElementById('passwordOverlay').style.display = 'none';
                 document.getElementById('confirmPasswordInput').value = '';
+                isEditingAccount = false;
+                isEditingCompany = false;
+            });
 
-                if (isEditingAccount) {
-                    const accountCard = document.querySelector('#my-info .content-card:first-of-type');
-                    const fieldValues = accountCard.querySelectorAll('.field-value');
-                    const editFields = accountCard.querySelectorAll('.edit-field');
-                    fieldValues.forEach(el => el.style.display = 'none');
-                    editFields.forEach(el => el.style.display = 'block');
-                    document.getElementById('saveAccountBtn').style.display = 'block';
-                    document.getElementById('editAccountBtn').style.display = 'none';
-                    
-                    // Hide verification badges during edit
-                    if (document.getElementById('emailVerified')) 
-                        document.getElementById('emailVerified').style.display = 'none';
-                    if (document.getElementById('phoneVerified'))
-                        document.getElementById('phoneVerified').style.display = 'none';
-                } else if (isEditingCompany) {
-                    const companyCard = document.querySelector('#my-info .content-card:last-of-type');
-                    const fieldValues = companyCard.querySelectorAll('.field-value');
-                    const editFields = companyCard.querySelectorAll('.edit-field');
-                    fieldValues.forEach(el => el.style.display = 'none');
-                    editFields.forEach(el => el.style.display = 'block');
-                    document.getElementById('saveCompanyBtn').style.display = 'block';
-                    document.getElementById('editCompanyBtn').style.display = 'none';
+            document.getElementById('confirmBtn').addEventListener('click', () => {
+                const password = document.getElementById('confirmPasswordInput');
+                if (!validateField(password)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Password Required',
+                        text: 'Please enter your password to proceed.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                    return;
                 }
-            } else {
-                alert('Incorrect password.');
-            }
-        } else {
-            alert('Please enter your password.');
-        }
-    });
 
-    document.getElementById('saveAccountBtn').addEventListener('click', () => {
-        const accountCard = document.querySelector('#my-info .content-card:first-of-type');
-        const editFields = accountCard.querySelectorAll('.edit-field');
-        let allValid = true;
-        
-        editFields.forEach(field => {
-            if (!validateField(field)) allValid = false;
-        });
+                if (password.value === "password123") { // Simulated correct password
+                    document.getElementById('passwordOverlay').style.display = 'none';
+                    document.getElementById('confirmPasswordInput').value = '';
 
-        if (allValid) {
-            const fieldValues = accountCard.querySelectorAll('.field-value');
-            fieldValues.forEach((el, index) => {
-                el.textContent = editFields[index].value;
-                el.style.display = 'block';
+                    if (isEditingAccount) {
+                        const accountCard = document.querySelector('#my-info .content-card:first-of-type');
+                        const fieldValues = accountCard.querySelectorAll('.field-value');
+                        const editFields = accountCard.querySelectorAll('.edit-field');
+                        fieldValues.forEach(el => el.style.display = 'none');
+                        editFields.forEach(el => el.style.display = 'block');
+                        document.getElementById('saveAccountBtn').style.display = 'block';
+                        document.getElementById('editAccountBtn').style.display = 'none';
+                    } else if (isEditingCompany) {
+                        const companyCard = document.querySelector('#my-info .content-card:last-of-type');
+                        const fieldValues = companyCard.querySelectorAll('.field-value');
+                        const editFields = companyCard.querySelectorAll('.edit-field');
+                        fieldValues.forEach(el => el.style.display = 'none');
+                        editFields.forEach(el => el.style.display = 'block');
+                        document.getElementById('companyLogoDisplay').style.display = 'none';
+                        document.getElementById('editCompanyLogoField').style.display = 'block';
+                        document.getElementById('saveCompanyBtn').style.display = 'block';
+                        document.getElementById('editCompanyBtn').style.display = 'none';
+                    }
+                    isEditingAccount = false;
+                    isEditingCompany = false;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Incorrect Password',
+                        text: 'The password you entered is incorrect.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                }
             });
-            editFields.forEach(el => el.style.display = 'none');
-            document.getElementById('saveAccountBtn').style.display = 'none';
-            document.getElementById('editAccountBtn').style.display = 'block';
-            isEditingAccount = false;
-            
-            // Show verification badges again
-            if (document.getElementById('emailVerified')) 
-                document.getElementById('emailVerified').style.display = 'inline-block';
-            if (document.getElementById('phoneVerified'))
-                document.getElementById('phoneVerified').style.display = 'inline-block';
-                
-            alert('Account details saved.');
-        } else {
-            alert('Please correct the errors before saving.');
-        }
-    });
 
-    document.getElementById('saveCompanyBtn').addEventListener('click', () => {
-        const companyCard = document.querySelector('#my-info .content-card:last-of-type');
-        const editFields = companyCard.querySelectorAll('.edit-field');
-        let allValid = true;
-        
-        editFields.forEach(field => {
-            if (!validateField(field)) allValid = false;
-        });
+            // Save Account Details
+            document.getElementById('saveAccountBtn').addEventListener('click', () => {
+                const accountCard = document.querySelector('#my-info .content-card:first-of-type');
+                const editFields = accountCard.querySelectorAll('.edit-field');
+                let allValid = true;
 
-        if (allValid) {
-            const fieldValues = companyCard.querySelectorAll('.field-value');
-            fieldValues.forEach((el, index) => {
-                el.textContent = editFields[index].value;
-                el.style.display = 'block';
+                editFields.forEach(field => {
+                    if (field.id !== 'phoneNumberInput' && field.id !== 'emailInput') { // Skip validation for readonly fields
+                        if (!validateField(field)) allValid = false;
+                    }
+                });
+
+                if (allValid) {
+                    const fieldValues = accountCard.querySelectorAll('.field-value');
+                    fieldValues.forEach((el, index) => {
+                        if (el.id === 'phoneNumber') {
+                            el.innerHTML = `${editFields[index].value}<span class="verified-badge" id="phoneVerified">Verified</span>`;
+                        } else if (el.id === 'email') {
+                            el.innerHTML = `${editFields[index].value}<span class="verified-badge" id="emailVerified">Verified</span>`;
+                        } else {
+                            el.innerHTML = editFields[index].value;
+                        }
+                        el.style.display = 'block';
+                    });
+                    editFields.forEach(el => el.style.display = 'none');
+                    document.getElementById('saveAccountBtn').style.display = 'none';
+                    document.getElementById('editAccountBtn').style.display = 'block';
+                    document.getElementById('emailVerified').style.display = 'inline-block';
+                    document.getElementById('phoneVerified').style.display = 'inline-block';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved!',
+                        text: 'Account details updated successfully.',
+                        confirmButtonColor: '#5e17eb',
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please correct the errors in the form.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                }
             });
-            editFields.forEach(el => el.style.display = 'none');
-            document.getElementById('saveCompanyBtn').style.display = 'none';
-            document.getElementById('editCompanyBtn').style.display = 'block';
-            isEditingCompany = false;
-            alert('Company details saved.');
-        } else {
-            alert('Please correct the errors before saving.');
-        }
-    });
 
-    // Password & Security
-    document.getElementById('changePasswordBtn').addEventListener('click', () => {
-        document.getElementById('passwordStatus').style.display = 'none';
-        document.getElementById('changePasswordFields').style.display = 'block';
-        document.getElementById('changePasswordBtn').style.display = 'none';
-    });
+            // Save Company Details
+            document.getElementById('saveCompanyBtn').addEventListener('click', () => {
+                const companyCard = document.querySelector('#my-info .content-card:last-of-type');
+                const editFields = companyCard.querySelectorAll('.edit-field');
+                let allValid = true;
 
-    document.getElementById('savePasswordBtn').addEventListener('click', () => {
-        const current = document.getElementById('currentPassword');
-        const newPass = document.getElementById('newPassword');
-        const confirmPass = document.getElementById('confirmPassword');
-        
-        const isCurrentValid = validateField(current);
-        const isNewValid = validateField(newPass);
-        const isConfirmValid = validateField(confirmPass);
+                editFields.forEach(field => {
+                    if (!validateField(field)) allValid = false;
+                });
 
-        if (isCurrentValid && isNewValid && isConfirmValid) {
-            if (current.value !== "password123") {
-                setFieldState(current, false, 'Current password is incorrect');
-            } else if (newPass.value !== confirmPass.value) {
-                setFieldState(confirmPass, false, 'Passwords do not match');
-            } else {
-                alert('Password changed successfully.');
-                current.value = '';
-                newPass.value = '';
-                confirmPass.value = '';
-                document.getElementById('passwordStatus').style.display = 'block';
-                document.getElementById('changePasswordFields').style.display = 'none';
-                document.getElementById('changePasswordBtn').style.display = 'block';
-            }
-        }
-    });
+                if (allValid) {
+                    const fieldValues = companyCard.querySelectorAll('.field-value');
+                    fieldValues.forEach((el) => {
+                        const inputField = document.getElementById(`${el.id}Input`);
+                        if (inputField) {
+                            if (el.id === 'companyIndustry' || el.id === 'location') {
+                                el.textContent = inputField.options[inputField.selectedIndex].text;
+                            } else {
+                                el.textContent = inputField.value;
+                            }
+                        }
+                        el.style.display = 'block';
+                    });
 
-    // Identity Verification
-    document.getElementById('submitVerificationBtn').addEventListener('click', () => {
-        const govId = document.getElementById('govId').files[0];
-        const companyId = document.getElementById('companyId').files[0];
-        const companyEmail = document.getElementById('companyEmail');
-        
-        const isEmailValid = validateField(companyEmail);
+                    const fileInput = document.getElementById('companyLogo');
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const companyLogoImg = document.getElementById('companyLogoImg');
+                        companyLogoImg.src = URL.createObjectURL(file);
+                    }
 
-        if (!govId) {
-            alert('Please upload a Government-Issued ID.');
-        } else if (!companyId && !companyEmail.value) {
-            alert('Please provide either a Company ID or a Company Email.');
-        } else if (!isEmailValid && companyEmail.value) {
-            alert('Please correct the company email format.');
-        } else {
-            document.getElementById('verificationStatus').textContent = 'Status: Submitted for Verification';
-            setTimeout(() => {
-                document.getElementById('govIdVerified').style.display = 'inline-block';
-                if (companyId) document.getElementById('companyIdVerified').style.display = 'inline-block';
-                document.getElementById('verificationStatus').textContent = 'Status: Verified';
-                document.getElementById('verificationStatus').style.color = '#2e7d32';
-            }, 2000);
-            alert('Verification documents submitted successfully.');
-        }
-    });
+                    editFields.forEach(el => el.style.display = 'none');
+                    document.getElementById('companyLogoDisplay').style.display = 'block';
+                    document.getElementById('editCompanyLogoField').style.display = 'none';
+                    document.getElementById('saveCompanyBtn').style.display = 'none';
+                    document.getElementById('editCompanyBtn').style.display = 'block';
 
-    // Existing file preview code remains unchanged
-    document.getElementById('govId').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const preview = document.getElementById('govIdPreview');
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = 'block';
-        }
-    });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved!',
+                        text: 'Company details updated successfully.',
+                        confirmButtonColor: '#5e17eb',
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please correct the errors in the form.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                }
+            });
 
-    document.getElementById('companyId').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const preview = document.getElementById('companyIdPreview');
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = 'block';
-        }
-    });
-    
-    // Update the initial phone number display to match our required format
-    const phoneNumberDisplay = document.getElementById('phoneNumber');
-    if (phoneNumberDisplay) {
-        phoneNumberDisplay.textContent = '9876543210'; // Sample 10-digit number starting with 9
-    }
-    
-    const phoneNumberInput = document.getElementById('editPhoneNumber');
-    if (phoneNumberInput) {
-        phoneNumberInput.value = '9876543210'; // Sample 10-digit number starting with 9
-    }
-});
-        </script>
+            // Company logo preview
+            document.getElementById('companyLogo').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const companyLogoImg = document.getElementById('companyLogoImg');
+                    companyLogoImg.src = URL.createObjectURL(file);
+                }
+            });
+
+            // Password & Security
+            document.getElementById('changePasswordBtn').addEventListener('click', () => {
+                document.getElementById('passwordStatus').style.display = 'none';
+                document.getElementById('changePasswordFields').style.display = 'block';
+                document.getElementById('changePasswordBtn').style.display = 'none';
+            });
+
+            document.getElementById('savePasswordBtn').addEventListener('click', () => {
+                const current = document.getElementById('currentPassword');
+                const newPass = document.getElementById('newPassword');
+                const confirmPass = document.getElementById('confirmPassword');
+
+                const isCurrentValid = validateField(current);
+                const isNewValid = validateField(newPass);
+                const isConfirmValid = validateField(confirmPass);
+
+                if (isCurrentValid && isNewValid && isConfirmValid) {
+                    if (current.value !== "password123") {
+                        setFieldState(current, false, 'Current password is incorrect');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Incorrect Password',
+                            text: 'The current password you entered is incorrect.',
+                            confirmButtonColor: '#5e17eb'
+                        });
+                    } else if (newPass.value !== confirmPass.value) {
+                        setFieldState(confirmPass, false, 'Passwords do not match');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Mismatch',
+                            text: 'New password and confirmation do not match.',
+                            confirmButtonColor: '#5e17eb'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Password Updated!',
+                            text: 'Your password has been changed successfully.',
+                            confirmButtonColor: '#5e17eb',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                        current.value = '';
+                        newPass.value = '';
+                        confirmPass.value = '';
+                        document.getElementById('passwordStatus').style.display = 'block';
+                        document.getElementById('changePasswordFields').style.display = 'none';
+                        document.getElementById('changePasswordBtn').style.display = 'block';
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please correct the errors in the form.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                }
+            });
+
+            // Identity Verification
+            let govIdUploaded = false;
+            let companyIdUploaded = false;
+
+            document.getElementById('govId').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const preview = document.getElementById('govIdPreview');
+                    preview.src = URL.createObjectURL(file);
+                    preview.style.display = 'block';
+                    govIdUploaded = true;
+                    validateField(document.getElementById('govId'));
+                }
+            });
+
+            document.getElementById('companyId').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const preview = document.getElementById('companyIdPreview');
+                    preview.src = URL.createObjectURL(file);
+                    preview.style.display = 'block';
+                    companyIdUploaded = true;
+                    validateField(document.getElementById('companyId'));
+                }
+            });
+
+            document.getElementById('submitVerificationBtn').addEventListener('click', () => {
+                const govId = document.getElementById('govId');
+                const companyId = document.getElementById('companyId');
+                const companyEmail = document.getElementById('companyEmailVerification');
+
+                const isGovIdValid = validateField(govId);
+                const isCompanyIdOrEmailValid = companyId.files.length > 0 || (companyEmail.value.trim() && validateField(companyEmail));
+
+                if (!isGovIdValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Missing ID',
+                        text: 'Please upload a Government-Issued ID.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                } else if (!isCompanyIdOrEmailValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Missing Information',
+                        text: 'Please provide either a Company ID or a valid Company Email.',
+                        confirmButtonColor: '#5e17eb'
+                    });
+                } else {
+                    document.getElementById('verificationStatus').textContent = 'Status: Submitted for Verification';
+                    setTimeout(() => {
+                        if (govIdUploaded) {
+                            document.getElementById('govIdVerified').style.display = 'inline-block';
+                        }
+                        if (companyIdUploaded) {
+                            document.getElementById('companyIdVerified').style.display = 'inline-block';
+                        }
+                        document.getElementById('verificationStatus').textContent = 'Status: Verified';
+                        document.getElementById('verificationStatus').style.color = '#28a745';
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Submitted!',
+                            text: 'Verification documents submitted successfully.',
+                            confirmButtonColor: '#5e17eb',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                    }, 2000);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
