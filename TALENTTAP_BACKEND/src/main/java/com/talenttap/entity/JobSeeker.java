@@ -39,7 +39,6 @@ public class JobSeeker {
     private Users user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Gender gender;
 
     @Column(name = "dob")
