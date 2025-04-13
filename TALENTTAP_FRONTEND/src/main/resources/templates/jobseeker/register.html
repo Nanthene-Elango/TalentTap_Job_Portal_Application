@@ -1,264 +1,369 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalentTap - Job Seeker Registration</title>
-    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <!-- Add SweetAlert2 CSS and JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-    <link rel="stylesheet" th:href="@{jobseeker/css/style.css}">
-    <link rel="stylesheet" th:href="@{jobseeker/css/register.css}">
-    <script th:src="@{jobseeker/js/register.js}"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentTap - Job Seeker Registration</title>
+<link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<!-- Add in your <head> section -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<link rel="stylesheet" th:href="@{/jobseeker/css/style.css}">
+<link rel="stylesheet" th:href="@{/jobseeker/css/register.css}">
+<script th:src="@{/jobseeker/js/register.js}"></script>
 </head>
 
 <body>
-    <div class="registration-container">
-        <button class="back-button" onclick="window.history.back()">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <div style="display: flex; justify-content: center; margin: 40px;">
-            <img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="Logo" style="height: 60px;">
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar-fill" id="progressBarFill"></div>
-        </div>
+	<div class="registration-container">
+		<button class="back-button" onclick="window.history.back()">
+			<i class="fas fa-arrow-left"></i>
+		</button>
+		<div style="display: flex; justify-content: center; margin: 40px;">
+			<img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="Logo"
+				style="height: 60px;">
+		</div>
+		<div class="progress-container">
+			<div class="progress-bar-fill" id="progressBarFill"></div>
+		</div>
 
-        <form id="registrationForm">
-            <div class="form-step active" id="basicDetailsStep">
-                <h2>Basic Details</h2>
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
-                    <div class="error-message" id="fullNameError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Choose a username">
-                    <div class="error-message" id="usernameError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
-                    <div class="error-message" id="passwordError"></div>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn next-btn progress-btn" data-step="1">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+		<!-- Form bound to JobseekerRegister DTO -->
+		<form id="registrationForm" th:action="@{/register}" method="post"
+			th:object="${jobseekerRegister}">
+			<!-- Basic Details -->
+			<div class="form-step active" id="basicDetailsStep">
+				<h2>Basic Details</h2>
+				<div class="form-group">
+					<label for="fullName">Full Name</label> <input type="text"
+						class="form-control" th:field="*{fullName}" id="fullName"
+						placeholder="Enter your full name">
+					<div class="error-message" id="fullNameError"></div>
+				</div>
+				<div class="form-group">
+					<label for="username">Username</label> <input type="text"
+						class="form-control" th:field="*{username}" id="username"
+						placeholder="Choose a username">
+					<div class="error-message" id="usernameError"></div>
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label> <input type="password"
+						class="form-control" th:field="*{password}" id="password"
+						placeholder="Enter your password">
+					<div class="error-message" id="passwordError"></div>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn next-btn progress-btn"
+						data-step="1">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Next</span>
+					</button>
+				</div>
+			</div>
 
-            <div class="form-step" id="phoneVerificationStep">
-                <h2>Phone Verification</h2>
-                <div class="form-group">
-                    <label for="phoneNumber">Phone Number</label>
-                    <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your phone number" maxlength="10">
-                    <div class="error-message" id="phoneNumberError"></div>
-                </div>
-                <p id="phoneOtpMessage" style="display: none;">
-                    Code sent to: <span id="displayPhone"></span>
-                </p>
-                <div class="otp-container" id="phoneOtpContainer" style="display: none;">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp1">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp2">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp3">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp4">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp5">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp6">
-                </div>
-                <div class="error-message otp-error" id="otpPhoneError"></div>
-                <div class="resend-container" id="phoneResendContainer" style="display: none;">
-                    <button type="button" class="resend-btn" id="phoneResendBtn" disabled>Resend OTP</button>
-                    <span id="phoneTimer"></span>
-                </div>
-                <div class="verification-status" id="phoneStatus"></div>
-                <button type="button" class="change-number-btn" id="changePhoneBtn">Change Number</button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="2">Previous</button>
-                    <button type="button" class="btn progress-btn" id="phoneVerifyBtn" style="display: block;">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Get OTP</span>
-                    </button>
-                    <button type="button" class="btn progress-btn" id="phoneNextBtn" style="display: none;">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Verify</span>
-                    </button>
-                    <button type="button" class="btn progress-btn next-btn" id="phoneSkipBtn" style="display: none;" data-step="2">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+			<!-- Phone Verification -->
+			<div class="form-step" id="phoneVerificationStep">
+				<h2>Phone Verification</h2>
+				<div class="form-group">
+					<label for="phoneNumber">Phone Number</label> <input type="tel"
+						class="form-control" th:field="*{phoneNumber}" id="phoneNumber"
+						placeholder="Enter your phone number" maxlength="10">
+					<div class="error-message" id="phoneNumberError"></div>
+				</div>
+				<p id="phoneOtpMessage" style="display: none;">
+					Code sent to: <span id="displayPhone"></span>
+				</p>
+				<div class="otp-container" id="phoneOtpContainer"
+					style="display: none;">
+					<input type="text" maxlength="1" class="otp-input" id="phoneOtp1">
+					<input type="text" maxlength="1" class="otp-input" id="phoneOtp2">
+					<input type="text" maxlength="1" class="otp-input" id="phoneOtp3">
+					<input type="text" maxlength="1" class="otp-input" id="phoneOtp4">
+					<input type="text" maxlength="1" class="otp-input" id="phoneOtp5">
+					<input type="text" maxlength="1" class="otp-input" id="phoneOtp6">
+				</div>
+				<div class="error-message otp-error" id="otpPhoneError"></div>
+				<div class="resend-container" id="phoneResendContainer"
+					style="display: none;">
+					<button type="button" class="resend-btn" id="phoneResendBtn"
+						disabled>Resend OTP</button>
+					<span id="phoneTimer"></span>
+				</div>
+				<div class="verification-status" id="phoneStatus"></div>
+				<button type="button" class="change-number-btn" id="changePhoneBtn">Change
+					Number</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary prev-btn"
+						data-step="2">Previous</button>
+					<button type="button" class="btn progress-btn" id="phoneVerifyBtn"
+						style="display: block;">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Get OTP</span>
+					</button>
+					<button type="button" class="btn progress-btn" id="phoneNextBtn"
+						style="display: none;">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Verify</span>
+					</button>
+					<button type="button" class="btn progress-btn next-btn"
+						id="phoneSkipBtn" style="display: none;" data-step="2">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Next</span>
+					</button>
+				</div>
+			</div>
 
-            <div class="form-step" id="emailVerificationStep">
-                <h2>Email Verification</h2>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
-                    <div class="error-message" id="emailError"></div>
-                </div>
-                <p id="emailOtpMessage" style="display: none;">
-                    Code sent to: <span id="displayEmail"></span>
-                </p>
-                <div class="otp-container" id="emailOtpContainer" style="display: none;">
-                    <input type="text" maxlength="1" class="otp-input" id="otp1">
-                    <input type="text" maxlength="1" class="otp-input" id="otp2">
-                    <input type="text" maxlength="1" class="otp-input" id="otp3">
-                    <input type="text" maxlength="1" class="otp-input" id="otp4">
-                    <input type="text" maxlength="1" class="otp-input" id="otp5">
-                    <input type="text" maxlength="1" class="otp-input" id="otp6">
-                </div>
-                <div class="error-message otp-error" id="otpEmailError"></div>
-                <div class="resend-container" id="emailResendContainer" style="display: none;">
-                    <button type="button" class="resend-btn" id="emailResendBtn" disabled>Resend OTP</button>
-                    <span id="emailTimer"></span>
-                </div>
-                <div class="verification-status" id="emailStatus"></div>
-                <button type="button" class="change-email-btn" id="changeEmailBtn">Change Email</button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="3">Previous</button>
-                    <button type="button" class="btn progress-btn" id="emailVerifyBtn" style="display: block;">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Get OTP</span>
-                    </button>
-                    <button type="button" class="btn progress-btn" id="emailNextBtn" style="display: none;">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Verify</span>
-                    </button>
-                    <button type="button" class="btn progress-btn next-btn" id="emailSkipBtn" style="display: none;" data-step="3">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+			<!-- Email Verification -->
+			<div class="form-step" id="emailVerificationStep">
+				<h2>Email Verification</h2>
+				<div class="form-group">
+					<label for="email">Email</label> <input type="email"
+						class="form-control" th:field="*{email}" id="email"
+						placeholder="Enter your email">
+					<div class="error-message" id="emailError"></div>
+				</div>
+				<p id="emailOtpMessage" style="display: none;">
+					Code sent to: <span id="displayEmail"></span>
+				</p>
+				<div class="otp-container" id="emailOtpContainer"
+					style="display: none;">
+					<input type="text" maxlength="1" class="otp-input" id="otp1">
+					<input type="text" maxlength="1" class="otp-input" id="otp2">
+					<input type="text" maxlength="1" class="otp-input" id="otp3">
+					<input type="text" maxlength="1" class="otp-input" id="otp4">
+					<input type="text" maxlength="1" class="otp-input" id="otp5">
+					<input type="text" maxlength="1" class="otp-input" id="otp6">
+				</div>
+				<div class="error-message otp-error" id="otpEmailError"></div>
+				<div class="resend-container" id="emailResendContainer"
+					style="display: none;">
+					<button type="button" class="resend-btn" id="emailResendBtn"
+						disabled>Resend OTP</button>
+					<span id="emailTimer"></span>
+				</div>
+				<div class="verification-status" id="emailStatus"></div>
+				<button type="button" class="change-email-btn" id="changeEmailBtn">Change
+					Email</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary prev-btn"
+						data-step="3">Previous</button>
+					<button type="button" class="btn progress-btn" id="emailVerifyBtn"
+						style="display: block;">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Get OTP</span>
+					</button>
+					<button type="button" class="btn progress-btn" id="emailNextBtn"
+						style="display: none;">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Verify</span>
+					</button>
+					<button type="button" class="btn progress-btn next-btn"
+						id="emailSkipBtn" style="display: none;" data-step="3">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Next</span>
+					</button>
+				</div>
+			</div>
 
-            <div class="form-step" id="professionalDetailsStep">
-                <h2>Professional Details</h2>
-                <div class="form-group">
-                    <label for="yearsOfExperience">Years of Experience</label>
-                    <input type="number" class="form-control" id="yearsOfExperience" placeholder="Enter years of experience" min="0">
-                    <div class="error-message" id="yearsOfExperienceError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <select class="form-control" id="location">
-                        <option value="" disabled selected>Select location</option>
-                        <option value="chennai">Chennai</option>
-                        <option value="bangalore">Bangalore</option>
-                        <option value="mumbai">Mumbai</option>
-                        <option value="delhi">Delhi</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <div class="error-message" id="locationError"></div>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="4">Previous</button>
-                    <button type="button" class="btn next-btn progress-btn" data-step="4">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+			<!-- Professional Details -->
+			<div class="form-step" id="professionalDetailsStep">
+				<h2>Professional Details</h2>
+				<div class="form-group">
+					<label for="yearsOfExperience">Years of Experience</label> <input
+						type="number" class="form-control" th:field="*{yearsOfExperience}"
+						id="yearsOfExperience" placeholder="Enter years of experience"
+						min="0">
+					<div class="error-message" id="yearsOfExperienceError"></div>
+				</div>
+				<div class="form-group">
+					<label for="location">Location</label> <select class="form-control"
+						id="location" th:field="*{location}">
+						<option value=null disabled th:selected="${location == null}">Select
+							location</option>
+						<option th:each="loc : ${locations}" th:value="${loc.locationId}"
+							th:text="${loc.location}"></option>
+					</select>
+					<div class="error-message" id="locationError"></div>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary prev-btn"
+						data-step="4">Previous</button>
+					<button type="button" class="btn next-btn progress-btn"
+						data-step="4">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Next</span>
+					</button>
+				</div>
+			</div>
 
-            <div class="form-step" id="educationDetailsStep">
-                <h2>Education Details</h2>
-                <div class="form-group">
-                    <label for="highestQualification">Highest Qualification</label>
-                    <select class="form-control" id="highestQualification">
-                        <option value="" disabled selected>Select qualification</option>
-                        <option value="10th">10th</option>
-                        <option value="12th">12th</option>
-                        <option value="ug">Undergraduate (UG)</option>
-                        <option value="pg">Postgraduate (PG)</option>
-                    </select>
-                    <div class="error-message" id="highestQualificationError"></div>
-                </div>
-                <div class="form-group" id="boardOfStudyGroup" style="display: none;">
-                    <label for="boardOfStudy">Board of Study</label>
-                    <input type="text" class="form-control" id="boardOfStudy" placeholder="Enter board of study">
-                    <div class="error-message" id="boardOfStudyError"></div>
-                </div>
-                <div class="form-group" id="degreeGroup" style="display: none;">
-                    <label for="degree">Degree</label>
-                    <input type="text" class="form-control" id="degree" placeholder="Enter your degree">
-                    <div class="error-message" id="degreeError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="university">University/Institution</label>
-                    <input type="text" class="form-control" id="university" placeholder="Enter university/institution">
-                    <div class="error-message" id="universityError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="startYear">Starting Year</label>
-                    <select class="form-control" id="startYear">
-                        <option value="" disabled selected>Select starting year</option>
-                    </select>
-                    <div class="error-message" id="startYearError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="endYear">End Year</label>
-                    <select class="form-control" id="endYear" disabled>
-                        <option value="" disabled selected>Select end year</option>
-                    </select>
-                    <div class="error-message" id="endYearError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="percentage">Percentage</label>
-                    <input type="number" class="form-control" id="percentage" placeholder="Enter percentage" min="0" max="100" step="0.01">
-                    <div class="error-message" id="percentageError"></div>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="5">Previous</button>
-                    <button type="button" class="btn next-btn progress-btn" data-step="5">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+			<!-- Education Details -->
+			<div class="form-step" id="educationDetailsStep">
+				<h2>Education Details</h2>
+				<div class="form-group">
+					<label for="highestQualification">Highest Qualification</label> <select
+						class="form-control" id="highestQualification"
+						th:field="*{highestQualification}">
 
-            <div class="form-step" id="keySkillsStep">
-                <h2>Key Skills</h2>
-                <div class="form-group">
-                    <label for="keySkills">Select Your Skills</label>
-                    <div class="skills-search-container">
-                        <div class="selected-skills" id="selectedSkills"></div>
-                        <input type="text" class="skills-search form-control" id="skillsSearch" placeholder="Search skills...">
-                        <div class="skills-list" id="skillsList"></div>
-                    </div>
-                    <div class="error-message" id="keySkillsError"></div>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="6">Previous</button>
-                    <button type="button" class="btn next-btn progress-btn" data-step="6">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+						<!-- Default option -->
+						<option value="" selected disabled>Select qualification</option>
 
-            <div class="form-step" id="confirmationStep">
-                <h2>Review Details</h2>
-                <div id="summaryDetails"></div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="7">Previous</button>
-                    <button type="submit" class="btn progress-btn" id="submitBtn">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Submit</span>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
+						<!-- Dynamically rendered options -->
+						<th:block th:each="qual : ${qualifications}">
+							<option th:value="${qual.levelId}" th:text="${qual.level}"></option>
+						</th:block>
+					</select>
 
-    <div class="toast" id="toast"></div>
-    
+					<div class="error-message" id="highestQualificationError"
+						th:if="${#fields.hasErrors('highestQualification')}"></div>
+				</div>
+
+
+				<div class="form-group" id="boardOfStudyGroup"
+					style="display: none;">
+					<label for="boardOfStudy">Board of Study</label> <input type="text"
+						class="form-control" id="boardOfStudy" th:field="*{boardOfStudy}"
+						placeholder="Enter board of study">
+					<div class="error-message" id="boardOfStudyError"></div>
+				</div>
+				<div class="form-group" id="degreeGroup" style="display: none;">
+					<label for="degree">Degree</label> <input type="text"
+						class="form-control" id="degree" th:field="*{degree}"
+						placeholder="Enter your degree">
+					<div class="error-message" id="degreeError"></div>
+				</div>
+				<div class="form-group">
+					<label for="university">University/Institution</label> <input
+						type="text" class="form-control" id="university"
+						th:field="*{institution}"
+						placeholder="Enter university/institution">
+					<div class="error-message" id="institutionError"></div>
+				</div>
+				<div class="form-group">
+					<label for="startYear">Starting Year</label> <select
+						class="form-control" id="startYear" th:field="*{startYear}">
+						<option value="" disabled>Select starting year</option>
+						<option th:each="year : ${startYears}" th:value="${year}"
+							th:text="${year}"></option>
+					</select>
+					<div class="error-message" id="startYearError"></div>
+				</div>
+				<div class="form-group">
+					<label for="endYear">End Year</label> <select class="form-control"
+						id="endYear" th:field="*{endYear}" disabled>
+						<option value="" disabled selected>Select end year</option>
+						<option th:each="year : ${endYears}" th:value="${year}"
+							th:text="${year}"></option>
+					</select>
+					<div class="error-message" id="endYearError"></div>
+				</div>
+				<div class="form-group">
+					<label for="percentage">Percentage</label> <input type="number"
+						class="form-control" id="percentage" th:field="*{percentage}"
+						placeholder="Enter percentage" min="0" max="100" step="0.01">
+					<div class="error-message" id="percentageError"></div>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary prev-btn"
+						data-step="5">Previous</button>
+					<button type="button" class="btn next-btn progress-btn"
+						data-step="5">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Next</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- Key Skills -->
+			<div class="form-step" id="keySkillsStep">
+				<h2>Key Skills</h2>
+				<div class="form-group">
+					<label for="keySkills">Select Your Skills</label> <select
+						th:field="*{skillIds}" multiple
+						class="form-control choices-multiple" id="keySkills">
+						<option th:each="skill : ${allSkills}" th:value="${skill.skillId}"
+							th:text="${skill.skill}"></option>
+					</select>
+					<div class="error-message"></div>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary prev-btn"
+						data-step="6">Previous</button>
+					<button type="button" class="btn next-btn progress-btn"
+						data-step="6">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Next</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- Confirmation Step -->
+			<div class="form-step" id="confirmationStep">
+				<h2>Review Details</h2>
+				<div id="summaryDetails">
+					<p>
+						<strong>Full Name:</strong> <span th:text="*{fullName}"></span>
+					</p>
+					<p>
+						<strong>Username:</strong> <span th:text="*{username}"></span>
+					</p>
+					<p>
+						<strong>Email:</strong> <span th:text="*{email}"></span>
+					</p>
+					<p>
+						<strong>Phone Number:</strong> <span th:text="*{phoneNumber}"></span>
+					</p>
+					<p>
+						<strong>Years of Experience:</strong> <span
+							th:text="*{yearsOfExperience}"></span>
+					</p>
+
+					<p>
+						<strong>Highest Qualification:</strong> <span
+							th:text="*{highestQualification}"></span>
+					</p>
+					<p>
+						<strong>Degree:</strong> <span th:text="*{degree}"></span>
+					</p>
+					<p>
+						<strong>Institution:</strong> <span th:text="*{institution}"></span>
+					</p>
+					<p>
+						<strong>Start Year:</strong> <span th:text="*{startYear}"></span>
+					</p>
+					<p>
+						<strong>End Year:</strong> <span th:text="*{endYear}"></span>
+					</p>
+					<p>
+						<strong>Percentage:</strong> <span th:text="*{percentage}"></span>
+					</p>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary prev-btn"
+						data-step="7">Previous</button>
+					<button type="submit" class="btn progress-btn" id="submitBtn">
+						<div class="progress-fill"></div>
+						<span class="btn-text">Submit</span>
+					</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
+
+	<div class="toast" id="toast"></div>
+	<!-- Add before your closing </body> -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 </body>
 </html>
