@@ -29,13 +29,11 @@ public class JobseekerController {
 	private LocationService locationService;
 	private SkillService skillService;
 	private EducationService educationService;
-	private JobseekerRegisterService jobseekerRegisterService;
 	
-	public JobseekerController(LocationService location , SkillService skillService ,JobseekerRegisterService jobseekerRegisterService, EducationService educationService) {
+	public JobseekerController(LocationService location , SkillService skillService, EducationService educationService) {
 		this.locationService = location;
 		this.skillService = skillService;
 		this.educationService = educationService;
-		this.jobseekerRegisterService = jobseekerRegisterService;
 	}
 	
 	@GetMapping("/locations")
@@ -51,11 +49,6 @@ public class JobseekerController {
 	@GetMapping("/educationlevel")
 	public ResponseEntity<List<EducationLevelDTO>> getAllEducationLevel(){
 		return ResponseEntity.ok().body(educationService.getAllEducationLevel());
-	}
-	
-	@PostMapping("/auth/register/jobseeker")
-	public ResponseEntity<?> registerJobSeeker(@RequestBody JobseekerRegisterDTO request){
-		return jobseekerRegisterService.register(request);
 	}
 	
 }
