@@ -1,14 +1,16 @@
 package com.talenttap.service;
 
 import java.time.LocalDate;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.talenttap.DTO.JobseekerRegisterDTO;
 import com.talenttap.entity.AuthProvider;
 import com.talenttap.entity.Education;
 import com.talenttap.entity.Users;
+import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
 import com.talenttap.repository.EducationLevelRepository;
 import com.talenttap.repository.EducationRepository;
@@ -17,12 +19,19 @@ import com.talenttap.repository.LocationRepository;
 import com.talenttap.repository.RoleRepository;
 import com.talenttap.repository.SkillsRepository;
 import com.talenttap.repository.UsersRepository;
+import com.talenttap.security.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @Service
 public class JobseekerRegisterService {
 
+	
+	@Autowired
+	private JwtUtil jwtUtil;
+	
 	private UsersRepository userRepo;
 	private JobseekerRepository jobseekerRepo;
 	private EducationRepository educationRepo;
@@ -30,9 +39,13 @@ public class JobseekerRegisterService {
 	private RoleRepository roleRepo;
 	private LocationRepository locationRepo;
 	private EducationLevelRepository educationLevelRepo;
+	private PasswordEncoder passwordEncoder;
 	
 	
-	public JobseekerRegisterService(UsersRepository userRepo , JobseekerRepository jobseekerRepo , EducationRepository educationRepo , SkillsRepository skillsRepo , RoleRepository roleRepo , LocationRepository locationRepo , EducationLevelRepository educationLevelRepo) {
+	public JobseekerRegisterService(UsersRepository userRepo , JobseekerRepository jobseekerRepo ,
+			EducationRepository educationRepo , SkillsRepository skillsRepo , 
+			RoleRepository roleRepo , LocationRepository locationRepo , 
+			EducationLevelRepository educationLevelRepo , PasswordEncoder passwordEncoder) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.skillsRepo = skillsRepo;
@@ -40,6 +53,7 @@ public class JobseekerRegisterService {
 		this.locationRepo = locationRepo;
 		this.roleRepo = roleRepo;
 		this.educationLevelRepo = educationLevelRepo;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public ResponseEntity<?> register(@Valid JobseekerRegisterDTO request) {
@@ -51,7 +65,7 @@ public class JobseekerRegisterService {
 		user.setFullName(request.getFullName());
 		user.setGoogleId(null);
 		user.setMobileNumber(request.getPhoneNumber());
-		user.setPassword(request.getPassword());
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setUsername(request.getUsername());
 		
 		user = userRepo.save(user);
@@ -80,6 +94,28 @@ public class JobseekerRegisterService {
 		educationRepo.save(education);
 		
 		return ResponseEntity.ok().body("Jobseeker Registered Successfully!");
+	}
+
+	public ResponseEntity<?> login(String username , String password , HttpServletResponse response) {
+		
+		Users user = userRepo.findByUsername(username).get();
+		
+		if (user != null && passwordEncoder.matches(password , user.getPassword())) {
+			String jwt = jwtUtil.generateToken(username, "JOBSEEKER");
+
+			System.out.println(jwt);
+	        Cookie cookie = new Cookie("jwt", jwt);
+	        cookie.setHttpOnly(true);
+	        cookie.setPath("/");
+	        cookie.setSecure(false);
+	        cookie.setMaxAge(24 * 60 * 60);
+	        response.addCookie(cookie);
+	        
+	        return ResponseEntity.ok().body("User Logged in Successfully");
+		}
+		else {
+			throw new InvalidCredentialsException("Invalid Username/Password!");
+		}
 	}
 
 }
