@@ -9,7 +9,13 @@ $(document).ready(function() {
 	let verifiedEmail = null;
 	let phoneAttempts = 0;
 	let emailAttempts = 0;
-	let selectedSkills = [];
+
+	new Choices('.choices-multiple', {
+		removeItemButton: true,
+		placeholder: true,
+		placeholderValue: 'Select skills',
+		searchEnabled: true
+	});
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&*])[A-Za-z\d@#$%^&*]{8,}$/;
@@ -18,11 +24,7 @@ $(document).ready(function() {
 	const phoneRegex = /^\d{10}$/;
 	const textOnlyRegex = /^[A-Za-z\s]+$/;
 
-	const skills = [
-		'JavaScript', 'Python', 'Java', 'C++', 'React',
-		'Node.js', 'SQL', 'HTML', 'CSS', 'Git',
-		'Angular', 'TypeScript', 'MongoDB', 'AWS', 'Docker'
-	];
+
 
 	const currentYear = new Date().getFullYear();
 	for (let year = currentYear; year >= 1970; year--) {
@@ -208,7 +210,7 @@ $(document).ready(function() {
 		if (type === 'phone') {
 			phoneVerified = false;
 			verifiedPhoneNumber = null;
-			$('#phoneNumber').prop('disabled', false);
+			$('#phoneNumber').prop('readonly', false);
 			$('#phoneOtpContainer input').val('').prop('disabled', false);
 			$('#phoneOtpContainer, #phoneResendContainer, #phoneNextBtn, #changePhoneBtn, #phoneSkipBtn').hide();
 			$('#phoneVerifyBtn').show();
@@ -219,7 +221,7 @@ $(document).ready(function() {
 		} else {
 			emailVerified = false;
 			verifiedEmail = null;
-			$('#email').prop('disabled', false);
+			$('#email').prop('readonly', false);
 			$('#emailOtpContainer input').val('').prop('disabled', false);
 			$('#emailOtpContainer, #emailResendContainer, #emailNextBtn, #changeEmailBtn, #emailSkipBtn').hide();
 			$('#emailVerifyBtn').show();
@@ -255,10 +257,6 @@ $(document).ready(function() {
 			disableOTPInputs('email');
 		}
 
-		if (stepNumber === 6) {
-			updateSelectedSkills();
-			populateSkillsList(skills);
-		}
 	}
 
 	function getStepName(stepNumber) {
@@ -310,7 +308,7 @@ $(document).ready(function() {
 		if (!validatePhoneNumber()) return;
 		animateProgressButton($('#phoneVerifyBtn'), function() {
 			const phone = $('#phoneNumber').val();
-			$('#phoneNumber').prop('disabled', true);
+			$('#phoneNumber').prop('readonly', true);
 			$('#displayPhone').text(phone.replace(/.(?=.{4})/g, '*'));
 			$('#phoneOtpMessage, #phoneOtpContainer, #phoneResendContainer').show();
 			$('#phoneVerifyBtn').hide();
@@ -325,7 +323,7 @@ $(document).ready(function() {
 		if (!validateEmail()) return;
 		animateProgressButton($('#emailVerifyBtn'), function() {
 			const email = $('#email').val();
-			$('#email').prop('disabled', true);
+			$('#email').prop('readonly', true);
 			$('#displayEmail').text(email.replace(/(?<=.{3}).(?=[^@]*@)/g, '*'));
 			$('#emailOtpMessage, #emailOtpContainer, #emailResendContainer').show();
 			$('#emailVerifyBtn').hide();
@@ -394,77 +392,8 @@ $(document).ready(function() {
 		});
 	}
 
-	function prepareConfirmation() {
-		const fullName = $('#fullName').val().trim();
-		const username = $('#username').val().trim();
-		const phone = $('#phoneNumber').val().trim();
-		const email = $('#email').val().trim();
-		const yearsOfExperience = $('#yearsOfExperience').val();
-		const location = $('#location option:selected').text();
-		const highestQualification = $('#highestQualification option:selected').text();
-		const boardOfStudy = $('#boardOfStudy').val()?.trim();
-		const degree = $('#degree').val()?.trim();
-		const university = $('#university').val().trim();
-		const startYear = $('#startYear').val();
-		const endYear = $('#endYear').val();
-		const percentage = $('#percentage').val();
-		const skillsList = selectedSkills.join(', ');
 
-		let html = `
-                    <p><strong>Full Name:</strong> ${fullName}</p>
-                    <p><strong>Username:</strong> ${username}</p>
-                    <p><strong>Phone:</strong> ${phone}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Years of Experience:</strong> ${yearsOfExperience}</p>
-                    <p><strong>Location:</strong> ${location}</p>
-                    <p><strong>Highest Qualification:</strong> ${highestQualification}</p>
-                `;
-		if (highestQualification.includes('10th') || highestQualification.includes('12th')) {
-			html += `<p><strong>Board of Study:</strong> ${boardOfStudy}</p>`;
-		} else {
-			html += `<p><strong>Degree:</strong> ${degree}</p>`;
-		}
-		html += `
-                    <p><strong>University/Institution:</strong> ${university}</p>
-                    <p><strong>Start Year:</strong> ${startYear}</p>
-                    <p><strong>End Year:</strong> ${endYear}</p>
-                    <p><strong>Percentage:</strong> ${percentage}</p>
-                    <p><strong>Key Skills:</strong> ${skillsList}</p>
-                `;
-		$('#summaryDetails').html(html);
-	}
 
-	// Skills Functions
-	function updateSelectedSkills() {
-		$('#selectedSkills').empty();
-		selectedSkills.forEach(skill => {
-			$('#selectedSkills').append(`
-                        <span class="skill-tag">
-                            ${skill}
-                            <i class="fas fa-times remove-skill" data-skill="${skill}"></i>
-                        </span>
-                    `);
-		});
-	}
-
-	function populateSkillsList(skillsToShow) {
-		const $skillsList = $('#skillsList');
-		$skillsList.empty();
-		const availableSkills = skillsToShow.filter(skill => !selectedSkills.includes(skill));
-
-		if (availableSkills.length === 0) {
-			$skillsList.html('<div class="skill-option">No skills available</div>');
-			return;
-		}
-
-		availableSkills.forEach(skill => {
-			$skillsList.append(`
-                        <div class="skill-option" data-skill="${skill}">
-                            ${skill}
-                        </div>
-                    `);
-		});
-	}
 
 	// Event Handlers
 	$('#fullName').on('input', validateFullNameDynamic);
@@ -498,54 +427,12 @@ $(document).ready(function() {
 		validatePercentageDynamic();
 	});
 
-	$('#skillsSearch').on('input', function() {
-		const query = $(this).val().trim().toLowerCase();
-		const filteredSkills = skills.filter(skill =>
-			skill.toLowerCase().includes(query) && !selectedSkills.includes(skill)
-		);
-		populateSkillsList(filteredSkills);
-		$('#skillsList').addClass('visible');
-	});
 
-	$('#skillsSearch').on('focus', function() {
-		const query = $(this).val().trim().toLowerCase();
-		const filteredSkills = query
-			? skills.filter(skill => skill.toLowerCase().includes(query) && !selectedSkills.includes(skill))
-			: skills.filter(skill => !selectedSkills.includes(skill));
-		populateSkillsList(filteredSkills);
-		$('#skillsList').addClass('visible');
-	});
-
-	$('#skillsSearch').on('blur', function() {
-		setTimeout(() => $('#skillsList').removeClass('visible'), 150);
-	});
-
-	$(document).on('mousedown', '.skill-option', function(e) {
-		e.preventDefault();
-		const skill = $(this).data('skill');
-		if (skill && !selectedSkills.includes(skill)) {
-			selectedSkills.push(skill);
-			updateSelectedSkills();
-			clearError('keySkills');
-			$('#skillsSearch').val('').focus();
-			populateSkillsList(skills);
-			$('#skillsList').addClass('visible');
-		}
-	});
-
-	$(document).on('click', '.remove-skill', function(e) {
-		e.stopPropagation();
-		const skill = $(this).data('skill');
-		selectedSkills = selectedSkills.filter(s => s !== skill);
-		updateSelectedSkills();
-		populateSkillsList(skills);
-		$('#skillsSearch').focus();
-	});
 
 	$('#startYear').on('change', function() {
 		const startYear = parseInt($(this).val());
 		const endYearSelect = $('#endYear');
-		endYearSelect.empty().append('<option value="" disabled selected>Select end year</option>');
+		endYearSelect.empty().append('<option value=null disabled th:selected>Select end year</option>');
 
 		if (startYear) {
 			for (let year = startYear; year <= currentYear; year++) {
@@ -570,10 +457,8 @@ $(document).ready(function() {
 		}
 		if (step === 4 && !validateProfessionalDetails()) return;
 		if (step === 5 && !validateEducationDetails()) return;
-		if (step === 6 && !validateKeySkills()) return;
 
 		animateProgressButton($(this), function() {
-			if (step === 6) prepareConfirmation();
 			currentStep = step + 1;
 			showStep(currentStep);
 			updateProgressBar();
@@ -641,14 +526,15 @@ $(document).ready(function() {
 
 	$('#highestQualification').change(function() {
 		const val = $(this).val();
-		if (val === '10th' || val === '12th') {
+		console.log(val);
+		if (val == 1 || val == 2) {
 			$('#boardOfStudyGroup').show();
 			$('#degreeGroup').hide();
-			$('#degree').val('');
-		} else if (val === 'ug' || val === 'pg') {
+			$('#degree').val(null);
+		} else if (val == 3 || val == 4) {
 			$('#boardOfStudyGroup').hide();
 			$('#degreeGroup').show();
-			$('#boardOfStudy').val('');
+			$('#boardOfStudy').val(null);
 		} else {
 			$('#boardOfStudyGroup, #degreeGroup').hide();
 			$('#boardOfStudy, #degree').val('');
@@ -657,7 +543,10 @@ $(document).ready(function() {
 	});
 
 	$('#registrationForm').submit(function(e) {
-		e.preventDefault();
+		e.preventDefault(); // prevent default form submission
+
+		const form = this; // reference to the form
+
 		animateProgressButton($('#submitBtn'), function() {
 			Swal.fire({
 				title: 'Success!',
@@ -667,12 +556,13 @@ $(document).ready(function() {
 				confirmButtonColor: '#5e17eb'
 			}).then((result) => {
 				if (result.isConfirmed) {
-					// Redirect to dashboard page
-					window.location.href = 'dashboard.html';
+					form.submit(); // trigger actual form submission
 				}
 			});
 		});
 	});
+
+
 
 	updateProgressBar();
 });

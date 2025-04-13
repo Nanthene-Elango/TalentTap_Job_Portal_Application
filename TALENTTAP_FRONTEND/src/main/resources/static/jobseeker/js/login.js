@@ -84,12 +84,13 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
+		const form = this;
         const isUsernameValid = validateUsernameOrEmail();
         const isPasswordValid = validatePassword();
 
         if (isUsernameValid && isPasswordValid) {
             // Simulate login process
-            alert('Login successful!');
+            form.submit();
             // In a real application, you would send the login request here
         }
     });

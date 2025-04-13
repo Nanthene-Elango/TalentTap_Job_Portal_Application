@@ -20,7 +20,8 @@
 		<button class="back-button" onclick="window.history.back()">
 			<i class="fas fa-arrow-left"></i>
 		</button>
-		<form id="loginForm" novalidate>
+		<form id="loginForm" th:action="@{/login}" method="post"
+			th:object="${Login}" novalidate >
 			<div
 				style="display: flex; justify-content: center; margin-bottom: 30px;">
 				<img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="TalentTap Logo"
@@ -29,16 +30,17 @@
 			<h2>Login</h2>
 
 			<div class="form-group">
-				<label for="username">Username or Email</label> <input
+				<label for="username">Username or Email</label>
+				<input 
 					class="form-control" id="username" name="username" type="text"
-					placeholder="Enter username or email" required>
+					placeholder="Enter username or email" th:field="*{username}" required>
 				<div id="usernameError" class="error-message"></div>
 			</div>
 
 			<div class="form-group password-container">
 				<label for="password">Password</label>
 				<div class="input-wrapper">
-					<input class="form-control" id="password" name="password"
+					<input class="form-control" id="password" name="password" th:field="*{password}"
 						type="password" placeholder="Enter your password" required>
 					<span class="toggle-password"> <i class="fas fa-eye"></i>
 					</span>
@@ -48,11 +50,12 @@
 			</div>
 
 			<button id="loginButton" class="btn" type="submit">
-				Log In</button>
+				Log In
+			</button>
 
 			<div class="signup-link">
 				<p>
-					Don't have an account? <a href="#">Sign Up</a>
+					Don't have an account? <a th:href="@{/register}">Sign Up</a>
 				</p>
 			</div>
 		</form>

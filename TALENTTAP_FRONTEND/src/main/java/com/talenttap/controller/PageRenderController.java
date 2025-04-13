@@ -1,12 +1,27 @@
 package com.talenttap.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.talenttap.model.EducationLevel;
+import com.talenttap.model.JobseekerRegister;
+import com.talenttap.model.Location;
+import com.talenttap.model.Login;
+import com.talenttap.model.Skills;
+import com.talenttap.service.JobseekerRegisterService;
 
 @Controller
 public class PageRenderController {
 
+	private JobseekerRegisterService jobseekerRegisterService;
+	
+	public PageRenderController(JobseekerRegisterService jobseekerRegisterService){
+		this.jobseekerRegisterService = jobseekerRegisterService;
+	}
+	
 	@GetMapping
 	public String LoadHomePage() {
 		return "index";
@@ -33,16 +48,30 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/login")
-	public String LoadJobseekerLogin() {
+	public String LoadJobseekerLogin(Model model) {
+		 model.addAttribute("Login", new Login()); 
 		return "jobseeker/login";
 	}
 	
 	@GetMapping("/register")
-	public String LoadJobseekerRegister() {
-		return "jobseeker/register";
-	}
-	
-    //	employer controller
+    public String showRegistrationForm(Model model) {
+        JobseekerRegister jobseekerRegister = new JobseekerRegister();
+        model.addAttribute("jobseekerRegister", jobseekerRegister);
+
+        List<Location> locations = jobseekerRegisterService.getAllLocations();
+        System.out.println(locations.get(0).getLocation());
+        model.addAttribute("locations", locations);
+
+        List<EducationLevel> qualifications = jobseekerRegisterService.getEducationLevel();
+        model.addAttribute("qualifications", qualifications);
+
+        List<Skills> allSkills = jobseekerRegisterService.getAllSkills();
+        System.out.println(allSkills.get(0).getSkillId() + " " + allSkills.get(0).getSkill() );
+        model.addAttribute("allSkills", allSkills);
+
+        return "jobseeker/register";
+    }
+
 	@GetMapping("/employer/login")
 	public String LoadEmployerLogin() {
 		return "employer/login";
@@ -65,7 +94,7 @@ public class PageRenderController {
 	
 	@GetMapping("/employer/candidates")
 	public String loadCandidates() {
-		return "employer/candidates"; // goes to static/template/employer/candidates
+		return "employer/candidates";
 	}
 	
 	@GetMapping("/employer/profile")
