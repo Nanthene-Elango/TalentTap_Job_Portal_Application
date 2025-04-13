@@ -11,14 +11,14 @@ import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
-import com.talenttap.service.JobseekerRegisterService;
+import com.talenttap.service.JobseekerService;
 
 @Controller
 public class PageRenderController {
 
-	private JobseekerRegisterService jobseekerRegisterService;
+	private JobseekerService jobseekerRegisterService;
 	
-	public PageRenderController(JobseekerRegisterService jobseekerRegisterService){
+	public PageRenderController(JobseekerService jobseekerRegisterService){
 		this.jobseekerRegisterService = jobseekerRegisterService;
 	}
 	
@@ -49,7 +49,7 @@ public class PageRenderController {
 	
 	@GetMapping("/login")
 	public String LoadJobseekerLogin(Model model) {
-		 model.addAttribute("Login", new Login()); 
+		model.addAttribute("Login", new Login()); 
 		return "jobseeker/login";
 	}
 	

@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.JobseekerRegister;
+import com.talenttap.model.JwtToken;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
@@ -21,7 +22,7 @@ import com.talenttap.model.Skills;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
-public class JobseekerRegisterService {
+public class JobseekerService {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -86,6 +87,29 @@ public class JobseekerRegisterService {
 	    }
 		
 	    System.out.println(backendResponse.getBody());
+	}
+
+	public String getFullName(JwtToken jwtToken) {
+		
+		String url = "http://localhost:8083/jobseeker/fullName";
+		
+		HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    HttpEntity<JwtToken> request = new HttpEntity<>(jwtToken, headers);
+		
+	    ResponseEntity<String> response = restTemplate.exchange(
+	    		url,
+	            HttpMethod.POST,
+	            request,
+	            String.class
+	    );
+		
+		if (response.getStatusCode().is2xxSuccessful()) {
+			return response.getBody();
+		}
+		else {
+			return null;
+		}
 	}
 
 }

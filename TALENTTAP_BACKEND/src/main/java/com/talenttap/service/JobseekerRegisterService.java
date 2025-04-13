@@ -118,4 +118,16 @@ public class JobseekerRegisterService {
 		}
 	}
 
+	public ResponseEntity<String> getFullName(String jwt) {
+		
+		System.out.println(jwt);
+		if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
+			return ResponseEntity.badRequest().body("Jwt Token is Empty!");
+		}
+		String username = jwtUtil.extractIdentifier(jwt);
+		Users user = userRepo.findByUsername(username).get();
+		
+		return ResponseEntity.ok().body(user.getFullName());
+	}
+
 }
