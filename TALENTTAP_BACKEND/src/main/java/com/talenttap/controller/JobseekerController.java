@@ -1,6 +1,7 @@
 package com.talenttap.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,33 +23,39 @@ import com.talenttap.service.SkillService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
 @CrossOrigin("*")
 public class JobseekerController {
 
 	private LocationService locationService;
 	private SkillService skillService;
 	private EducationService educationService;
+	private JobseekerRegisterService jobseekerService;
 	
-	public JobseekerController(LocationService location , SkillService skillService, EducationService educationService) {
+	public JobseekerController(LocationService location , SkillService skillService, 
+			EducationService educationService , JobseekerRegisterService jobseekerService) {
 		this.locationService = location;
 		this.skillService = skillService;
 		this.educationService = educationService;
+		this.jobseekerService = jobseekerService;
 	}
 	
-	@GetMapping("/locations")
+	@GetMapping("api/locations")
 	public ResponseEntity<List<LocationDTO>> getAllLocations(){
 		return ResponseEntity.ok().body(locationService.getAllLocations());
 	}
 	
-	@GetMapping("/skills")
+	@GetMapping("api/skills")
 	public ResponseEntity<List<SkillsDTO>> getAllSkills(){
 		return ResponseEntity.ok().body(skillService.getAllSkills());
 	}
 	
-	@GetMapping("/educationlevel")
+	@GetMapping("api/educationlevel")
 	public ResponseEntity<List<EducationLevelDTO>> getAllEducationLevel(){
 		return ResponseEntity.ok().body(educationService.getAllEducationLevel());
 	}
 	
+	@PostMapping("jobseeker/fullName")
+	public ResponseEntity<String> getFullName(@RequestBody Map<String,String> jwt){
+		return jobseekerService.getFullName(jwt.get("jwt"));
+	}
 }

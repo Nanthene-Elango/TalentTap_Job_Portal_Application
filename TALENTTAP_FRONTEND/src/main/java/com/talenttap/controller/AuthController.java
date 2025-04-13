@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.Login;
-import com.talenttap.service.JobseekerRegisterService;
+import com.talenttap.service.JobseekerService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class AuthController {
 
-	private JobseekerRegisterService jobseekerRegisterService;
+	private JobseekerService jobseekerRegisterService;
 	
-	public AuthController(JobseekerRegisterService jobseekerRegisterService){
+	public AuthController(JobseekerService jobseekerRegisterService){
 		this.jobseekerRegisterService = jobseekerRegisterService;
 	}
 	
@@ -57,5 +58,16 @@ public class AuthController {
 	public String loginUser(@ModelAttribute Login login, HttpServletResponse response) {
 	    jobseekerRegisterService.login(login , response);
 	    return "redirect:/";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpServletResponse response) {
+	    Cookie cookie = new Cookie("jwt", null);
+	    cookie.setPath("/");             
+	    cookie.setHttpOnly(true);       
+	    cookie.setMaxAge(0);            
+	    response.addCookie(cookie);
+
+	    return "redirect:/";     
 	}
 }
