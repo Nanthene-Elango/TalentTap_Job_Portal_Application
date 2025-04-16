@@ -8,5 +8,4 @@ import com.talenttap.entity.Location;
 @Repository
 public interface LocationRepository extends JpaRepository<Location,Integer>{
 
-	
 }

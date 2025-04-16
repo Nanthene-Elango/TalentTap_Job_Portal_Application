@@ -19,7 +19,6 @@ public class AuthController {
 	private JobseekerRegisterService jobseekerRegisterService;
 	
 	public AuthController(JobseekerRegisterService jobseekerRegisterService) {
-
 		this.jobseekerRegisterService = jobseekerRegisterService;
 	}
 	
