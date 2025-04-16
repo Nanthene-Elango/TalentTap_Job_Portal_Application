@@ -7,10 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.EmployerRegister;
+import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
+import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobseekerService;
 
 @Controller
@@ -18,8 +21,11 @@ public class PageRenderController {
 
 	private JobseekerService jobseekerRegisterService;
 	
-	public PageRenderController(JobseekerService jobseekerRegisterService){
+	private EmployerAuthService employerService;
+	
+	public PageRenderController(JobseekerService jobseekerRegisterService, EmployerAuthService employerService){
 		this.jobseekerRegisterService = jobseekerRegisterService;
+		this.employerService = employerService;
 	}
 	
 	@GetMapping
@@ -78,7 +84,18 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/employer/register")
-	public String LoadEmployerResiter() {
+	public String LoadEmployerResiter(Model model) {
+		EmployerRegister register = new EmployerRegister();
+		model.addAttribute("employerRegister", register);
+		
+		List<Location> locations = jobseekerRegisterService.getAllLocations();
+		System.out.println(locations.get(0).getLocation());
+		model.addAttribute("locations",locations);
+		
+		List<IndustryType> industryType = employerService.getAllIndustryType();
+	    System.out.println(industryType.get(0).getIndustryType());
+		model.addAttribute("companyIndustry",industryType);
+		
 		return "employer/register";
 	}
 	
