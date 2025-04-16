@@ -52,13 +52,14 @@ public class JobSeeker {
     private int yearOfExperience;
 
     @Lob
-    @Column(name = "profile_photo")
+    @Column(name = "profile_photo" , columnDefinition = "LONGBLOB")
     private byte[] profilePhoto;
 
     @Column(name = "profile_summary", columnDefinition = "TEXT")
     private String profileSummary;
 
     @Lob
+    @Column(name = "resume", columnDefinition = "LONGBLOB")
     private byte[] resume;
     
     @ManyToMany

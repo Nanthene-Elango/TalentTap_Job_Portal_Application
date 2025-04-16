@@ -27,7 +27,7 @@ public class Company {
 	private String companyName;
 	
 	@Lob
-	@Column(name="company_logo" , nullable=false)
+	@Column(name = "company_logo", columnDefinition = "LONGBLOB" ,  nullable=false)
 	private byte[] companyLogo;
 	
 	@ManyToOne
