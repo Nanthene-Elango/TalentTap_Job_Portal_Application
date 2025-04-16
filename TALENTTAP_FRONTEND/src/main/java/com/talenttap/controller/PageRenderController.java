@@ -53,6 +53,11 @@ public class PageRenderController {
 		return "jobseeker/companyProfile";
 	}
 	
+	@GetMapping("/profile")
+	public String LoadProfile() {
+		return "jobseeker/profile";
+	}
+	
 	@GetMapping("/login")
 	public String LoadJobseekerLogin(Model model) {
 		model.addAttribute("Login", new Login()); 

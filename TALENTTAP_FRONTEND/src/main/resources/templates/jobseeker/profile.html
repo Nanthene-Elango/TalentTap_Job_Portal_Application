@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Seeker Profile</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/jobseeker/css/style.css}">
+    <link rel="stylesheet" th:href="@{/jobseeker/css/profile.css}">
+
+</head>
+
+<body>
+    <div class="container py-5">
+        <a th:href = "@{/}" class="btn btn-violet mb-3">
+            <i class="fas fa-chevron-left"></i> Back to Home
+        </a>
+        <div class="row">
+            <!-- Left Column - Basic Profile Details -->
+            <div class="col-lg-4">
+                <!-- Profile Photo, Name and Basic Info -->
+                <div class="profile-card position-relative">
+                    <button class="btn btn-edit" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <div class="profile-header">
+                        <img src="/api/placeholder/150/150" alt="Profile Photo" class="profile-image mb-3">
+                        <h4 class="text-center mb-1" id="fullname">John Doe</h4>
+                        <p class="text-muted text-center mb-2">
+                            <i class="fas fa-map-marker-alt me-1"></i><span id="location"> New York, USA</span>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-envelope me-2"></i>Email:</div>
+                            <div id="email">johndoe@example.com</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-phone me-2"></i>Phone:</div>
+                            <div id="phone">+91 934278 38900</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-calendar me-2"></i>DOB:</div>
+                            <div id="dob">15 Jan 1990</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-venus-mars me-2"></i>Gender:</div>
+                            <div id="gender">Male</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-user me-2"></i>Username:</div>
+                            <div id="username">johndoe90</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div><i class="fas fa-key me-2"></i>Password:</div>
+                            <div id="password">••••••••</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Summary Section -->
+                <div class="profile-card position-relative">
+                    <button class="btn btn-edit" data-bs-toggle="modal" data-bs-target="#editSummaryModal">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <h5 class="section-title">Profile Summary</h5>
+                    <p id="summary">Experienced software developer with 5+ years of expertise in full-stack development.
+                        Proficient
+                        in JavaScript, React, Node.js, and Python. Passionate about creating user-friendly applications
+                        and solving complex problems. Seeking opportunities to leverage my skills in a challenging
+                        environment.</p>
+                </div>
+            </div>
+
+            <!-- Right Column - Professional Details -->
+            <div class="col-lg-8">
+                <!-- Job Preferences Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Job Preferences</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#editJobPreferencesModal">
+                            <i class="fas fa-pencil-alt me-1"></i> Edit Preferences
+                        </button>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-briefcase me-2"></i>Job Type:</div>
+                            <div>All Type</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-map-marker-alt me-2"></i>Preferred Locations:</div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div><i class="fas fa-dollar-sign me-2"></i>Salary Range:</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Upload Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Resume/CV</h5>
+                        <button class="btn btn-primary btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#uploadResumeModal">
+                            <i class="fas fa-upload me-1"></i> Upload New
+                        </button>
+                    </div>
+
+                    <div class="resume-section">
+                        <!-- When no resume is uploaded -->
+                        <div class="empty-state d-none">
+                            <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
+                            <p>No resume uploaded yet</p>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#uploadResumeModal">
+                                <i class="fas fa-upload me-1"></i> Upload Resume
+                            </button>
+                        </div>
+
+                        <!-- When resume is uploaded -->
+                        <div class="resume-details">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-file-pdf fa-2x text-danger me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">John_Doe_Resume.pdf</h6>
+                                    <p class="text-muted mb-0"><small>Uploaded on March 15, 2025 (2.4 MB)</small></p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download me-1"></i> Download
+                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-eye me-1"></i> Preview
+                                </a>
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Resume Modal -->
+                <div class="modal fade" id="uploadResumeModal" tabindex="-1" aria-labelledby="uploadResumeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="uploadResumeModalLabel">Upload Resume/CV</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="resumeFile" class="form-label">Choose Resume File</label>
+                                        <input class="form-control" type="file" id="resumeFile"
+                                            accept=".pdf,.doc,.docx">
+                                        <small class="text-muted">Accepted formats: PDF, DOC, DOCX (Max 5MB)</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="makePublic">
+                                            <label class="form-check-label" for="makePublic">
+                                                Make resume visible to employers
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Resume Parsing Options</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="extractSkills" checked>
+                                            <label class="form-check-label" for="extractSkills">
+                                                Automatically extract skills
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="extractEducation"
+                                                checked>
+                                            <label class="form-check-label" for="extractEducation">
+                                                Automatically extract education
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="extractExperience"
+                                                checked>
+                                            <label class="form-check-label" for="extractExperience">
+                                                Automatically extract work experience
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="upload-preview d-none mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="card-title">Upload Preview</h6>
+                                                <p class="card-text">Filename: <span
+                                                        id="fileNamePreview">resume.pdf</span></p>
+                                                <p class="card-text">Size: <span id="fileSizePreview">2.4 MB</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary">Upload Resume</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Education Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Education</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#addEducationModal">
+                            <i class="fas fa-plus me-1"></i> Add Education
+                        </button>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editEducationModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title" id="degree">Master of Computer Science</h6>
+                        <p class="card-subtitle mb-1" id="institution">Stanford University</p>
+                        <p class="card-text" id="year">2014 - 2016</p>
+                        <p class="card-text" id="percentage">Percentage: 86</p>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editEducationModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">Bachelor of Engineering in Computer Science</h6>
+                        <p class="card-subtitle mb-1">MIT</p>
+                        <p class="card-text">2010 - 2014</p>
+                        <p class="card-text">Percentage: 74</p>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Skills</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#addSkillModal">
+                            <i class="fas fa-plus me-1"></i> Add Skill
+                        </button>
+                    </div>
+
+                    <div>
+                        <span class="skill-badge">JavaScript <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">React.js <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">Node.js <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">Python <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">SQL <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">HTML/CSS <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">Git <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                        <span class="skill-badge">Docker <button class="btn btn-sm text-secondary p-0 ms-1"><i
+                                    class="fas fa-times"></i></button></span>
+                    </div>
+                </div>
+
+                <!-- Certifications Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Certifications</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#addCertificationModal">
+                            <i class="fas fa-plus me-1"></i> Add Certification
+                        </button>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editCertificationModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">AWS Certified Solutions Architect</h6>
+                        <p class="card-subtitle mb-1">Amazon Web Services</p>
+                        <p class="card-text">Issued: Jan 2023 | Expires: Jan 2026</p>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editCertificationModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">Google Cloud Professional Developer</h6>
+                        <p class="card-subtitle mb-1">Google</p>
+                        <p class="card-text">Issued: Mar 2022 | Expires: Mar 2025</p>
+                    </div>
+                </div>
+
+                <!-- Projects Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Projects</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#addProjectModal">
+                            <i class="fas fa-plus me-1"></i> Add Project
+                        </button>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editProjectModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">E-commerce Platform</h6>
+                        <p class="card-subtitle mb-1">Lead Developer</p>
+                        <p class="card-text">Developed a full-scale e-commerce platform using React, Node.js, and
+                            MongoDB. Implemented payment processing, inventory management, and user authentication
+                            systems.</p>
+                        <p class="card-text"><small class="text-muted">2022 - 2023</small></p>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editProjectModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">AI-Based Recommendation System</h6>
+                        <p class="card-subtitle mb-1">Backend Developer</p>
+                        <p class="card-text">Created an AI-based recommendation system for a streaming service using
+                            Python and TensorFlow. Improved user engagement by 25% through personalized content
+                            suggestions.</p>
+                        <p class="card-text"><small class="text-muted">2021 - 2022</small></p>
+                    </div>
+                </div>
+
+                <!-- Experience Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Experience</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#addExperienceModal">
+                            <i class="fas fa-plus me-1"></i> Add Experience
+                        </button>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editExperienceModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">Senior Software Engineer</h6>
+                        <p class="card-subtitle mb-1">Google</p>
+                        <p class="card-text">Jan 2020 - Present</p>
+                        <p class="card-text">Led a team of 5 developers to build and maintain cloud-based applications.
+                            Implemented CI/CD pipelines and microservices architecture. Reduced deployment time by 40%.
+                        </p>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editExperienceModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <br>
+                        <h6 class="card-title">Software Developer</h6>
+                        <p class="card-subtitle mb-1">Microsoft</p>
+                        <p class="card-text">Jun 2017 - Dec 2019</p>
+                        <p class="card-text">Developed web applications using ASP.NET and Angular. Collaborated with UX
+                            designers to improve user interface and experience. Participated in code reviews and
+                            mentored junior developers.</p>
+                    </div>
+                </div>
+
+                <!-- Languages Section -->
+                <div class="profile-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">Languages</h5>
+                        <button class="btn btn-violet btn-sm btn-add" data-bs-toggle="modal"
+                            data-bs-target="#addLanguageModal">
+                            <i class="fas fa-plus me-1"></i> Add Language
+                        </button>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editLanguageModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <h6 class="card-title">English</h6>
+                        <p class="card-text">Native</p>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editLanguageModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <h6 class="card-title">Spanish</h6>
+                        <p class="card-text">Intermediate</p>
+                    </div>
+
+                    <div class="section-item">
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-link text-violet" data-bs-toggle="modal"
+                                data-bs-target="#editLanguageModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-secondary">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <h6 class="card-title">French</h6>
+                        <p class="card-text">Basic</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for editing profile sections -->
+
+    <!-- Edit Job Preferences Modal -->
+    <div class="modal fade" id="editJobPreferencesModal" tabindex="-1" aria-labelledby="editJobPreferencesModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editJobPreferencesModalLabel">Edit Job Preferences</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="jobType" class="form-label">Preferred Job Type</label>
+                            <select class="form-select" id="jobType">
+                                <option value="all-type" selected>All Type</option>
+                                <option value="full-time">Full Time</option>
+                                <option value="part-time">Part Time</option>
+                                <option value="internship">Internship</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Preferred Locations</label>
+                            <div class="input-group mb-2">
+                                <select class="form-select" id="jobLocation" placeholder="">
+                                    <option value="" selected disabled>Choose a location</option>
+                                    <option value="all-type">Chennai , Tamilnadu</option>
+                                    <option value="full-time">Bangalore , Karnataka</option>
+                                    <option value="part-time">Mumbai , Maharashtra</option>
+                                    <option value="internship">Coimbatore , Tamilnadu</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button" id="addLocationBtn">Add</button>
+                            </div>
+                            <!-- <div id="selectedLocations" class="d-flex flex-wrap gap-2 mt-2">
+                                <span class="badge bg-light text-dark p-2">
+                                    New York, USA
+                                    <button class="btn-close btn-close-sm ms-1" type="button"
+                                        aria-label="Remove"></button>
+                                </span>
+                                <span class="badge bg-light text-dark p-2">
+                                    San Francisco, USA
+                                    <button class="btn-close btn-close-sm ms-1" type="button"
+                                        aria-label="Remove"></button>
+                                </span>
+                                <span class="badge bg-light text-dark p-2">
+                                    Remote
+                                    <button class="btn-close btn-close-sm ms-1" type="button"
+                                        aria-label="Remove"></button>
+                                </span>
+                            </div> -->
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Salary Range (per year)</label>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="minSalary" class="form-label">Minimum (Rs.)</label>
+                                    <input type="number" class="form-control" id="minSalary" placeholder="e.g., 90000"
+                                        value="90000">
+                                </div>
+                                <div class="col">
+                                    <label for="maxSalary" class="form-label">Maximum (Rs.)</label>
+                                    <input type="number" class="form-control" id="maxSalary" placeholder="e.g., 120000"
+                                        value="120000">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3 text-center">
+                            <img src="/api/placeholder/150/150" alt="Profile Photo" class="profile-image mb-2">
+                            <div>
+                                <button type="button" class="btn btn-outline-primary btn-sm">Change Photo</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" value="John Doe">
+                        </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" value="Software Developer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" value="johndoe@example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" value="+1 234 567 8900">
+                        </div>
+                        <div class="mb-3">
+                            <label for="dob" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob" value="1990-01-15">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender">
+                                <option value="male" selected>Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <select class="form-select" id="location">
+                                <option value="new-york" selected>New York, USA</option>
+                                <option value="san-francisco">San Francisco, USA</option>
+                                <option value="london">London, UK</option>
+                                <option value="berlin">Berlin, Germany</option>
+                                <option value="toronto">Toronto, Canada</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" value="johndoe90">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" value="password123">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Summary Modal -->
+    <div class="modal fade" id="editSummaryModal" tabindex="-1" aria-labelledby="editSummaryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSummaryModalLabel">Edit Profile Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="profileSummary" class="form-label">Profile Summary</label>
+                            <textarea class="form-control" id="profileSummary"
+                                rows="6">Experienced software developer with 5+ years of expertise in full-stack development. Proficient in JavaScript, React, Node.js, and Python. Passionate about creating user-friendly applications and solving complex problems. Seeking opportunities to leverage my skills in a challenging environment.</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Education Modal -->
+    <div class="modal fade" id="addEducationModal" tabindex="-1" aria-labelledby="addEducationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEducationModalLabel">Add Education</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="education-level" class="form-label">Education Level</label>
+                            <select class="form-select" id="education-level">
+                                <option value="" selected disabled>choose board of education</option>
+                                <option value="native">10th</option>
+                                <option value="fluent">12th</option>
+                                <option value="advanced">Undergraduation</option>
+                                <option value="intermediate">Post-Graduation</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="board-of-education">Board of Education</label>
+                            <select class="form-select" id="education-level">
+                                <option value="" selected disabled>Choose Education level</option>
+                                <option value="native">CBSC</option>
+                                <option value="fluent">Tamilnadu</option>
+                                <option value="advanced">Gujarat</option>
+                                <option value="intermediate">Karnataka</option>
+                                <option value="kerala">Kerala</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="degree" class="form-label">Degree</label>
+                            <input type="text" class="form-control" id="degree" placeholder="e.g., Bachelor of Science">
+                        </div>
+                        <div class="mb-3">
+                            <label for="institution" class="form-label">Institution</label>
+                            <input type="text" class="form-control" id="institution"
+                                placeholder="e.g., Harvard University">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="startYear" class="form-label">Start Year</label>
+                                <input type="number" class="form-control" id="startYear" placeholder="e.g., 2010">
+                            </div>
+                            <div class="col">
+                                <label for="endYear" class="form-label">End Year</label>
+                                <input type="number" class="form-control" id="endYear" placeholder="e.g., 2014">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Percentage" class="form-label">Percentage</label>
+                            <input type="tel" class="form-control" id="percentage" placeholder="e.g., 79" min="0"
+                                max="100" maxlength="3">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Education Modal -->
+    <div class="modal fade" id="editEducationModal" tabindex="-1" aria-labelledby="editEducationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEducationModalLabel">Edit Education</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="editDegree" class="form-label">Degree</label>
+                            <input type="text" class="form-control" id="editDegree" value="Master of Computer Science">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editInstitution" class="form-label">Institution</label>
+                            <input type="text" class="form-control" id="editInstitution" value="Stanford University">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="editStartYear" class="form-label">Start Year</label>
+                                <input type="number" class="form-control" id="editStartYear" value="2014">
+                            </div>
+                            <div class="col">
+                                <label for="editEndYear" class="form-label">End Year</label>
+                                <input type="number" class="form-control" id="editEndYear" value="2016">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPercentage" class="form-label">Percentage</label>
+                            <input type="text" class="form-control" id="editPercentage" value="3.8/4.0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<!-- Add Skill Modal -->
+    <div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="skillName" class="form-label">Skill</label>
+                            <input type="text" class="form-control" id="skillName" placeholder="e.g., Java">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Certification Modal -->
+    <div class="modal fade" id="addCertificationModal" tabindex="-1" aria-labelledby="addCertificationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCertificationModalLabel">Add Certification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="certificationName" class="form-label">Certification Name</label>
+                            <input type="text" class="form-control" id="certificationName"
+                                placeholder="e.g., AWS Certified Developer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="certificationIssuer" class="form-label">Issuing Organization</label>
+                            <input type="text" class="form-control" id="certificationIssuer"
+                                placeholder="e.g., Amazon Web Services">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="issueDate" class="form-label">Issue Date</label>
+                                <input type="month" class="form-control" id="issueDate">
+                            </div>
+                            <div class="col">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="month" class="form-control" id="expiryDate">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Certification Modal -->
+    <div class="modal fade" id="editCertificationModal" tabindex="-1" aria-labelledby="editCertificationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCertificationModalLabel">Edit Certification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="editCertificationName" class="form-label">Certification Name</label>
+                            <input type="text" class="form-control" id="editCertificationName"
+                                value="AWS Certified Solutions Architect">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCertificationIssuer" class="form-label">Issuing Organization</label>
+                            <input type="text" class="form-control" id="editCertificationIssuer"
+                                value="Amazon Web Services">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="editIssueDate" class="form-label">Issue Date</label>
+                                <input type="month" class="form-control" id="editIssueDate" value="2023-01">
+                            </div>
+                            <div class="col">
+                                <label for="editExpiryDate" class="form-label">Expiry Date</label>
+                                <input type="month" class="form-control" id="editExpiryDate" value="2026-01">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Project Modal -->
+    <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProjectModalLabel">Add Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="projectName" class="form-label">Project Name</label>
+                            <input type="text" class="form-control" id="projectName" placeholder="e.g., CRM System">
+                        </div>
+                        <div class="mb-3">
+                            <label for="projectRole" class="form-label">Your Role</label>
+                            <input type="text" class="form-control" id="projectRole"
+                                placeholder="e.g., Frontend Developer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="projectDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="projectDescription" rows="4"
+                                placeholder="Describe your project and your contributions"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="projectStartDate" class="form-label">Start Date</label>
+                                <input type="month" class="form-control" id="projectStartDate">
+                            </div>
+                            <div class="col">
+                                <label for="projectEndDate" class="form-label">End Date</label>
+                                <input type="month" class="form-control" id="projectEndDate">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Project Modal -->
+    <div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProjectModalLabel">Edit Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="editProjectName" class="form-label">Project Name</label>
+                            <input type="text" class="form-control" id="editProjectName" value="E-commerce Platform">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProjectRole" class="form-label">Your Role</label>
+                            <input type="text" class="form-control" id="editProjectRole" value="Lead Developer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProjectDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editProjectDescription"
+                                rows="4">Developed a full-scale e-commerce platform using React, Node.js, and MongoDB. Implemented payment processing, inventory management, and user authentication systems.</textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="editProjectStartDate" class="form-label">Start Date</label>
+                                <input type="month" class="form-control" id="editProjectStartDate" value="2022-01">
+                            </div>
+                            <div class="col">
+                                <label for="editProjectEndDate" class="form-label">End Date</label>
+                                <input type="month" class="form-control" id="editProjectEndDate" value="2023-12">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Experience Modal -->
+    <div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addExperienceModalLabel">Add Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="jobTitle" class="form-label">Job Title</label>
+                            <input type="text" class="form-control" id="jobTitle" placeholder="e.g., Software Engineer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="companyName" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="companyName"
+                                placeholder="e.g., ABC Corporation">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="jobStartDate" class="form-label">Start Date</label>
+                                <input type="month" class="form-control" id="jobStartDate">
+                            </div>
+                            <div class="col">
+                                <label for="jobEndDate" class="form-label">End Date</label>
+                                <input type="month" class="form-control" id="jobEndDate">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="currentJob">
+                                    <label class="form-check-label" for="currentJob">
+                                        I currently work here
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="jobDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="jobDescription" rows="4"
+                                placeholder="Describe your responsibilities and achievements"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Experience Modal -->
+    <div class="modal fade" id="editExperienceModal" tabindex="-1" aria-labelledby="editExperienceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editExperienceModalLabel">Edit Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="editJobTitle" class="form-label">Job Title</label>
+                            <input type="text" class="form-control" id="editJobTitle" value="Senior Software Engineer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCompanyName" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="editCompanyName" value="Google">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="editJobStartDate" class="form-label">Start Date</label>
+                                <input type="month" class="form-control" id="editJobStartDate" value="2020-01">
+                            </div>
+                            <div class="col">
+                                <label for="editJobEndDate" class="form-label">End Date</label>
+                                <input type="month" class="form-control" id="editJobEndDate">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="editCurrentJob" checked>
+                                    <label class="form-check-label" for="editCurrentJob">
+                                        I currently work here
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editJobDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editJobDescription"
+                                rows="4">Led a team of 5 developers to build and maintain cloud-based applications. Implemented CI/CD pipelines and microservices architecture. Reduced deployment time by 40%.</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Language Modal -->
+    <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addLanguageModalLabel">Add Language</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="languageName" class="form-label">Language</label>
+                            <input type="text" class="form-control" id="languageName" placeholder="e.g., German">
+                        </div>
+                        <div class="mb-3">
+                            <label for="languageProficiency" class="form-label">Proficiency</label>
+                            <select class="form-select" id="languageProficiency">
+                                <option value="native">Native</option>
+                                <option value="fluent">Fluent</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="basic">Basic</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Language Modal -->
+    <div class="modal fade" id="editLanguageModal" tabindex="-1" aria-labelledby="editLanguageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLanguageModalLabel">Edit Language</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="editLanguageName" class="form-label">Language</label>
+                            <input type="text" class="form-control" id="editLanguageName" value="Spanish">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLanguageProficiency" class="form-label">Proficiency</label>
+                            <select class="form-select" id="editLanguageProficiency">
+                                <option value="native">Native</option>
+                                <option value="fluent">Fluent</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="intermediate" selected>Intermediate</option>
+                                <option value="basic">Basic</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-violet">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
