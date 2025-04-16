@@ -388,7 +388,6 @@
         }
     </style>
 </head>
-
 <body>
     <div class="registration-container">
         <button class="back-button" onclick="window.history.back()">
@@ -574,6 +573,12 @@
                     <label for="companyAbout">About the Company</label>
                     <textarea class="form-control" id="companyAbout" placeholder="Describe your company"></textarea>
                     <div class="error-message" id="companyAboutError"></div>
+                </div>
+                <!-- New Designation Field -->
+                <div class="form-group">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" placeholder="Enter your designation (e.g., HR Manager)">
+                    <div class="error-message" id="designationError"></div>
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-btn" data-step="4">Previous</button>
@@ -923,6 +928,7 @@
                 const websiteUrl = $('#websiteUrl').val().trim();
                 const foundedAt = $('#foundedAt').val();
                 const companyAbout = $('#companyAbout').val().trim();
+                const designation = $('#designation').val().trim();
 
                 console.log('Validating Company Details...');
                 console.log('Company Name:', companyName);
@@ -935,6 +941,7 @@
                 console.log('Website URL:', websiteUrl);
                 console.log('Founded At:', foundedAt);
                 console.log('Company About:', companyAbout);
+                console.log('Designation:', designation);
 
                 if (!companyName || companyName.length < 2) {
                     showError('companyName', companyName ? 'Minimum 2 characters' : 'Company name is required');
@@ -1012,6 +1019,13 @@
                     clearError('companyAbout');
                 }
 
+                if (!designation || designation.length < 2) {
+                    showError('designation', designation ? 'Minimum 2 characters' : 'Designation is required');
+                    isValid = false;
+                } else {
+                    clearError('designation');
+                }
+
                 console.log('Validation Result:', isValid);
                 return isValid;
             }
@@ -1030,6 +1044,7 @@
                 const websiteUrl = $('#websiteUrl').val().trim();
                 const foundedAt = $('#foundedAt').val();
                 const companyAbout = $('#companyAbout').val().trim();
+                const designation = $('#designation').val().trim();
 
                 let html = `
                     <p><strong>Full Name:</strong> ${fullName}</p>
@@ -1045,6 +1060,7 @@
                     <p><strong>Website URL:</strong> ${websiteUrl}</p>
                     <p><strong>Founded At:</strong> ${foundedAt}</p>
                     <p><strong>About Company:</strong> ${companyAbout}</p>
+                    <p><strong>Designation:</strong> ${designation}</p>
                 `;
                 $('#summaryDetails').html(html);
             }
@@ -1307,6 +1323,16 @@
                     showError('companyAbout', val ? 'Minimum 10 characters required' : 'About company is required');
                 } else {
                     clearError('companyAbout');
+                }
+            });
+
+            // New real-time validation for Designation
+            $('#designation').on('input', function() {
+                const val = $(this).val().trim();
+                if (!val || val.length < 2) {
+                    showError('designation', val ? 'Minimum 2 characters' : 'Designation is required');
+                } else {
+                    clearError('designation');
                 }
             });
 

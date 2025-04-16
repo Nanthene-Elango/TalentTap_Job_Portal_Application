@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobseekerRegisterDTO {
-
-
     private Integer yearsOfExperience;
     private Integer location;
     private Integer highestQualification;
@@ -26,6 +24,5 @@ public class JobseekerRegisterDTO {
     private String password;
     private String email;
     private String phoneNumber;
-    private List<Integer> skillIds;
-    
+    private List<Integer> skillIds; 
 }

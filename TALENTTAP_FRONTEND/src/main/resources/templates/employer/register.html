@@ -28,23 +28,24 @@
             <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
 
-        <form id="registrationForm" novalidate>
+        <form id="registrationForm" novalidate th:action="@{/employerRegister}" method="post"
+			th:object="${employerRegister}" enctype="multipart/form-data">
             <!-- Step 1: Basic Details -->
             <div class="form-step active" id="basicDetailsStep">
                 <h2>Basic Details</h2>
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
-                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
+                    <input type="text" class="form-control" id="fullName" th:field="*{fullName}" placeholder="Enter your full name">
                     <div class="error-message" id="fullNameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Choose a username">
+                    <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Choose a username">
                     <div class="error-message" id="usernameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                    <input type="password" class="form-control" id="password" th:field = "*{password}" placeholder="Enter your password">
                     <div class="error-message" id="passwordError"></div>
                 </div>
                 <div class="btn-group">
@@ -56,52 +57,55 @@
             </div>
 
             <!-- Step 2: Phone Verification -->
-            <div class="form-step" id="phoneVerificationStep">
-                <h2>Phone Verification</h2>
-                <div class="form-group">
-                    <label for="phoneNumber">Phone Number</label>
-                    <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your phone number">
-                    <div class="error-message" id="phoneNumberError"></div>
-                </div>
-                <p id="phoneOtpMessage" style="display: none;">
-                    Code sent to: <span id="displayPhone"></span>
-                </p>
-                <div class="otp-container" id="phoneOtpContainer" style="display: none;">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp1" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp2" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp3" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp4" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp5" inputmode="numeric" pattern="[0-9]*">
-                    <input type="text" maxlength="1" class="otp-input" id="phoneOtp6" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <div class="error-message" id="otpPhoneError"></div>
-                <div class="resend-container" id="phoneResendContainer" style="display: none;">
-                    <button type="button" class="resend-btn" id="phoneResendBtn" disabled>Resend OTP</button>
-                    <span id="phoneTimer"></span>
-                </div>
-                <div class="verification-status" id="phoneStatus"></div>
-                <button type="button" class="change-number-btn" id="changePhoneBtn" style="display: none;">Change Number</button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary prev-btn" data-step="2">Previous</button>
-                    <button type="button" class="btn progress-btn" id="phoneVerifyBtn" style="display: block;">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Get OTP</span>
-                    </button>
-                    <button type="button" class="btn next-btn progress-btn" id="phoneNextBtn" data-step="2" style="display: none;">
-                        <div class="progress-fill"></div>
-                        <span class="btn-text">Next</span>
-                    </button>
-                </div>
-            </div>
+            <!-- Step 2: Phone Verification -->
+<div class="form-step" id="phoneVerificationStep">
+    <h2>Phone Verification</h2>
+    <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumberInput" placeholder="Enter your phone number">
+        <input type="hidden" name="phoneNumber" id="hiddenPhoneNumber">
+        <div class="error-message" id="phoneNumberError"></div>
+    </div>
+    <p id="phoneOtpMessage" style="display: none;">
+        Code sent to: <span id="displayPhone"></span>
+    </p>
+    <div class="otp-container" id="phoneOtpContainer" style="display: none;">
+        <input type="text" maxlength="1" class="otp-input" id="phoneOtp1" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" class="otp-input" id="phoneOtp2" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" class="otp-input" id="phoneOtp3" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" class="otp-input" id="phoneOtp4" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" class="otp-input" id="phoneOtp5" inputmode="numeric" pattern="[0-9]*">
+        <input type="text" maxlength="1" class="otp-input" id="phoneOtp6" inputmode="numeric" pattern="[0-9]*">
+    </div>
+    <div class="error-message" id="otpPhoneError"></div>
+    <div class="resend-container" id="phoneResendContainer" style="display: none;">
+        <button type="button" class="resend-btn" id="phoneResendBtn" disabled>Resend OTP</button>
+        <span id="phoneTimer"></span>
+    </div>
+    <div class="verification-status" id="phoneStatus"></div>
+    <button type="button" class="change-number-btn" id="changePhoneBtn" style="display: none;">Change Number</button>
+    <div class="btn-group">
+        <button type="button" class="btn btn-secondary prev-btn" data-step="2">Previous</button>
+        <button type="button" class="btn progress-btn" id="phoneVerifyBtn" style="display: block;">
+            <div class="progress-fill"></div>
+            <span class="btn-text">Get OTP</span>
+        </button>
+        <button type="button" class="btn next-btn progress-btn" id="phoneNextBtn" data-step="2" style="display: none;">
+            <div class="progress-fill"></div>
+            <span class="btn-text">Next</span>
+        </button>
+    </div>
+</div>
 
             <!-- Step 3: Email Verification -->
-            <div class="form-step" id="emailVerificationStep">
-                <h2>Email Verification</h2>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
-                    <div class="error-message" id="emailError"></div>
-                </div>
+<div class="form-step" id="emailVerificationStep">
+    <h2>Email Verification</h2>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="emailInput" placeholder="Enter your email">
+        <input type="hidden" name="emailId" id="hiddenEmailId">
+        <div class="error-message" id="emailError"></div>
+    </div>
                 <p id="emailOtpMessage" style="display: none;">
                     Code sent to: <span id="displayEmail"></span>
                 </p>
@@ -138,68 +142,72 @@
                 <h2>Company Details</h2>
                 <div class="form-group">
                     <label for="companyName">Company Name</label>
-                    <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
+                    <input type="text" class="form-control" id="companyName" th:field="*{companyName}" placeholder="Enter company name">
                     <div class="error-message" id="companyNameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companyLogo">Company Logo</label>
-                    <input type="file" class="form-control" id="companyLogo" accept="image/*">
+                    <input type="file" class="form-control" id="companyLogo" name="companyLogo" accept="image/*">
                     <div class="error-message" id="companyLogoError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companyIndustry">Industry Type</label>
-                    <select class="form-control" id="companyIndustry">
-                        <option value="" disabled selected>Select industry</option>
-                        <option value="technology">Technology</option>
-                        <option value="finance">Finance</option>
-                        <option value="healthcare">Healthcare</option>
-                        <option value="education">Education</option>
-                        <option value="manufacturing">Manufacturing</option>
-                        <option value="retail">Retail</option>
-                        <option value="other">Other</option>
+                    <select class="form-control" id="companyIndustry" th:field="*{industryType}">
+                        <option value="" disabled th:selected="${companyIndustry == null}">Select industry</option>
+                        <option th:each="it :${companyIndustry}" 
+                                th:value="${it.industryTypeId}"
+                                th:text="${it.industryType}">
+                        </option>
                     </select>
                     <div class="error-message" id="companyIndustryError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companyEmail">Company Email</label>
-                    <input type="email" class="form-control" id="companyEmail" placeholder="Enter company email">
+                    <input type="email" class="form-control" id="companyEmail" th:field="*{companyEmail}" placeholder="Enter company email">
                     <div class="error-message" id="companyEmailError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companyPhone">Company Phone</label>
-                    <input type="tel" class="form-control" id="companyPhone" placeholder="Enter company phone">
+                    <input type="tel" class="form-control" id="companyPhone" th:field="*{companyPhoneNumber}" placeholder="Enter company phone">
                     <div class="error-message" id="companyPhoneError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companySize">Company Size</label>
-                    <input type="text" class="form-control" id="companySize" placeholder="e.g., 0-100 employees">
+                    <input type="text" class="form-control" id="companySize" th:field="*{companySize}" placeholder="e.g., 0-100 employees">
                     <div class="error-message" id="companySizeError"></div>
                 </div>
                 <div class="form-group">
                     <label for="location">Location</label>
-                    <select class="form-control" id="location">
-                        <option value="" disabled selected>Select location</option>
-                        <option value="usa">USA</option>
-                        <option value="uk">UK</option>
-                        <option value="india">India</option>
-                        <option value="other">Other</option>
+                    <select class="form-control" id="location" th:field="*{locationId}">
+                        <option value="" disabled th:selected="${location==null}">Select location</option>
+                        <option th:each="loc : ${locations}"
+                                th:value="${loc.locationId}"
+                                th:text="${loc.location}">
+                        </option>
+          
                     </select>
                     <div class="error-message" id="locationError"></div>
                 </div>
                 <div class="form-group">
                     <label for="websiteUrl">Website URL</label>
-                    <input type="url" class="form-control" id="websiteUrl" placeholder="Enter website URL">
+                    <input type="url" class="form-control" id="websiteUrl" th:field="*{webUrl}" placeholder="Enter website URL">
                     <div class="error-message" id="websiteUrlError"></div>
                 </div>
                 <div class="form-group">
                     <label for="foundedAt">Founded At</label>
-                    <input type="number" class="form-control" id="foundedAt" placeholder="Enter founding year" min="1800" max="2025">
+                    <input type="number" class="form-control" id="foundedAt" th:field="*{foundedAt}" placeholder="Enter founding year" min="1800" max="2025">
                     <div class="error-message" id="foundedAtError"></div>
                 </div>
                 <div class="form-group">
                     <label for="companyAbout">About the Company</label>
-                    <textarea class="form-control" id="companyAbout" placeholder="Describe your company"></textarea>
+                    <textarea class="form-control" id="companyAbout" th:field="*{about}" placeholder="Describe your company"></textarea>
                     <div class="error-message" id="companyAboutError"></div>
+                </div>
+                 <!-- New Designation Field -->
+                <div class="form-group">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" th:field="*{designation}" placeholder="Enter your designation (e.g., HR Manager)">
+                    <div class="error-message" id="designationError"></div>
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-btn" data-step="4">Previous</button>
