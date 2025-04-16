@@ -1,16 +1,21 @@
 package com.talenttap.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.model.EmployerRegister;
+import com.talenttap.model.Login;
 import com.talenttap.service.EmployerAuthService;
+import com.talenttap.service.JobseekerService;
 
 import java.util.stream.Collectors;
 
@@ -18,9 +23,12 @@ import java.util.stream.Collectors;
 public class EmployerAuthController {
 
     private EmployerAuthService employerService;
+    
+    private JobseekerService jobseekerService;
 
-    public EmployerAuthController(EmployerAuthService employerService) {
+    public EmployerAuthController(EmployerAuthService employerService, JobseekerService jobseekerService) {
         this.employerService = employerService;
+        this.jobseekerService = jobseekerService;
     }
 
     @PostMapping("/employerRegister")
@@ -97,4 +105,24 @@ public class EmployerAuthController {
             return "employer/register";
         }
     }
+    
+    
+    @PostMapping("/employerLogin")
+	public String loginUser(@ModelAttribute Login login, HttpServletResponse response) {
+    	System.out.println("Username"+login.getUsername());
+    	System.out.println("Password"+login.getPassword());
+	    jobseekerService.login(login , response);
+	    return "redirect:/employer/employerDashboard";
+	}
+	
+	@GetMapping("/employerLogout")
+	public String logout(HttpServletResponse response) {
+	    Cookie cookie = new Cookie("jwt", null);
+	    cookie.setPath("/");             
+	    cookie.setHttpOnly(true);       
+	    cookie.setMaxAge(0);            
+	    response.addCookie(cookie);
+
+	    return "redirect:/";     
+	}
 }

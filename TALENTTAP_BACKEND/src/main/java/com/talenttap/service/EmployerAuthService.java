@@ -7,6 +7,7 @@ import com.talenttap.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -34,6 +35,7 @@ public class EmployerAuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public ResponseEntity<?> register(EmployerRegisterDTO dto) throws Exception {
         // Validate uniqueness
         if (userRepository.existsByUsername(dto.getUsername())) {
@@ -46,13 +48,11 @@ public class EmployerAuthService {
             return ResponseEntity.badRequest().body("Company name already exists");
         }
 
-        // Validate file size
         if (dto.getCompanyLogo() != null && dto.getCompanyLogo().getSize() > 5 * 1024 * 1024) {
             return ResponseEntity.badRequest().body("Logo file size exceeds 5MB");
         }
 
-        // Create Users entity
-        Users user = new Users();
+         Users user = new Users();
         user.setFullName(dto.getFullName());
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));

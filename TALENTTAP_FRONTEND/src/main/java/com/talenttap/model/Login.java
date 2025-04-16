@@ -12,7 +12,6 @@ public class Login {
 	}
 	public Login() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public String getUsername() {
 		return username;

@@ -75,7 +75,9 @@ public class EmployerAuthService {
 		List<IndustryType> list = Arrays.asList(industryType);
 		return list;
 		
-		}
+	}
+	
+	
 	
 	
 	

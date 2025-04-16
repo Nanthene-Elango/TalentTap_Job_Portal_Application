@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.EmployerLogin;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobseekerRegister;
@@ -79,7 +80,8 @@ public class PageRenderController {
     }
 
 	@GetMapping("/employer/login")
-	public String LoadEmployerLogin() {
+	public String LoadEmployerLogin(Model model) {
+		model.addAttribute("Login",new Login());
 		return "employer/login";
 	}
 	

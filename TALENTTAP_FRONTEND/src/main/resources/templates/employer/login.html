@@ -19,7 +19,7 @@
         <button class="back-button" onclick="window.history.back()">
             <i class="fas fa-arrow-left"></i>
         </button>
-        <form id="loginForm" novalidate>
+        <form id="loginForm" novalidate th:action="@{/employerLogin}" th:object="${Login}" method="post">
             <div style="display: flex; justify-content: center; margin-bottom: 30px;">
                 <img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="TalentTap Logo" style="height: 60px;">
             </div>
@@ -32,6 +32,7 @@
                     id="username" 
                     name="username"
                     type="text" 
+                    th:field="*{username}"
                     placeholder="Enter username or email"
                     required
                 >
@@ -45,7 +46,8 @@
                         class="form-control" 
                         id="password" 
                         name="password"
-                        type="password" 
+                        type="password"
+                        th:field="*{password}" 
                         placeholder="Enter your password"
                         required
                     >
