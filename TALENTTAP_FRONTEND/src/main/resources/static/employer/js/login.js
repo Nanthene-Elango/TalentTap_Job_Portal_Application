@@ -56,15 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Form submission
 	form.addEventListener('submit', function(event) {
-		event.preventDefault();
-
+        const form=this;
 		const isUsernameValid = validateUsernameOrEmail();
 		const isPasswordValid = validatePassword();
 
 		if (isUsernameValid && isPasswordValid) {
 			// Here you would typically send the data to your server
 			console.log('Form is valid, submitting...');
-			window.location.href = "/employer/employerDashboard";
+			form.submit();
 		}
 	});
 });
