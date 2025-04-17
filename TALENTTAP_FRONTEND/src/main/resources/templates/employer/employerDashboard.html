@@ -20,7 +20,8 @@
 </head>
 
 <body>
-	<div th:replace = "employer/navbar ::  navbar"></div>
+	  <div th:replace="~{employer/navbar :: navbar}"></div>
+
 
     <!-- Verification Message (Hidden if Verified) -->
     <div class="container">
@@ -271,7 +272,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src = @{/employer/js/employerDashboard.js}></script>
-    <script th:src="@{jobseeker/js/util.js}"></script>
+    <script th:src="@{employer/js/util.js}"></script>
 </body>
 
 </html>

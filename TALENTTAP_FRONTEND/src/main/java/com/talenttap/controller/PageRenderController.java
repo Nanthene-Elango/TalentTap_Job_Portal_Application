@@ -4,13 +4,17 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerLogin;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobseekerRegister;
+import com.talenttap.model.JwtToken;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
@@ -122,9 +126,47 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/employer/profile")
-	public String loademployerProfile() {
-		return "employer/employerProfile";
+	public String employerProfile(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+	    try {
+	        if (jwt != null && !jwt.trim().isEmpty()) {
+	            JwtToken token = new JwtToken(jwt.trim());
+	            EmployerProfileDTO profile = employerService.profile(token);
+	            System.out.println("In employerProfile - Profile fetched: " + (profile != null ? profile.getFullname() : "null"));
+	            System.out.println(profile.getCompanyEmail());
+	            System.out.println(profile.getPhoneNumber());
+	            System.out.println(profile.getEmail());
+	            System.out.println(profile.getCompanyLogo());
+	            
+	            if (profile != null) {
+	                model.addAttribute("Fullname", profile.getFullname());
+	                model.addAttribute("username", profile.getUsername());
+                model.addAttribute("email", profile.getEmail());
+                model.addAttribute("phoneNumber", profile.getPhoneNumber());
+	                model.addAttribute("companyName", profile.getCompanyName());
+	                model.addAttribute("companyIndustry", profile.getIndustryType());
+	                model.addAttribute("companyEmail", profile.getCompanyEmail());
+	                model.addAttribute("companyPhone", profile.getCompanyPhone());
+	                model.addAttribute("designation", profile.getDesignation());
+	                model.addAttribute("companyAbout", profile.getAbout());
+	                model.addAttribute("companySize", profile.getCompanySize());
+	                model.addAttribute("location", profile.getLocation());
+	                model.addAttribute("companyLogo", profile.getCompanyLogo());
+	                model.addAttribute("loggedIn", true);
+	            } else {
+	                model.addAttribute("loggedIn", false);
+	            }
+	        } else {
+	            System.out.println("No JWT token found in cookie");
+	            model.addAttribute("loggedIn", false);
+	        }
+	    } catch (Exception e) {
+	        System.out.println("Error in employerProfile: " + e.getMessage());
+	        model.addAttribute("error", "Unable to load profile data. Please try again.");
+	        model.addAttribute("loggedIn", false);
+	    }
+	    return "employer/employerprofile";
 	}
+	
 	
 	@GetMapping("/employer/viewProfile")
 	public String loadEmployerProfile() {

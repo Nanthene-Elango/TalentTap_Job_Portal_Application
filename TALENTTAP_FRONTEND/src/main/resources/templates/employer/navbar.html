@@ -12,20 +12,13 @@
                 </button>
                 
                 <div class="dropdown ms-3">
-                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="profile-circle me-2">EP</div>
+                    <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" th:if="${loggedIn}" aria-expanded="false" >
+                        <div class="profile-circle me-2"th:text="${fullname.substring(0, 1)}"></div>
                         <span class="d-none d-lg-inline">Acme Inc.</span>
                         <i class="fas fa-chevron-down ms-2 d-none d-lg-inline" style="font-size: 0.7rem;"></i>
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
-                        <li class="px-3 py-2 d-flex align-items-center">
-                            <div class="profile-circle me-2">EP</div>
-                            <div>
-                                <div class="fw-bold">Acme Inc.</div>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" th:href="@{/employer/employerProfile}"><i class="fas fa-cog"></i>Profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/employer/profile}"><i class="fas fa-cog"></i>Profile</a></li>
                         <li><a class="dropdown-item" th:href="@{/employer/help}"><i class="fas fa-question-circle"></i>Help Center</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>

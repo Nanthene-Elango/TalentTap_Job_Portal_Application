@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
+import com.talenttap.model.JwtToken;
 
 @Service
 public class EmployerAuthService {
@@ -77,10 +80,32 @@ public class EmployerAuthService {
 		
 	}
 	
-	
-	
-	
-	
+	public EmployerProfileDTO profile(JwtToken jwtToken) {
+	    String url = "http://localhost:8083/api/employer/profile";
+	    
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    HttpEntity<JwtToken> request = new HttpEntity<>(jwtToken, headers);
+	    
+	    try {
+	        ResponseEntity<EmployerProfileDTO> response = restTemplate.exchange(
+	            url,
+	            HttpMethod.POST,
+	            request,
+	            EmployerProfileDTO.class
+	        );
+	        
+	        if (response.getStatusCode().is2xxSuccessful()) {
+	            return response.getBody();
+	        } else {
+	            System.err.println("Failed to fetch profile. Status: " + response.getStatusCode());
+	            return null;
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Error fetching profile: " + e.getMessage());
+	        return null;
+	    }
+	}
 	
 
 }

@@ -1,15 +1,21 @@
 // com.talenttap.service.EmployerAuthService
 package com.talenttap.service;
 
+import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.entity.*;
 import com.talenttap.repository.*;
+import com.talenttap.security.JwtUtil;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.Base64;
 
 @Service
 public class EmployerAuthService {
@@ -21,11 +27,13 @@ public class EmployerAuthService {
     private final CompanyRepository companyRepository;
     private final EmployerRepository employerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtutil;
+  
 
     public EmployerAuthService(RoleRepository roleRepository, UsersRepository userRepository,
                                LocationRepository locationRepository, IndustryTypeRepository industryTypeRepo,
                                CompanyRepository companyRepository, EmployerRepository employerRepository,
-                               PasswordEncoder passwordEncoder) {
+                               PasswordEncoder passwordEncoder, JwtUtil jwtutil) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
@@ -33,6 +41,7 @@ public class EmployerAuthService {
         this.companyRepository = companyRepository;
         this.employerRepository = employerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtutil = jwtutil;
     }
 
     @Transactional
@@ -93,5 +102,43 @@ public class EmployerAuthService {
         employerRepository.save(employer);
 
         return ResponseEntity.ok("Employer Registered Successfully");
+    }
+    
+    public EmployerProfileDTO profile(String jwt) {
+//        if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
+//            return ResponseEntity.badRequest().body("JWT Token is Empty!");
+//        }
+
+        String username = jwtutil.extractIdentifier(jwt);
+        Users user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Employer employer = employerRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Employer not found"));
+
+        Company company = employer.getCompany();
+        EmployerProfileDTO profileData = new EmployerProfileDTO();
+
+        // Convert logo to base64
+        String companyLogoBase64 = company.getCompanyLogo() != null && company.getCompanyLogo().length > 0
+                ? Base64.getEncoder().encodeToString(company.getCompanyLogo())
+                : null;
+
+        // DTO Transfer data
+        profileData.setFullname(user.getFullName());
+        profileData.setUsername(user.getUsername());
+        profileData.setPhoneNumber(user.getMobileNumber());
+        profileData.setEmail(user.getEmail());
+        profileData.setCompanyLogo(companyLogoBase64); // Updated field
+        profileData.setCompanyName(company.getCompanyName());
+        profileData.setIndustryType(company.getIndustryType().getIndustryType());
+        profileData.setCompanyEmail(company.getEmail());
+        profileData.setCompanyPhone(company.getPhoneNumber());
+        profileData.setDesignation(employer.getDesignation());
+        profileData.setAbout(company.getAbout());
+        profileData.setCompanySize(company.getCompanySize());
+        profileData.setLocation(company.getLocation().getLocation());
+        System.out.println("Data isbeign sent from service");
+        return profileData;
     }
 }
