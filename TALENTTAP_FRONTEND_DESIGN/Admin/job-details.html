@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Job Details</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="d-flex justify-content-center align-items-center min-vh-100 p-3">
+        <div class="card dashboard-card" style="max-width: 800px; width: 100%;">
+            <div class="card-body">
+                <h4 class="card-title mb-4" id="job-title">Software Engineer - TechCorp</h4>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h5>Description</h5>
+                        <p class="text-muted" id="description">
+                            Design, develop, and maintain scalable software solutions. Collaborate with cross-functional teams to deliver high-quality products.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Roles</h5>
+                        <ul class="text-muted" id="roles">
+                            <li>Develop backend services using Node.js</li>
+                            <li>Integrate APIs with front-end</li>
+                            <li>Ensure code quality through testing</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Responsibilities</h5>
+                        <ul class="text-muted" id="responsibilities">
+                            <li>Write clean, maintainable code</li>
+                            <li>Participate in code reviews</li>
+                            <li>Meet project deadlines</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Benefits</h5>
+                        <ul class="text-muted" id="benefits">
+                            <li>Health insurance</li>
+                            <li>Flexible work hours</li>
+                            <li>Annual performance bonus</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Required Skills</h5>
+                        <div class="d-flex flex-wrap" id="skills">
+                            <span class="badge bg-violet-light text-violet me-2 mb-2">JavaScript</span>
+                            <span class="badge bg-violet-light text-violet me-2 mb-2">Node.js</span>
+                            <span class="badge bg-violet-light text-violet me-2 mb-2">SQL</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Locations</h5>
+                        <div class="d-flex flex-wrap" id="locations">
+                            <span class="badge bg-violet-light text-violet me-2 mb-2">New York</span>
+                            <span class="badge bg-violet-light text-violet me-2 mb-2">San Francisco</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Applications</h5>
+                        <p class="text-muted" id="applications">25 applications received</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="index.html#jobs" class="btn btn-outline-primary"><i class="fas fa-arrow-left me-1"></i> Back to Jobs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data for demonstration
+        const jobData = {
+            1: {
+                title: "Software Engineer - TechCorp",
+                description: "Design, develop, and maintain scalable software solutions. Collaborate with cross-functional teams to deliver high-quality products.",
+                roles: ["Develop backend services using Node.js", "Integrate APIs with front-end", "Ensure code quality through testing"],
+                responsibilities: ["Write clean, maintainable code", "Participate in code reviews", "Meet project deadlines"],
+                benefits: ["Health insurance", "Flexible work hours", "Annual performance bonus"],
+                skills: ["JavaScript", "Node.js", "SQL"],
+                locations: ["New York", "San Francisco"],
+                applications: 25
+            },
+            2: {
+                title: "Marketing Manager - MarketPro",
+                description: "Plan and execute marketing campaigns to drive brand awareness and engagement.",
+                roles: ["Develop marketing strategies", "Analyze campaign performance", "Collaborate with creative teams"],
+                responsibilities: ["Manage social media channels", "Coordinate with stakeholders", "Report on KPIs"],
+                benefits: ["Remote work options", "Paid time off", "Professional development"],
+                skills: ["SEO", "Content Marketing", "Analytics"],
+                locations: ["Remote"],
+                applications: 15
+            },
+            3: {
+                title: "Nurse Practitioner - HealthInc",
+                description: "Provide high-quality patient care in a clinical setting.",
+                roles: ["Conduct patient assessments", "Develop treatment plans", "Collaborate with physicians"],
+                responsibilities: ["Maintain patient records", "Educate patients on health", "Ensure compliance"],
+                benefits: ["Health insurance", "Retirement plan", "Paid leave"],
+                skills: ["Patient Care", "Diagnostics", "EMR"],
+                locations: ["Chicago"],
+                applications: 30
+            }
+        };
+
+        function loadJobDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id') || '1';
+            const data = jobData[id] || jobData[1];
+
+            document.getElementById('job-title').textContent = data.title;
+            document.getElementById('description').textContent = data.description;
+            
+            const rolesList = document.getElementById('roles');
+            rolesList.innerHTML = '';
+            data.roles.forEach(role => {
+                const li = document.createElement('li');
+                li.textContent = role;
+                rolesList.appendChild(li);
+            });
+
+            const responsibilitiesList = document.getElementById('responsibilities');
+            responsibilitiesList.innerHTML = '';
+            data.responsibilities.forEach(resp => {
+                const li = document.createElement('li');
+                li.textContent = resp;
+                responsibilitiesList.appendChild(li);
+            });
+
+            const benefitsList = document.getElementById('benefits');
+            benefitsList.innerHTML = '';
+            data.benefits.forEach(benefit => {
+                const li = document.createElement('li');
+                li.textContent = benefit;
+                benefitsList.appendChild(li);
+            });
+
+            const skillsDiv = document.getElementById('skills');
+            skillsDiv.innerHTML = '';
+            data.skills.forEach(skill => {
+                const span = document.createElement('span');
+                span.className = 'badge bg-violet-light text-violet me-2 mb-2';
+                span.textContent = skill;
+                skillsDiv.appendChild(span);
+            });
+
+            const locationsDiv = document.getElementById('locations');
+            locationsDiv.innerHTML = '';
+            data.locations.forEach(location => {
+                const span = document.createElement('span');
+                span.className = 'badge bg-violet-light text-violet me-2 mb-2';
+                span.textContent = location;
+                locationsDiv.appendChild(span);
+            });
+
+            document.getElementById('applications').textContent = `${data.applications} applications received`;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadJobDetails);
+    </script>
+</body>
+</html>

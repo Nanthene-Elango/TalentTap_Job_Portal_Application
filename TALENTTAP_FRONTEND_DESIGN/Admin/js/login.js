@@ -1,5 +1,4 @@
- // Define togglePassword in the global scope
- function togglePassword() {
+function togglePassword() {
     const passwordInput = document.getElementById('password');
     const toggleIcon = document.querySelector('.toggle-password i');
     if (passwordInput.type === 'password') {
@@ -21,10 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const usernameError = document.getElementById('usernameError');
     const passwordError = document.getElementById('passwordError');
 
-    // Attach the togglePassword event listener programmatically
+    // Admin data
+    const adminData = {
+        username: "admin123",
+        email: "admin@talenttap.com",
+        password: "Secret@123"
+    };
+
     togglePasswordElement.addEventListener('click', togglePassword);
 
-    // Regex patterns from the registration page
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const usernameRegex = /^[A-Za-z0-9]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&*])[A-Za-z\d@#$%^&*]{8,}$/;
@@ -50,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setFieldState(usernameInput, false, 'Username or email is required');
             isValid = false;
         } else if (!emailRegex.test(username) && (!usernameRegex.test(username) || username.length < 3)) {
-            setFieldState(usernameInput, false, !usernameRegex.test(username) ? 'Username must only contain letters and numbers' : 'Must be at least 3 characters');
+            setFieldState(usernameInput, false, !usernameRegex.test(username) ? 'Username must contain only letters and numbers' : 'Username must be at least 3 characters');
             isValid = false;
         } else {
             setFieldState(usernameInput, true, '');
@@ -67,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setFieldState(passwordInput, false, 'Password is required');
             isValid = false;
         } else if (!passwordRegex.test(password)) {
-            setFieldState(passwordInput, false, 'Must be 8+ characters with uppercase, lowercase, number, and special character');
+            setFieldState(passwordInput, false, 'Password must be 8+ characters with uppercase, lowercase, number, and special character');
             isValid = false;
         } else {
             setFieldState(passwordInput, true, '');
@@ -76,11 +80,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
-    // Real-time validation
     usernameInput.addEventListener('input', validateUsernameOrEmail);
     passwordInput.addEventListener('input', validatePassword);
 
-    // Form submission validation
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -88,9 +90,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const isPasswordValid = validatePassword();
 
         if (isUsernameValid && isPasswordValid) {
-            // Simulate login process
-            alert('Login successful!');
-            // In a real application, you would send the login request here
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if ((username === adminData.username || username === adminData.email) && password === adminData.password) {
+                console.log('Login successful, redirecting to index.html');
+                sessionStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'index.html';
+            } else {
+                setFieldState(passwordInput, false, 'Invalid username/email or password');
+            }
         }
     });
 });

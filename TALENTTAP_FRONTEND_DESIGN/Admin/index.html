@@ -3,359 +3,688 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Portal Admin Dashboard</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
+    <title>TalentTap | Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/TALENTTAP_FRONTEND_DESIGN/Admin/css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
-<body class="bg-white font-sans">
-    <!-- Sidebar -->
-    <div class="flex h-screen">
-        <div id="sidebar" class="bg-[var(--dark)] text-[var(--light)] w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
-            <h2 class="text-2xl font-bold text-center">Admin Panel</h2>
-            <nav>
-                <a href="#" id="dashboardLink" class="block py-2.5 px-4 rounded bg-[var(--primary)]">Dashboard</a>
-                <a href="#" id="jobsLink" class="block py-2.5 px-4 rounded hover:bg-[var(--primary)]">Jobs</a>
-                <a href="#" id="employersLink" class="block py-2.5 px-4 rounded hover:bg-[var(--primary)]">Employers</a>
-                <a href="#" id="usersLink" class="block py-2.5 px-4 rounded hover:bg-[var(--primary)]">Users</a>
-            </nav>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-3 px-md-4">
+            <a class="navbar-brand" href="./index.html">
+                <img src="./img/LOGO_ADMIN.png" alt="Logo-TalentTap" class="navbar-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+                <form class="d-flex search-box me-2" role="search">
+                    <div class="input-group">
+                        <input class="form-control" type="search" placeholder="Search..." aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <div class="dropdown">
+                    <div class="profile-dropdown d-flex align-items-center" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="profile-circle me-2">AD</div>
+                        <span class="d-none d-lg-inline text-white">Admin</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 0.7rem; color: #ffffff;"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" href="admin-profile.html"><i class="fas fa-user"></i> Profile View</a></li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Toggle Button for Mobile -->
+    <button id="sidebarToggle" class="btn btn-violet d-lg-none"><i class="fas fa-bars"></i></button>
+
+    <!-- Sidebar and Main Content -->
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-dark text-white" id="sidebar">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#jobs" class="nav-link" data-section="jobs"><i class="fas fa-briefcase me-2"></i> Jobs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#employers" class="nav-link" data-section="employers"><i class="fas fa-building me-2"></i> Employers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#jobseekers" class="nav-link" data-section="jobseekers">
+                        <i class="fas fa-users me-2"></i> Job Seekers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#applications" class="nav-link" data-section="applications"><i class="fas fa-file-alt me-2"></i> Applications</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link" data-section="settings"><i class="fas fa-cog me-2"></i> Settings</a>
+                </li>
+            </ul>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Navbar -->
-            <nav class="bg-[var(--light)] shadow p-4 flex justify-between items-center">
-                <button id="sidebarToggle" class="md:hidden">
-                    <i class="fas fa-bars text-2xl text-[var(--primary)]"></i>
-                </button>
-                <div class="flex-1 mx-4">
-                    <input type="text" class="w-full max-w-md p-2 rounded border border-[var(--primary)] text-[var(--dark)]" placeholder="Search jobs or users...">
-                </div>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle text-[var(--primary)]" type="button" id="adminDropdown" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i> Admin
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item text-[var(--dark)]" href="#">View Profile</a></li>
-                        <li><a class="dropdown-item text-[var(--dark)]" href="#" id="logout">Logout</a></li>
-                    </ul>
-                </div>
-            </nav>
-
-            <!-- Dashboard Content -->
-            <div id="dashboardSection" class="p-6 overflow-y-auto">
-                <!-- Key Metrics -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-[var(--dark)]">Total Job Listings</h3>
-                        <p class="text-2xl font-bold text-[var(--primary)]">1,234</p>
-                    </div>
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-[var(--dark)]">Pending / Approved</h3>
-                        <p class="text-2xl font-bold text-[var(--primary)]">45 / 1,189</p>
-                    </div>
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-[var(--dark)]">New Registrations</h3>
-                        <p class="text-2xl font-bold text-[var(--primary)]">78</p>
-                    </div>
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-[var(--dark)]">Recent Applications</h3>
-                        <p class="text-2xl font-bold text-[var(--primary)]">156</p>
-                    </div>
-                </div>
-
-                <!-- Recent Data -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    <!-- Job Management -->
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">Recent Job Postings</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Software Engineer</span>
-                                <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="deleteJob(this)">Delete</button>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Marketing Manager</span>
-                                <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="deleteJob(this)">Delete</button>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Graphic Designer</span>
-                                <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="deleteJob(this)">Delete</button>
-                            </div>
+        <div class="main-content flex-grow-1 p-6">
+            <h3 class="fw-bold mb-4" id="section-title">Dashboard Overview</h3>
+            <div id="content">
+                <!-- Dashboard Section -->
+                <div class="section dashboard-section active" id="dashboardSection">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex">
+                            <select class="form-select me-2">
+                                <option>Last 30 days</option>
+                                <option>Last week</option>
+                                <option>Last 3 months</option>
+                            </select>
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-download me-1"></i> Export
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Employer & Job Seeker Management -->
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">Recent Users</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">John Doe</span>
-                                <div>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)] mr-2" onclick="approveUser(this)">Approve</button>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--dark)] hover:bg-[var(--primary)]" onclick="rejectUser(this)">Reject</button>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Jane Smith</span>
-                                <div>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)] mr-2" onclick="approveUser(this)">Approve</button>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--dark)] hover:bg-[var(--primary)]" onclick="rejectUser(this)">Reject</button>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Mike Johnson</span>
-                                <div>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)] mr-2" onclick="approveUser(this)">Approve</button>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--dark)] hover:bg-[var(--primary)]" onclick="rejectUser(this)">Reject</button>
+                    <!-- Statistics Cards Row -->
+                    <div class="row mb-4 g-4 stats-card-row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-briefcase"></i>
+                                    </div>
+                                    <div class="card-value">12</div>
+                                    <div class="card-label">Total Job Listings</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Applications & Candidate Tracking -->
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">Recent Applications</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Dev Application</span>
-                                <div>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)] mr-2" onclick="shortlistCandidate(this)">Shortlist</button>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--dark)] hover:bg-[var(--primary)]" onclick="rejectCandidate(this)">Reject</button>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="card-value">5</div>
+                                    <div class="card-label">Pending Jobs</div>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Marketing Application</span>
-                                <div>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)] mr-2" onclick="shortlistCandidate(this)">Shortlist</button>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--dark)] hover:bg-[var(--primary)]" onclick="rejectCandidate(this)">Reject</button>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="card-value">7</div>
+                                    <div class="card-label">Approved Jobs</div>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[var(--dark)]">Design Application</span>
-                                <div>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)] mr-2" onclick="shortlistCandidate(this)">Shortlist</button>
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--dark)] hover:bg-[var(--primary)]" onclick="rejectCandidate(this)">Reject</button>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="card-value">48</div>
+                                    <div class="card-label">Total Users</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="card-value">20</div>
+                                    <div class="card-label">New Registrations</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="card-value">150</div>
+                                    <div class="card-label">Total Applications</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card dashboard-card stats-card">
+                                <div class="card-body">
+                                    <div class="card-icon bg-violet-light text-violet">
+                                        <i class="fas fa-envelope-open-text"></i>
+                                    </div>
+                                    <div class="card-value">30</div>
+                                    <div class="card-label">Recent Applications</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- Recent Data Cards Row -->
+                    <div class="row mb-4 g-4 recent-card-row">
+                        <div class="col-md-4">
+                            <div class="card dashboard-card recent-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recent Jobs</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Software Engineer</h6>
+                                            <p class="text-muted small">Posted 2 days ago</p>
+                                        </div>
+                                        <div>
+                                            <a href="job-details.html?id=1" class="btn btn-sm btn-outline-secondary me-1"><i class="fas fa-eye"></i></a>
+                                            <a href="#" class="btn btn-sm btn-outline-secondary me-1"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card recent-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recent Employers</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Acme Corp</h6>
+                                            <p class="text-muted small">Registered 3 days ago</p>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-sm btn-success me-1">Approve</button>
+                                            <button class="btn btn-sm btn-warning">Reject</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card dashboard-card recent-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recent Job Seekers</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">John Doe</h6>
+                                            <p class="text-muted small">Registered 5 days ago</p>
+                                        </div>
+                                        <div>
+                                            <a href="job-seeker-details.html?id=1" class="btn btn-sm btn-outline-secondary"><i class="fas fa-eye"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Analytics Graphs Section -->
+                    <div class="analytics-section mb-5">
+                        <h2 class="text-center mb-4">Analytics Graphs</h2>
+                        <div class="row g-4 analytics-card-row">
+                            <div class="col-12 col-md-6">
+                                <div class="card dashboard-card analytics-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">User Growth</h5>
+                                        <div class="chart-container">
+                                            <canvas id="userGrowthChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="card dashboard-card analytics-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Job Postings</h5>
+                                        <div class="chart-container">
+                                            <canvas id="jobPostingsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="card dashboard-card analytics-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Job Applications</h5>
+                                        <div class="chart-container">
+                                            <canvas id="jobApplicationsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="card dashboard-card analytics-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Recruiter Analytics</h5>
+                                        <div class="chart-container">
+                                            <canvas id="recruiterAnalyticsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Analytics Graphs -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">User Growth Analytics</h3>
-                        <canvas id="userGrowthChart"></canvas>
-                    </div>
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">Job Postings by Category</h3>
-                        <canvas id="jobPostingsChart"></canvas>
-                    </div>
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">Job Applications by Category</h3>
-                        <canvas id="jobApplicationsChart"></canvas>
-                    </div>
-                    <div class="bg-[var(--light)] p-4 rounded shadow border border-[var(--primary)]">
-                        <h3 class="text-lg font-semibold mb-4 text-[var(--dark)]">Recruiter Analytics</h3>
-                        <canvas id="recruiterAnalyticsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Jobs Table Section -->
-            <div id="jobsSection" class="p-6 overflow-y-auto hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-[var(--dark)]">Job Listings</h2>
-                    <input type="text" id="jobSearch" class="w-64 p-2 rounded border border-[var(--primary)] text-[var(--dark)]" placeholder="Search jobs...">
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-[var(--dark)]">
-                        <thead class="bg-[var(--primary)] text-[var(--light)]">
-                            <tr>
-                                <th class="p-3">Job ID</th>
-                                <th class="p-3">Title</th>
-                                <th class="p-3">Type</th>
-                                <th class="p-3">Experience</th>
-                                <th class="p-3">Posted By</th>
-                                <th class="p-3">Posted Date</th>
-                                <th class="p-3">Deadline</th>
-                                <th class="p-3">Salary/Stipend</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3">Approval</th>
-                            </tr>
-                        </thead>
-                        <tbody id="jobTableBody">
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">J001</td>
-                                <td class="p-3">Software Engineer</td>
-                                <td class="p-3">Full-time</td>
-                                <td class="p-3">3-5 years</td>
-                                <td class="p-3">TechCorp</td>
-                                <td class="p-3">2025-03-01</td>
-                                <td class="p-3">2025-04-01</td>
-                                <td class="p-3">Rs80,000</td>
-                                <td class="p-3">Open</td>
-                                <td class="p-3">
-                                    <select class="approval-select p-1 rounded border border-[var(--primary)]" onchange="updateApproval(this)">
-                                        <option value="Pending">Pending</option>
-                                        <option value="Approved" selected>Approved</option>
-                                        <option value="Rejected">Rejected</option>
+                <!-- Jobs Section -->
+                <div class="section jobs-section" id="jobsSection">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-3 col-sm-6">
+                                    <select id="statusFilter" class="form-select">
+                                        <option value="">All Status</option>
+                                        <option value="open">Open</option>
+                                        <option value="closed">Closed</option>
+                                        <option value="expired">Expired</option>
                                     </select>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">J002</td>
-                                <td class="p-3">Marketing Manager</td>
-                                <td class="p-3">Part-time</td>
-                                <td class="p-3">2-4 years</td>
-                                <td class="p-3">MarketPro</td>
-                                <td class="p-3">2025-03-15</td>
-                                <td class="p-3">2025-04-15</td>
-                                <td class="p-3">Rs45,000</td>
-                                <td class="p-3">Closed</td>
-                                <td class="p-3">
-                                    <select class="approval-select p-1 rounded border border-[var(--primary)]" onchange="updateApproval(this)">
-                                        <option value="Pending" selected>Pending</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Rejected">Rejected</option>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <select id="approvalFilter" class="form-select">
+                                        <option value="">All Approval Status</option>
+                                        <option value="pending"> FranPending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
                                     </select>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">J003</td>
-                                <td class="p-3">Intern Designer</td>
-                                <td class="p-3">Internship</td>
-                                <td class="p-3">0-1 year</td>
-                                <td class="p-3">DesignCo</td>
-                                <td class="p-3">2025-02-28</td>
-                                <td class="p-3">2025-03-31</td>
-                                <td class="p-3">Rs1,000/mo</td>
-                                <td class="p-3">Expired</td>
-                                <td class="p-3">
-                                    <select class="approval-select p-1 rounded border border-[var(--primary)]" onchange="updateApproval(this)">
-                                        <option value="Pending">Pending</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Rejected" selected>Rejected</option>
+                                </div>
+                                <div class="col-md-4 col-sm-6">
+                                    <input type="text" id="employerSearch" class="form-control" placeholder="Search by company or email">
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="d-flex">
+                                        <input type="date" id="postedStartDate" class="form-control me-1" placeholder="Start Date">
+                                        <input type="date" id="postedEndDate" class="form-control" placeholder="End Date">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Job Listings</h5>
+                                <div>
+                                    <input type="checkbox" id="selectAllJobs">
+                                    <label for="selectAllJobs" class="ms-2">Select All</label>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="jobTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" disabled></th>
+                                            <th scope="col">Job Title</th>
+                                            <th scope="col">Company</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Work Type</th>
+                                            <th scope="col">Openings</th>
+                                            <th scope="col">Posted</th>
+                                            <th scope="col">Deadline</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Approval</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="checkbox" class="job-select"></td>
+                                            <td>Software Engineer</td>
+                                            <td>TechCorp</td>
+                                            <td>full-time</td>
+                                            <td>Hybrid</td>
+                                            <td>3</td>
+                                            <td>2025-04-10</td>
+                                            <td>2025-05-10</td>
+                                            <td><span class="badge bg-success">Open</span></td>
+                                            <td><span class="badge bg-success">Approved</span></td>
+                                            <td>
+                                                <a href="job-details.html?id=1" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="job-select"></td>
+                                            <td>Marketing Manager</td>
+                                            <td>MarketPro</td>
+                                            <td>part-time</td>
+                                            <td>Remote</td>
+                                            <td>2</td>
+                                            <td>2025-04-08</td>
+                                            <td>2025-04-30</td>
+                                            <td><span class="badge bg-success">Open</span></td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td>
+                                                <a href="job-details.html?id=2" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="job-select"></td>
+                                            <td>Nurse Practitioner</td>
+                                            <td>HealthInc</td>
+                                            <td>full-time</td>
+                                            <td>On-Site</td>
+                                            <td>5</td>
+                                            <td>2025-04-05</td>
+                                            <td>2025-04-20</td>
+                                            <td><span class="badge bg-danger">Expired</span></td>
+                                            <td><span class="badge bg-success">Approved</span></td>
+                                            <td>
+                                                <a href="job-details.html?id=3" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-sm btn-success me-1" id="bulkApprove" disabled>Approve Selected</button>
+                                    <button class="btn btn-sm btn-warning" id="bulkReject" disabled>Reject Selected</button>
+                                </div>
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employers Section -->
+                <div class="section employers-section" id="employersSection">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-3 col-sm-6">
+                                    <select id="employerStatusFilter" class="form-select">
+                                        <option value="">All Approval Status</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="rejected">Rejected</option>
                                     </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <select id="industryFilter" class="form-select">
+                                        <option value="">All Industries</option>
+                                        <option value="technology">Technology</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="healthcare">Healthcare</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-sm-6">
+                                    <input type="text" id="employerSearch" class="form-control" placeholder="Search by company or email">
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="d-flex">
+                                        <input type="date" id="postedStartDate" class="form-control me-1" placeholder="Start Date">
+                                        <input type="date" id="postedEndDate" class="form-control" placeholder="End Date">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Employer Listings</h5>
+                                <div>
+                                    <input type="checkbox" id="selectAllEmployers">
+                                    <label for="selectAllEmployers" class="ms-2">Select All</label>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="employerTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" disabled></th>
+                                            <th scope="col">Company</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Industry</th>
+                                            <th scope="col">Jobs</th>
+                                            <th scope="col">Applications</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Registered</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="checkbox" class="employer-select"></td>
+                                            <td>TechCorp</td>
+                                            <td><a href="mailto:contact@techcorp.com">contact@techcorp.com</a></td>
+                                            <td>Technology</td>
+                                            <td>5</td>
+                                            <td>50</td>
+                                            <td><span class="badge bg-success">Approved</span></td>
+                                            <td>2025-03-15</td>
+                                            <td>
+                                                <a href="employer-details.html?id=1" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-violet me-1 approve-btn"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-sm btn-outline-warning me-1 reject-btn"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-sm btn-outline-danger delete-btn"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="employer-select"></td>
+                                            <td>MarketPro</td>
+                                            <td><a href="mailto:info@marketpro.com">info@marketpro.com</a></td>
+                                            <td>Marketing</td>
+                                            <td>3</td>
+                                            <td>20</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td>2025-04-01</td>
+                                            <td>
+                                                <a href="employer-details.html?id=2" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-violet me-1 approve-btn"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-sm btn-outline-warning me-1 reject-btn"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-sm btn-outline-danger delete-btn"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="employer-select"></td>
+                                            <td>HealthInc</td>
+                                            <td><a href="mailto:hr@healthinc.com">hr@healthinc.com</a></td>
+                                            <td>Healthcare</td>
+                                            <td>2</td>
+                                            <td>15</td>
+                                            <td><span class="badge bg-danger">Rejected</span></td>
+                                            <td>2025-02-20</td>
+                                            <td>
+                                                <a href="employer-details.html?id=3" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-violet me-1 approve-btn"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-sm btn-outline-warning me-1 reject-btn"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-sm btn-outline-danger delete-btn"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-sm btn-success me-1" id="bulkApproveEmployers" disabled>Approve Selected</button>
+                                    <button class="btn btn-sm btn-warning" id="bulkRejectEmployers" disabled>Reject Selected</button>
+                                </div>
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Employers Table Section -->
-            <div id="employersSection" class="p-6 overflow-y-auto hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-[var(--dark)]">Employers</h2>
-                    <input type="text" id="employerSearch" class="w-64 p-2 rounded border border-[var(--primary)] text-[var(--dark)]" placeholder="Search employers...">
+                <!-- Job Seekers Section -->
+                <div class="section jobseekers-section" id="jobseekersSection">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-3 col-sm-6">
+                                    <select id="seekerStatusFilter" class="form-select">
+                                        <option value="">All Status</option>
+                                        <option value="active">Active</option>
+                                        <option value="suspended">Suspended</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <select id="locationFilter" class="form-select">
+                                        <option value="">All Locations</option>
+                                        <option value="new york">New York</option>
+                                        <option value="san francisco">San Francisco</option>
+                                        <option value="chicago">Chicago</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-sm-6">
+                                    <input type="text" id="seekerSearch" class="form-control" placeholder="Search by name or email">
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="d-flex">
+                                        <input type="date" id="registeredStartDate" class="form-control me-1" placeholder="Start Date">
+                                        <input type="date" id="registeredEndDate" class="form-control" placeholder="End Date">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Job Seeker Listings</h5>
+                                <div>
+                                    <input type="checkbox" id="selectAllSeekers">
+                                    <label for="selectAllSeekers" class="ms-2">Select All</label>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="seekerTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" disabled></th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Location</th>
+                                            <th scope="col">Experience</th>
+                                            <th scope="col">Applications</th>
+                                            <th scope="col">Registered</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="checkbox" class="seeker-select"></td>
+                                            <td>John Doe</td>
+                                            <td><a href="mailto:john.doe@example.com">john.doe@example.com</a></td>
+                                            <td>New York</td>
+                                            <td>5</td>
+                                            <td>10</td>
+                                            <td>2025-03-15</td>
+                                            <td><span class="badge bg-success">Active</span></td>
+                                            <td>
+                                                <a href="job-seeker-details.html?id=1" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend"><i class="fas fa-pause"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="seeker-select"></td>
+                                            <td>Jane Smith</td>
+                                            <td><a href="mailto:jane.smith@example.com">jane.smith@example.com</a></td>
+                                            <td>San Francisco</td>
+                                            <td>3</td>
+                                            <td>5</td>
+                                            <td>2025-04-01</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td>
+                                                <a href="job-seeker-details.html?id=2" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend"><i class="fas fa-pause"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="seeker-select"></td>
+                                            <td>Mike Johnson</td>
+                                            <td><a href="mailto:mike.johnson@example.com">mike.johnson@example.com</a></td>
+                                            <td>Chicago</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>2025-02-20</td>
+                                            <td><span class="badge bg-danger">Suspended</span></td>
+                                            <td>
+                                                <a href="job-seeker-details.html?id=3" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
+                                                <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend"><i class="fas fa-pause"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-sm btn-success me-1" id="bulkActivateSeekers" disabled>Activate Selected</button>
+                                    <button class="btn btn-sm btn-warning" id="bulkSuspendSeekers" disabled>Suspend Selected</button>
+                                </div>
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-[var(--dark)]">
-                        <thead class="bg-[var(--primary)] text-[var(--light)]">
-                            <tr>
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Company Name</th>
-                                <th class="p-3">Designation</th>
-                                <th class="p-3">Jobs Posted</th>
-                                <th class="p-3">Profile</th>
-                            </tr>
-                        </thead>
-                        <tbody id="employerTableBody">
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">E001</td>
-                                <td class="p-3">John Smith</td>
-                                <td class="p-3">TechCorp</td>
-                                <td class="p-3">HR Manager</td>
-                                <td class="p-3">5</td>
-                                <td class="p-3">
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="viewEmployerProfile('E001')">View Profile</button>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">E002</td>
-                                <td class="p-3">Jane Doe</td>
-                                <td class="p-3">MarketPro</td>
-                                <td class="p-3">Recruitment Lead</td>
-                                <td class="p-3">3</td>
-                                <td class="p-3">
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="viewEmployerProfile('E002')">View Profile</button>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">E003</td>
-                                <td class="p-3">Mike Johnson</td>
-                                <td class="p-3">DesignCo</td>
-                                <td class="p-3">Talent Acquisition</td>
-                                <td class="p-3">2</td>
-                                <td class="p-3">
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="viewEmployerProfile('E003')">View Profile</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- Job Seekers Table Section -->
-            <div id="usersSection" class="p-6 overflow-y-auto hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-[var(--dark)]">Job Seekers</h2>
-                    <input type="text" id="userSearch" class="w-64 p-2 rounded border border-[var(--primary)] text-[var(--dark)]" placeholder="Search job seekers...">
+                <!-- Applications Section -->
+                <div class="section applications-section" id="applicationsSection">
+                    <h2 class="text-center mb-4">Applications Overview</h2>
+                    <div class="text-center py-5">
+                        <p class="text-muted">Content for Applications coming soon!</p>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-[var(--dark)]">
-                        <thead class="bg-[var(--primary)] text-[var(--light)]">
-                            <tr>
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Jobs Applied</th>
-                                <th class="p-3">Profile</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userTableBody">
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">U001</td>
-                                <td class="p-3">Alice Brown</td>
-                                <td class="p-3">4</td>
-                                <td class="p-3">
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="viewUserProfile('U001')">View Profile</button>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">U002</td>
-                                <td class="p-3">Bob Wilson</td>
-                                <td class="p-3">2</td>
-                                <td class="p-3">
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="viewUserProfile('U002')">View Profile</button>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[var(--primary)]">
-                                <td class="p-3">U003</td>
-                                <td class="p-3">Carol Davis</td>
-                                <td class="p-3">6</td>
-                                <td class="p-3">
-                                    <button class="btn btn-sm text-[var(--light)] bg-[var(--primary)] hover:bg-[var(--dark)]" onclick="viewUserProfile('U003')">View Profile</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- Settings Section -->
+                <div class="section settings-section" id="settingsSection">
+                    <h2 class="text-center mb-4">Settings</h2>
+                    <div class="text-center py-5">
+                        <p class="text-muted">Content for Settings coming soon!</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/TALENTTAP_FRONTEND_DESIGN/Admin/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/script.js"></script>
 </body>
 </html>
