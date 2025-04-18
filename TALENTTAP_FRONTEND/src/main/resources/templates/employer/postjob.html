@@ -11,254 +11,259 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel ="stylesheet" th:href ="@{/employer/css/postjob.css}"/>
-</head>
+    <link rel="stylesheet" th:href="@{/employer/css/postjob.css}"/>
 </head>
 <body>
-    <div class="container">
-        <div class="form-container" id="formContainer">
-            <h1 class="text-violet text-center mb-4">Post a New Job</h1>
+<div class="container">
+    <div class="form-container" id="formContainer" th:object="${jobForm}">
+        <h1 class="text-violet text-center mb-4">Post a New Job</h1>
 
-            <form id="jobPostForm" class="needs-validation" novalidate>
-                <!-- Job Details -->
-                <div class="form-section">
-                    <h3>Job Details</h3>
-                    <div class="mb-3">
-                        <label for="jobRole" class="form-label">Job Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="jobRole" >
-                        <div class="invalid-feedback">Please enter a job title (at least 3 characters).</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="jobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
-                        <select class="form-select" id="jobType" required>
-                            <option value="" selected disabled>Select type</option>
-                            <option value="Full-time">Full-time</option>
-                            <option value="Part-time">Part-time</option>
-                            <option value="Internship">Internship</option>
-                        </select>
-                        <div class="invalid-feedback">Please select an employment type.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="jobCategory" class="form-label">Job Category <span class="text-danger">*</span></label>
-                        <select class="form-select" id="jobCategory" required>
-                            <option value="" selected disabled>Select category</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Design">Design</option>
-                            <option value="Marketing">Marketing</option>
-                        </select>
-                        <div class="invalid-feedback">Please select a job category.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Job Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="description" rows="4" required></textarea>
-                        <div class="character-count"><span id="charCount">0</span>/3000 characters (minimum 100)</div>
-                        <div class="invalid-feedback">Description must be between 100 and 3000 characters.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="skills" class="form-label">Required Skills <span class="text-danger">*</span></label>
-                        <select class="form-control" id="skills" multiple required>
-                            <option value="JavaScript">JavaScript</option>
-                            <option value="Python">Python</option>
-                            <option value="React">React</option>
-                            <option value="Node.js">Node.js</option>
-                        </select>
-                        <div class="invalid-feedback">Please select at least one skill.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Requirements <span class="text-danger">*</span></label>
-                        <ul class="requirements-list" id="requirementsList"></ul>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="requirementInput" placeholder="Enter requirement">
-                            <button type="button" class="btn btn-violet" id="addRequirementBtn">Add</button>
-                        </div>
-                        <div class="invalid-feedback">Please add at least one requirement.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Benefits</label>
-                        <ul class="benefits-list" id="benefitsList"></ul>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="benefitInput" placeholder="Enter benefit">
-                            <button type="button" class="btn btn-violet" id="addBenefitBtn">Add</button>
-                        </div>
-                    </div>
+        <form id="jobPostForm" class="needs-validation" th:action="@{/employer/post-job}" method="post" novalidate>
+            <!-- Job Details -->
+            <div class="form-section">
+                <h3>Job Details</h3>
+                <div class="mb-3">
+                    <label for="jobRole" class="form-label">Job Title <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="jobRole" th:field="*{jobRole}" required>
+                    <div class="invalid-feedback">Please enter a job title (at least 3 characters).</div>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
-
-                <!-- Work Location -->
-                <div class="form-section">
-                    <h3>Work Location</h3>
-                    <div class="mb-3">
-                        <label for="workType" class="form-label">Work Type <span class="text-danger">*</span></label>
-                        <select class="form-select" id="workType" required>
-                            <option value="" selected disabled>Select arrangement</option>
-                            <option value="Remote">Remote</option>
-                            <option value="Hybrid">Hybrid</option>
-                            <option value="On-site">On-site</option>
-                        </select>
-                        <div class="invalid-feedback">Please select a work arrangement.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="locations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
-                        <select class="form-control" id="locations" multiple required>
-                            <option value="New York, USA">New York, USA</option>
-                            <option value="San Francisco, USA">San Francisco, USA</option>
-                            <option value="London, UK">London, UK</option>
-                        </select>
-                        <div class="invalid-feedback">Please select at least one location.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
+                <div class="mb-3">
+                    <label for="jobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
+                    <select class="form-select" id="jobType" th:field="*{jobTypeId}" required>
+                        <option value="" selected disabled>Select type</option>
+                        <option th:each="type : ${employmentTypes}" th:value="${type.employmentTypeId}" th:text="${type.employmentType}"></option>
+                    </select>
+                    <div class="invalid-feedback">Please select an employment type.</div>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
-
-                <!-- Employment Specific Details -->
-                <div class="form-section" id="fullTimeFields" style="display: none;">
-                    <h3>Full-time Details</h3>
-                    <div class="mb-3">
-                        <label for="experienceYears" class="form-label">Experience Required <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="experienceYears" placeholder="e.g., 0 or 4-5" required>
-                        <div class="invalid-feedback">Enter 0 or a range (e.g., 4-5).</div>
-                        <div class="valid-feedback">Looks good!</div>
+                <div class="mb-3">
+                    <label for="jobCategory" class="form-label">Job Category <span class="text-danger">*</span></label>
+                    <select class="form-select" id="jobCategory" th:field="*{jobCategoryId}" required>
+                        <option value="" selected disabled>Select category</option>
+                        <option th:each="category : ${jobCategories}" th:value="${category.jobCategoryId}" th:text="${category.jobCategory}"></option>
+                    </select>
+                    <div class="invalid-feedback">Please select a job category.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Job Description <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="description" rows="4" th:field="*{jobDescription}" required></textarea>
+                    <div class="character-count"><span id="charCount">0</span>/3000 characters (minimum 100)</div>
+                    <div class="invalid-feedback">Description must be between 100 and 3000 characters.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Required Skills <span class="text-danger">*</span></label>
+                    <select class="form-control" id="skills" th:field="*{skillIds}" multiple required>
+                        <option th:each="skill : ${skills}" th:value="${skill.skillId}" th:text="${skill.skill}"></option>
+                    </select>
+                    <div class="invalid-feedback">Please select at least one skill.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Roles and Responsibilities <span class="text-danger">*</span></label>
+                    <ul class="list-group" id="rolesList"></ul>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="roleInput" placeholder="Enter role or responsibility">
+                        <button type="button" class="btn btn-violet" id="addRoleBtn">Add</button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Salary Range <span class="text-danger">*</span></label>
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <input type="number" class="form-control" id="salaryMinFT" placeholder="Minimum" min="0" required>
-                                <div class="invalid-feedback">Please enter a valid minimum salary (at least 0).</div>
-                                <div class="valid-feedback">Looks good!</div>
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <input type="number" class="form-control" id="salaryMaxFT" placeholder="Maximum" min="0" required>
-                                <div class="invalid-feedback">Please enter a valid maximum salary (greater than minimum).</div>
-                                <div class="valid-feedback">Looks good!</div>
-                            </div>
+                    <input type="hidden" id="responsibilities" th:field="*{responsibilities}" />
+                    <div class="invalid-feedback">Please add at least one role or responsibility.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Requirements <span class="text-danger">*</span></label>
+                    <ul class="list-group" id="requirementsList"></ul>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="requirementInput" placeholder="Enter requirement">
+                        <button type="button" class="btn btn-violet" id="addRequirementBtn">Add</button>
+                    </div>
+                    <input type="hidden" id="requirements" th:field="*{requirements}" />
+                    <div class="invalid-feedback">Please add at least one requirement.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Benefits</label>
+                    <ul class="list-group" id="benefitsList"></ul>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="benefitInput" placeholder="Enter benefit">
+                        <button type="button" class="btn btn-violet" id="addBenefitBtn">Add</button>
+                    </div>
+                    <input type="hidden" id="benefits" th:field="*{benefits}" />
+                </div>
+            </div>
+
+            <!-- Work Location -->
+            <div class="form-section">
+                <h3>Work Location</h3>
+                <div class="mb-3">
+                    <label for="workType" class="form-label">Work Type <span class="text-danger">*</span></label>
+                    <select class="form-select" id="workType" th:field="*{workType}" required>
+                        <option value="" selected disabled>Select arrangement</option>
+                        <option value="REMOTE">Remote</option>
+                        <option value="HYBRID">Hybrid</option>
+                        <option value="ONSITE">On-site</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a work arrangement.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="locations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
+                    <select class="form-control" id="locations" th:field="*{locationIds}" multiple required>
+                        <option th:each="location : ${locations}" th:value="${location.locationId}" th:text="${location.location}"></option>
+                    </select>
+                    <div class="invalid-feedback">Please select at least one location.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+            </div>
+
+            <!-- Employment Specific Details -->
+            <div class="form-section" id="fullTimeFields" style="display: none;">
+                <h3>Full-time Details</h3>
+                <div class="mb-3">
+                    <label for="yearsOfExperience" class="form-label">Experience Required <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="yearsOfExperience" th:field="*{yearsOfExperience}" placeholder="e.g., 0 or 4-5" required>
+                    <div class="invalid-feedback">Enter 0 or a range (e.g., 4-5).</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Salary Range <span class="text-danger">*</span></label>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <input type="number" class="form-control" id="salaryMinFT" th:field="*{salaryMin}" placeholder="Minimum" min="0" required>
+                            <div class="invalid-feedback">Please enter a valid minimum salary (at least 0).</div>
+                            <div class="valid-feedback">Looks good!</div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-section" id="partTimeFields" style="display: none;">
-                    <h3>Part-time Details</h3>
-                    <div class="mb-3">
-                        <label class="form-label">Salary Range <span class="text-danger">*</span></label>
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <input type="number" class="form-control" id="salaryMinPT" placeholder="Minimum" min="0" required>
-                                <div class="invalid-feedback">Please enter a valid minimum salary (at least 0).</div>
-                                <div class="valid-feedback">Looks good!</div>
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <input type="number" class="form-control" id="salaryMaxPT" placeholder="Maximum" min="0" required>
-                                <div class="invalid-feedback">Please enter a valid maximum salary (greater than minimum).</div>
-                                <div class="valid-feedback">Looks good!</div>
-                            </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="number" class="form-control" id="salaryMaxFT" th:field="*{salaryMax}" placeholder="Maximum" min="0" required>
+                            <div class="invalid-feedback">Please enter a valid maximum salary (greater than minimum).</div>
+                            <div class="valid-feedback">Looks good!</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-section" id="internshipFields" style="display: none;">
-                    <h3>Internship Details</h3>
-                    <div class="mb-3">
-                        <label for="duration" class="form-label">Duration (months) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="duration" min="1" max="24" required>
-                        <div class="invalid-feedback">Enter a duration between 1 and 24 months.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="stipend" class="form-label">Stipend <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="stipend" min="0" required>
-                        <div class="invalid-feedback">Enter a valid stipend (at least 0).</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                </div>
-
-                <!-- Application Details (Email Removed) -->
-                <div class="form-section">
-                    <h3>Application Details</h3>
-                    <div class="mb-3">
-                        <label for="openings" class="form-label">Number of Positions <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="openings" min="1" value="1" required>
-                        <div class="invalid-feedback">Enter at least 1 position.</div>
-                        <div class="valid-feedback">Looks good!</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="deadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="deadline" required>
-                        <div class="invalid-feedback">Select a future date.</div>
-                        <div class="valid-feedback">Looks good!</div>
+            <div class="form-section" id="partTimeFields" style="display: none;">
+                <h3>Part-time Details</h3>
+                <div class="mb-3">
+                    <label class="form-label">Salary Range <span class="text-danger">*</span></label>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <input type="number" class="form-control" id="salaryMinPT" th:field="*{salaryMin}" placeholder="Minimum" min="0" required>
+                            <div class="invalid-feedback">Please enter a valid minimum salary (at least 0).</div>
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="number" class="form-control" id="salaryMaxPT" th:field="*{salaryMax}" placeholder="Maximum" min="0" required>
+                            <div class="invalid-feedback">Please enter a valid maximum salary (greater than minimum).</div>
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-violet" id="draftBtn">
-                        <i class="fas fa-save me-1"></i> Save as Draft
-                    </button>
-                    <button type="button" class="btn btn-outline-violet" id="previewBtn">
-                        <i class="fas fa-eye me-1"></i> Preview
-                    </button>
-                    <button type="submit" class="btn btn-violet">
-                        <i class="fas fa-check-circle me-1"></i> Post Job
-                    </button>
+            <div class="form-section" id="internshipFields" style="display: none;">
+                <h3>Internship Details</h3>
+                <div class="mb-3">
+                    <label for="duration" class="form-label">Duration (months) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="duration" th:field="*{duration}" min="1" max="24" required>
+                    <div class="invalid-feedback">Enter a duration between 1 and 24 months.</div>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
-            </form>
-        </div>
+                <div class="mb-3">
+                    <label for="stipend" class="form-label">Stipend <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="stipend" th:field="*{stipend}" min="0" required>
+                    <div class="invalid-feedback">Enter a valid stipend (at least 0).</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+            </div>
 
-        <!-- Preview Container (Email Removed) -->
-        <div class="preview-container" id="previewContainer">
-            <h2 class="text-violet mb-4">Job Posting Preview</h2>
-            <div class="preview-section">
-                <h4>Job Details</h4>
-                <div class="preview-item"><span class="preview-label">Job Title:</span><span class="preview-value" id="previewJobRole"></span><i class="fas fa-pencil-alt edit-icon" data-field="jobRole"></i></div>
-                <div class="preview-item"><span class="preview-label">Employment Type:</span><span class="preview-value" id="previewJobType"></span><i class="fas fa-pencil-alt edit-icon" data-field="jobType"></i></div>
-                <div class="preview-item"><span class="preview-label">Job Category:</span><span class="preview-value" id="previewJobCategory"></span><i class="fas fa-pencil-alt edit-icon" data-field="jobCategory"></i></div>
-                <div class="preview-item"><span class="preview-label">Description:</span><span class="preview-value" id="previewDescription"></span><i class="fas fa-pencil-alt edit-icon" data-field="description"></i></div>
-                <div class="preview-item"><span class="preview-label">Required Skills:</span><span class="preview-value" id="previewSkills"></span><i class="fas fa-pencil-alt edit-icon" data-field="skills"></i></div>
-                <div class="preview-item"><span class="preview-label">Requirements:</span><span class="preview-value" id="previewRequirements"></span><i class="fas fa-pencil-alt edit-icon" data-field="requirementInput"></i></div>
-                <div class="preview-item"><span class="preview-label">Benefits:</span><span class="preview-value" id="previewBenefits"></span><i class="fas fa-pencil-alt edit-icon" data-field="benefitInput"></i></div>
+            <!-- Application Details -->
+            <div class="form-section">
+                <h3>Application Details</h3>
+                <div class="mb-3">
+                    <label for="openings" class="form-label">Number of Positions <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="openings" th:field="*{openings}" min="1" value="1" required>
+                    <div class="invalid-feedback">Enter at least 1 position.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="deadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="deadline" th:field="*{deadline}" required>
+                    <div class="invalid-feedback">Select a future date.</div>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
             </div>
-            <div class="preview-section">
-                <h4>Work Location</h4>
-                <div class="preview-item"><span class="preview-label">Work Type:</span><span class="preview-value" id="previewWorkType"></span><i class="fas fa-pencil-alt edit-icon" data-field="workType"></i></div>
-                <div class="preview-item"><span class="preview-label">Location(s):</span><span class="preview-value" id="previewLocations"></span><i class="fas fa-pencil-alt edit-icon" data-field="locations"></i></div>
-            </div>
-            <div class="preview-section" id="previewFullTimeFields" style="display: none;">
-                <h4>Full-time Details</h4>
-                <div class="preview-item"><span class="preview-label">Experience:</span><span class="preview-value" id="previewExperienceYears"></span><i class="fas fa-pencil-alt edit-icon" data-field="experienceYears"></i></div>
-                <div class="preview-item"><span class="preview-label">Salary Range:</span><span class="preview-value" id="previewSalaryRangeFT"></span><i class="fas fa-pencil-alt edit-icon" data-field="salaryMinFT"></i></div>
-            </div>
-            <div class="preview-section" id="previewPartTimeFields" style="display: none;">
-                <h4>Part-time Details</h4>
-                <div class="preview-item"><span class="preview-label">Salary Range:</span><span class="preview-value" id="previewSalaryRangePT"></span><i class="fas fa-pencil-alt edit-icon" data-field="salaryMinPT"></i></div>
-            </div>
-            <div class="preview-section" id="previewInternshipFields" style="display: none;">
-                <h4>Internship Details</h4>
-                <div class="preview-item"><span class="preview-label">Duration:</span><span class="preview-value" id="previewDuration"></span><i class="fas fa-pencil-alt edit-icon" data-field="duration"></i></div>
-                <div class="preview-item"><span class="preview-label">Stipend:</span><span class="preview-value" id="previewStipend"></span><i class="fas fa-pencil-alt edit-icon" data-field="stipend"></i></div>
-            </div>
-            <div class="preview-section">
-                <h4>Application Details</h4>
-                <div class="preview-item"><span class="preview-label">Positions:</span><span class="preview-value" id="previewOpenings"></span><i class="fas fa-pencil-alt edit-icon" data-field="openings"></i></div>
-                <div class="preview-item"><span class="preview-label">Deadline:</span><span class="preview-value" id="previewDeadline"></span><i class="fas fa-pencil-alt edit-icon" data-field="deadline"></i></div>
-            </div>
+
             <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-outline-violet" id="backToFormBtn">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Edit
+                <button type="button" class="btn btn-outline-violet" id="draftBtn">
+                    <i class="fas fa-save me-1"></i> Save as Draft
                 </button>
-                <button class="btn btn-violet" id="submitFromPreviewBtn">
+                <button type="button" class="btn btn-outline-violet" id="previewBtn">
+                    <i class="fas fa-eye me-1"></i> Preview
+                </button>
+                <button type="submit" class="btn btn-violet">
                     <i class="fas fa-check-circle me-1"></i> Post Job
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script th:href="@{employer/js/postjob.css}"></script>
+    <!-- Preview Container -->
+    <div class="preview-container" id="previewContainer">
+        <h2 class="text-violet mb-4">Job Posting Preview</h2>
+        <div class="preview-section">
+            <h4>Job Details</h4>
+            <div class="preview-item"><span class="preview-label">Job Title:</span><span class="preview-value" id="previewJobRole"></span><i class="fas fa-pencil-alt edit-icon" data-field="jobRole"></i></div>
+            <div class="preview-item"><span class="preview-label">Employment Type:</span><span class="preview-value" id="previewJobType"></span><i class="fas fa-pencil-alt edit-icon" data-field="jobType"></i></div>
+            <div class="preview-item"><span class="preview-label">Job Category:</span><span class="preview-value" id="previewJobCategory"></span><i class="fas fa-pencil-alt edit-icon" data-field="jobCategory"></i></div>
+            <div class="preview-item"><span class="preview-label">Description:</span><span class="preview-value" id="previewDescription"></span><i class="fas fa-pencil-alt edit-icon" data-field="description"></i></div>
+            <div class="preview-item"><span class="preview-label">Required Skills:</span><span class="preview-value" id="previewSkills"></span><i class="fas fa-pencil-alt edit-icon" data-field="skills"></i></div>
+            <div class="preview-item"><span class="preview-label">Roles and Responsibilities:</span><span class="preview-value" id="previewRoles"></span><i class="fas fa-pencil-alt edit-icon" data-field="roleInput"></i></div>
+            <div class="preview-item"><span class="preview-label">Requirements:</span><span class="preview-value" id="previewRequirements"></span><i class="fas fa-pencil-alt edit-icon" data-field="requirementInput"></i></div>
+            <div class="preview-item"><span class="preview-label">Benefits:</span><span class="preview-value" id="previewBenefits"></span><i class="fas fa-pencil-alt edit-icon" data-field="benefitInput"></i></div>
+        </div>
+        <div class="preview-section">
+            <h4>Work Location</h4>
+            <div class="preview-item"><span class="preview-label">Work Type:</span><span class="preview-value" id="previewWorkType"></span><i class="fas fa-pencil-alt edit-icon" data-field="workType"></i></div>
+            <div class="preview-item"><span class="preview-label">Location(s):</span><span class="preview-value" id="previewLocations"></span><i class="fas fa-pencil-alt edit-icon" data-field="locations"></i></div>
+        </div>
+        <div class="preview-section" id="previewFullTimeFields" style="display: none;">
+            <h4>Full-time Details</h4>
+            <div class="preview-item"><span class="preview-label">Experience:</span><span class="preview-value" id="previewExperienceYears"></span><i class="fas fa-pencil-alt edit-icon" data-field="yearsOfExperience"></i></div>
+            <div class="preview-item"><span class="preview-label">Salary Range:</span><span class="preview-value" id="previewSalaryRangeFT"></span><i class="fas fa-pencil-alt edit-icon" data-field="salaryMinFT"></i></div>
+        </div>
+        <div class="preview-section" id="previewPartTimeFields" style="display: none;">
+            <h4>Part-time Details</h4>
+            <div class="preview-item"><span class="preview-label">Salary Range:</span><span class="preview-value" id="previewSalaryRangePT"></span><i class="fas fa-pencil-alt edit-icon" data-field="salaryMinPT"></i></div>
+        </div>
+        <div class="preview-section" id="previewInternshipFields" style="display: none;">
+            <h4>Internship Details</h4>
+            <div class="preview-item"><span class="preview-label">Duration:</span><span class="preview-value" id="previewDuration"></span><i class="fas fa-pencil-alt edit-icon" data-field="duration"></i></div>
+            <div class="preview-item"><span class="preview-label">Stipend:</span><span class="preview-value" id="previewStipend"></span><i class="fas fa-pencil-alt edit-icon" data-field="stipend"></i></div>
+        </div>
+        <div class="preview-section">
+            <h4>Application Details</h4>
+            <div class="preview-item"><span class="preview-label">Positions:</span><span class="preview-value" id="previewOpenings"></span><i class="fas fa-pencil-alt edit-icon" data-field="openings"></i></div>
+            <div class="preview-item"><span class="preview-label">Deadline:</span><span class="preview-value" id="previewDeadline"></span><i class="fas fa-pencil-alt edit-icon" data-field="deadline"></i></div>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-outline-violet" id="backToFormBtn">
+                <i class="fas fa-arrow-left me-1"></i> Back to Edit
+            </button>
+            <button class="btn btn-violet" id="submitFromPreviewBtn">
+                <i class="fas fa-check-circle me-1"></i> Post Job
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/employer/js/jobs.js}"></script>
 </body>
 </html>

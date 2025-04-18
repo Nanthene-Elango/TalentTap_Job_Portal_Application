@@ -1,16 +1,14 @@
 package com.talenttap.controller;
 
 import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
 import com.talenttap.DTO.EmployerProfileDTO;
+import com.talenttap.DTO.JobDisplayDTO;
+import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.EducationLevel;
-import com.talenttap.model.EmployerLogin;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobseekerRegister;
@@ -19,6 +17,7 @@ import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
 import com.talenttap.service.EmployerAuthService;
+import com.talenttap.service.JobsService;
 import com.talenttap.service.JobseekerService;
 
 @Controller
@@ -28,9 +27,12 @@ public class PageRenderController {
 	
 	private EmployerAuthService employerService;
 	
-	public PageRenderController(JobseekerService jobseekerRegisterService, EmployerAuthService employerService){
+	private JobsService jobService;
+	
+	public PageRenderController(JobseekerService jobseekerRegisterService, EmployerAuthService employerService,JobsService jobService){
 		this.jobseekerRegisterService = jobseekerRegisterService;
 		this.employerService = employerService;
+		this.jobService = jobService;
 	}
 	
 	@GetMapping
@@ -116,10 +118,25 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/employer/jobs")
-	public String loadJobs(){
-		return "employer/jobs";
-	}
-	
+    public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+        try {
+            if (jwt == null || jwt.trim().isEmpty()) {
+                model.addAttribute("error", "Please log in to view jobs.");
+                return "error"; // Or redirect to login
+            }
+            JwtToken token = new JwtToken(jwt.trim());
+            List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
+            System.out.println(jobs.get(0).getJobType());
+            model.addAttribute("jobs", jobs);
+            return "employer/jobs";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", "Invalid JWT token: " + e.getMessage());
+            return "error";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
+            return "error";
+        }
+    }
 	@GetMapping("/employer/candidates")
 	public String loadCandidates() {
 		return "employer/candidates";
@@ -152,9 +169,7 @@ public class PageRenderController {
 	                model.addAttribute("location", profile.getLocation());
 	                model.addAttribute("companyLogo", profile.getCompanyLogo());
 	                model.addAttribute("loggedIn", true);
-	            } else {
-	                model.addAttribute("loggedIn", false);
-	            }
+	            } 
 	        } else {
 	            System.out.println("No JWT token found in cookie");
 	            model.addAttribute("loggedIn", false);
@@ -174,7 +189,13 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/employer/postjob")
-	public String loadPostJob() {
+	public String loadPostJob(Model model) {
+		    JobFormDTO  j = new JobFormDTO();
+		    model.addAttribute("jobForm", new JobFormDTO());
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerRegisterService.getAllSkills());
+	        model.addAttribute("locations", jobseekerRegisterService.getAllLocations());
 		return "employer/postjob";
 	}
 }
