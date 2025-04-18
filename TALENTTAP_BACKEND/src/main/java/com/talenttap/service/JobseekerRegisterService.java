@@ -1,11 +1,19 @@
 package com.talenttap.service;
 
+import java.net.URI;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.JobseekerRegisterDTO;
 import com.talenttap.entity.AuthProvider;
 import com.talenttap.entity.Education;
@@ -22,6 +30,7 @@ import com.talenttap.repository.UsersRepository;
 import com.talenttap.security.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -128,6 +137,61 @@ public class JobseekerRegisterService {
 		Users user = userRepo.findByUsername(username).get();
 		
 		return ResponseEntity.ok().body(user.getFullName());
+	}
+
+	public ResponseEntity<JobseekerDTO> getJobseeker(String token) {
+
+	    String username = jwtUtil.extractIdentifier(token);
+
+	    Optional<Users> optionalUser = userRepo.findByUsername(username);
+	    if (optionalUser.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+
+	    Users user = optionalUser.get();
+
+	    Optional<JobSeeker> optionalJobseeker = jobseekerRepo.findByUser(user);
+	    if (optionalJobseeker.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+
+	    JobSeeker jobseeker = optionalJobseeker.get();
+	    JobseekerDTO response = new JobseekerDTO(jobseeker, user);
+
+	    return ResponseEntity.ok(response);
+	}
+
+	public ResponseEntity<?> getProfilePhotoById(int id) {
+		JobSeeker jobSeeker = jobseekerRepo.findById(id).orElse(null);
+
+	    if (jobSeeker == null || jobSeeker.getProfilePhoto() == null) {
+	        // Return redirect to frontend's default image
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setLocation(URI.create("http://localhost:8082/img/default_profile.png"));
+	        return new ResponseEntity<>(headers, HttpStatus.FOUND); // 302 Redirect
+	    }
+
+	    byte[] imageBytes = jobSeeker.getProfilePhoto();
+	    String contentType = detectImageType(imageBytes); // JPEG or PNG
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.parseMediaType(contentType));
+
+	    return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+	}
+
+	private String detectImageType(byte[] imageBytes) {
+	    if (imageBytes == null || imageBytes.length < 4) {
+	        return "image/png"; // default
+	    }
+
+	    if (imageBytes[0] == (byte)0xFF && imageBytes[1] == (byte)0xD8) {
+	        return "image/jpeg";
+	    } else if (imageBytes[0] == (byte)0x89 && imageBytes[1] == (byte)0x50) {
+	        return "image/png";
+	    } else {
+	        return "image/png"; // fallback
+	    }
 	}
 
 }

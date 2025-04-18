@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Employer Details</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .employer-details-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .employer-details-card {
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0d6ff;
+            border-radius: 10px;
+            background: #ffffff;
+            transition: transform 0.2s ease;
+        }
+
+        .employer-details-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .employer-details-card .card-body {
+            padding: 24px;
+        }
+
+        .employer-details-card h4 {
+            color: #2a0a5a;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .employer-details-card h5 {
+            color: #5e17eb;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .employer-details-card p {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .btn-outline-primary {
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-color: #5e17eb;
+            color: #5e17eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #5e17eb;
+            color: #ffffff;
+        }
+
+        .btn-outline-primary i {
+            margin-right: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .employer-details-card .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .employer-details-card .row {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .employer-details-card {
+                padding: 16px;
+            }
+
+            .employer-details-card h4 {
+                font-size: 1.25rem;
+            }
+
+            .employer-details-card h5 {
+                font-size: 1rem;
+            }
+
+            .employer-details-card p {
+                font-size: 0.85rem;
+            }
+
+            .btn-outline-primary {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="employer-details-container">
+        <div class="card employer-details-card">
+            <div class="card-body">
+                <h4 class="card-title mb-4" id="employer-title">Employer Profile</h4>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h5>Personal Information</h5>
+                        <p><strong>First Name:</strong> <span id="first-name">John</span></p>
+                        <p><strong>Last Name:</strong> <span id="last-name">Doe</span></p>
+                        <p><strong>Email:</strong> <span id="email">hr@techcorp.com</span></p>
+                        <p><strong>Phone:</strong> <span id="phone">+1 (555) 123-4567</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Company Information</h5>
+                        <p><strong>Company:</strong> <span id="company-name">TechCorp</span></p>
+                        <p><strong>Industry:</strong> <span id="industry">Technology</span></p>
+                        <p><strong>Jobs Posted:</strong> <span id="job-count">5</span></p>
+                        <p><strong>Applications Received:</strong> <span id="application-count">50</span></p>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="index.html#employers" class="btn-outline-primary"><i class="fas fa-arrow-left"></i> Back to Employers</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Sample data for demonstration (replace with backend fetch for dynamic data)
+        const employerData = {
+            1: {
+                first_name: "John",
+                last_name: "Doe",
+                email: "hr@techcorp.com",
+                phone: "+1 (555) 123-4567",
+                company_name: "TechCorp",
+                industry: "Technology",
+                job_count: 5,
+                application_count: 50
+            },
+            2: {
+                first_name: "Jane",
+                last_name: "Smith",
+                email: "jobs@marketpro.com",
+                phone: "+1 (555) 987-6543",
+                company_name: "MarketPro",
+                industry: "Marketing",
+                job_count: 3,
+                application_count: 20
+            },
+            3: {
+                first_name: "Emily",
+                last_name: "Johnson",
+                email: "careers@healthinc.com",
+                phone: "+1 (555) 456-7890",
+                company_name: "HealthInc",
+                industry: "Healthcare",
+                job_count: 2,
+                application_count: 15
+            }
+        };
+
+        // Load employer data based on URL query parameter
+        function loadEmployerDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id') || '1'; // Default to ID 1 if none provided
+            const data = employerData[id] || employerData[1]; // Fallback to default
+
+            document.getElementById('employer-title').textContent = `Employer Profile - ${data.company_name}`;
+            document.getElementById('first-name').textContent = data.first_name;
+            document.getElementById('last-name').textContent = data.last_name;
+            document.getElementById('email').textContent = data.email;
+            document.getElementById('phone').textContent = data.phone;
+            document.getElementById('company-name').textContent = data.company_name;
+            document.getElementById('industry').textContent = data.industry;
+            document.getElementById('job-count').textContent = data.job_count;
+            document.getElementById('application-count').textContent = data.application_count;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', loadEmployerDetails);
+    </script>
+</body>
+</html>
