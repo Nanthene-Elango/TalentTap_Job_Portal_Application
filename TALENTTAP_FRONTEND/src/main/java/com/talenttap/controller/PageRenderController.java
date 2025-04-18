@@ -7,12 +7,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerLogin;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
+import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
 import com.talenttap.model.Location;
@@ -24,13 +28,14 @@ import com.talenttap.service.JobseekerService;
 @Controller
 public class PageRenderController {
 
-	private JobseekerService jobseekerRegisterService;
+	private JobseekerService jobseekerService;
 	
 	private EmployerAuthService employerService;
 	
-	public PageRenderController(JobseekerService jobseekerRegisterService, EmployerAuthService employerService){
-		this.jobseekerRegisterService = jobseekerRegisterService;
+	public PageRenderController( 
+			EmployerAuthService employerService ,JobseekerService jobseekerService){
 		this.employerService = employerService;
+		this.jobseekerService = jobseekerService;
 	}
 	
 	@GetMapping
@@ -59,7 +64,14 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/profile")
-	public String LoadProfile() {
+	public String LoadProfile(Model model , @CookieValue(value = "jwt", required = false) String jwt) {
+		
+		if (jwt != null && !jwt.trim().isEmpty()) {
+            JwtToken token = new JwtToken(jwt.trim());
+            Jobseeker jobseeker = jobseekerService.getJobseeker(token);
+    		model.addAttribute("jobSeeker", jobseeker);
+		}
+		
 		return "jobseeker/profile";
 	}
 	
@@ -74,18 +86,25 @@ public class PageRenderController {
         JobseekerRegister jobseekerRegister = new JobseekerRegister();
         model.addAttribute("jobseekerRegister", jobseekerRegister);
 
-        List<Location> locations = jobseekerRegisterService.getAllLocations();
+        List<Location> locations = jobseekerService.getAllLocations();
         System.out.println(locations.get(0).getLocation());
         model.addAttribute("locations", locations);
 
-        List<EducationLevel> qualifications = jobseekerRegisterService.getEducationLevel();
+        List<EducationLevel> qualifications = jobseekerService.getEducationLevel();
         model.addAttribute("qualifications", qualifications);
 
-        List<Skills> allSkills = jobseekerRegisterService.getAllSkills();
+        List<Skills> allSkills = jobseekerService.getAllSkills();
         System.out.println(allSkills.get(0).getSkillId() + " " + allSkills.get(0).getSkill() );
         model.addAttribute("allSkills", allSkills);
 
         return "jobseeker/register";
+    }
+	
+	@PostMapping("/jobseeker/upload-profile-photo")
+    public String uploadProfilePhoto(@RequestParam("profilePhoto") MultipartFile file,
+                                     @RequestParam("jobSeekerId") Integer jobSeekerId) {
+        	jobseekerService.updateProfilePicture(file , jobSeekerId);
+        	return "redirect:/jobseeker/profile";
     }
 
 	@GetMapping("/employer/login")
@@ -99,7 +118,7 @@ public class PageRenderController {
 		EmployerRegister register = new EmployerRegister();
 		model.addAttribute("employerRegister", register);
 		
-		List<Location> locations = jobseekerRegisterService.getAllLocations();
+		List<Location> locations = jobseekerService.getAllLocations();
 		System.out.println(locations.get(0).getLocation());
 		model.addAttribute("locations",locations);
 		

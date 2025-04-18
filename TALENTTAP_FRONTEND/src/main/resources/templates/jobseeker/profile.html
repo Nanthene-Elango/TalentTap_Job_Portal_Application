@@ -23,60 +23,92 @@
         <div class="row">
             <!-- Left Column - Basic Profile Details -->
             <div class="col-lg-4">
-                <!-- Profile Photo, Name and Basic Info -->
-                <div class="profile-card position-relative">
-                    <button class="btn btn-edit" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <div class="profile-header">
-                        <img src="/api/placeholder/150/150" alt="Profile Photo" class="profile-image mb-3">
-                        <h4 class="text-center mb-1" id="fullname">John Doe</h4>
-                        <p class="text-muted text-center mb-2">
-                            <i class="fas fa-map-marker-alt me-1"></i><span id="location"> New York, USA</span>
-                        </p>
-                    </div>
+				<!-- Profile Photo, Name and Basic Info -->
+				<div class="profile-card position-relative">
+					<button class="btn btn-edit" data-bs-toggle="modal"
+						data-bs-target="#editProfileModal">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+					<div class="profile-header">
+						<!-- Profile Image -->
+						<img
+							th:src="@{'http://localhost:8083/jobseeker/profile-photo/' + ${jobSeeker.id}}"
+							alt="Profile Photo" class="profile-image mb-3"
+							id="profilePicPreview">
 
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-2">
-                            <div><i class="fas fa-envelope me-2"></i>Email:</div>
-                            <div id="email">johndoe@example.com</div>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <div><i class="fas fa-phone me-2"></i>Phone:</div>
-                            <div id="phone">+91 934278 38900</div>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <div><i class="fas fa-calendar me-2"></i>DOB:</div>
-                            <div id="dob">15 Jan 1990</div>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <div><i class="fas fa-venus-mars me-2"></i>Gender:</div>
-                            <div id="gender">Male</div>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <div><i class="fas fa-user me-2"></i>Username:</div>
-                            <div id="username">johndoe90</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div><i class="fas fa-key me-2"></i>Password:</div>
-                            <div id="password">••••••••</div>
-                        </div>
-                    </div>
-                </div>
+						<!-- + Icon for uploading profile picture -->
+						<form th:action="@{/jobseeker/upload-profile-photo}" method="post"
+							enctype="multipart/form-data" style="position: relative;">
+							<!-- Hidden File Input -->
+							<input type="file" id="profilePicInput" name="profilePhoto"
+								onchange="this.form.submit()" style="display: none;"> <input
+								type="hidden" name="jobSeekerId" th:value="${jobSeeker.id}" />
 
-                <!-- Profile Summary Section -->
-                <div class="profile-card position-relative">
-                    <button class="btn btn-edit" data-bs-toggle="modal" data-bs-target="#editSummaryModal">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <h5 class="section-title">Profile Summary</h5>
-                    <p id="summary">Experienced software developer with 5+ years of expertise in full-stack development.
-                        Proficient
-                        in JavaScript, React, Node.js, and Python. Passionate about creating user-friendly applications
-                        and solving complex problems. Seeking opportunities to leverage my skills in a challenging
-                        environment.</p>
-                </div>
-            </div>
+							<!-- Label that acts like a button -->
+							<label for="profilePicInput"
+								style="position: absolute; bottom: 10px; right: -30px; background-color: #5e17eb; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);">+</label>
+						</form>
+						<!-- Name and Location -->
+						<h4 class="text-center mb-1" th:text="${jobSeeker.fullName}">John
+							Doe</h4>
+						<p class="text-muted text-center mb-2">
+							<i class="fas fa-map-marker-alt me-1"></i> <span
+								th:text="${jobSeeker.location}">New York, USA</span>
+						</p>
+					</div>
+					<div class="mb-3">
+						<div class="d-flex justify-content-between mb-2">
+							<div>
+								<i class="fas fa-envelope me-2"></i>Email:
+							</div>
+							<div th:text="${jobSeeker.email}">johndoe@example.com</div>
+						</div>
+						<div class="d-flex justify-content-between mb-2">
+							<div>
+								<i class="fas fa-phone me-2"></i>Phone:
+							</div>
+							<div th:text="${jobSeeker.phone}">+91 934278 38900</div>
+						</div>
+						<div class="d-flex justify-content-between mb-2">
+							<div>
+								<i class="fas fa-calendar me-2"></i>DOB:
+							</div>
+							<div th:text="${#dates.format(jobSeeker.dob, 'dd MMM yyyy')}">15
+								Jan 1990</div>
+						</div>
+						<div class="d-flex justify-content-between mb-2">
+							<div>
+								<i class="fas fa-venus-mars me-2"></i>Gender:
+							</div>
+							<div th:text="${jobSeeker.gender}">Male</div>
+						</div>
+						<div class="d-flex justify-content-between mb-2">
+							<div>
+								<i class="fas fa-user me-2"></i>Username:
+							</div>
+							<div th:text="${jobSeeker.username}">johndoe90</div>
+						</div>
+						<div class="d-flex justify-content-between">
+							<div>
+								<i class="fas fa-key me-2"></i>Password:
+							</div>
+							<div>••••••••••••••••••</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Profile Summary Section -->
+				<div class="profile-card position-relative">
+					<button class="btn btn-edit" data-bs-toggle="modal"
+						data-bs-target="#editSummaryModal">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+					<h5 class="section-title">Profile Summary</h5>
+					<p th:text="${jobSeeker.summary}">Experienced software
+						developer with 5+ years...</p>
+				</div>
+			</div>
+
 
             <!-- Right Column - Professional Details -->
             <div class="col-lg-8">

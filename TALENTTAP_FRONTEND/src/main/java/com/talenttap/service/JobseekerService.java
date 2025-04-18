@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
 import com.talenttap.model.Location;
@@ -61,55 +66,89 @@ public class JobseekerService {
 	}
 
 	public void register(JobseekerRegister jobseekerRegister) {
-		
+
 		String url = "http://localhost:8083/auth/register/jobseeker";
-		
-		restTemplate.postForEntity(url, jobseekerRegister, String.class);	
+
+		restTemplate.postForEntity(url, jobseekerRegister, String.class);
 	}
 
-	public void login(Login login , HttpServletResponse response) {
+	public void login(Login login, HttpServletResponse response) {
 
 		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    HttpEntity<Login> request = new HttpEntity<>(login, headers);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Login> request = new HttpEntity<>(login, headers);
 
-	    ResponseEntity<String> backendResponse = restTemplate.exchange(
-	    		"http://localhost:8083/auth/login/jobseeker",
-	            HttpMethod.POST,
-	            request,
-	            String.class
-	    );
-	    List<String> cookieHeaders = backendResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
-	    if (cookieHeaders != null) {
-	        for (String cookieHeader : cookieHeaders) {
-	            response.addHeader(HttpHeaders.SET_COOKIE, cookieHeader);
-	        }
-	    }
-		
-	    System.out.println(backendResponse.getBody());
+		ResponseEntity<String> backendResponse = restTemplate.exchange("http://localhost:8083/auth/login/jobseeker",
+				HttpMethod.POST, request, String.class);
+		List<String> cookieHeaders = backendResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
+		if (cookieHeaders != null) {
+			for (String cookieHeader : cookieHeaders) {
+				response.addHeader(HttpHeaders.SET_COOKIE, cookieHeader);
+			}
+		}
+
+		System.out.println(backendResponse.getBody());
 	}
 
 	public String getFullName(JwtToken jwtToken) {
-		
+
 		String url = "http://localhost:8083/jobseeker/fullName";
-		
+
 		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    HttpEntity<JwtToken> request = new HttpEntity<>(jwtToken, headers);
-		
-	    ResponseEntity<String> response = restTemplate.exchange(
-	    		url,
-	            HttpMethod.POST,
-	            request,
-	            String.class
-	    );
-		
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<JwtToken> request = new HttpEntity<>(jwtToken, headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+
 		if (response.getStatusCode().is2xxSuccessful()) {
 			return response.getBody();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
 
+	public Jobseeker getJobseeker(JwtToken jwt) {
+		String url = "http://localhost:8083/jobseeker";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<JwtToken> request = new HttpEntity<>(jwt, headers);
+
+		ResponseEntity<Jobseeker> response = restTemplate.exchange(url, HttpMethod.POST, request, Jobseeker.class);
+
+		return response.getBody();
+	}
+
+	public String updateProfilePicture(MultipartFile file, Integer jobSeekerId) {
+
+		try {
+
+			RestTemplate restTemplate = new RestTemplate();
+
+			String backendUrl = "http://localhost:8083/jobseeker/upload-profile-photo";
+
+			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+			body.add("profilePhoto",
+					new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()));
+			body.add("jobSeekerId", jobSeekerId);
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+			HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+			// Send the POST request
+			ResponseEntity<String> response = restTemplate.postForEntity(backendUrl, requestEntity, String.class);
+
+			if (response.getStatusCode() == HttpStatus.OK) {
+				// Success
+			} else {
+				// Handle failure case
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/jobseeker/profile";
+	}
 }
