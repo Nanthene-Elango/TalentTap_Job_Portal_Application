@@ -103,4 +103,149 @@ public class JobSeeker {
     
     @OneToMany(mappedBy = "jobSeeker")
     private List<JobApplication> jobApplications;
+
+	public int getJobSeekerId() {
+		return jobSeekerId;
+	}
+
+	public void setJobSeekerId(int jobSeekerId) {
+		this.jobSeekerId = jobSeekerId;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public LocalDate getDob() {
+		return dob;
+	}
+
+	public void setDob(LocalDate dob) {
+		this.dob = dob;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public int getYearOfExperience() {
+		return yearOfExperience;
+	}
+
+	public void setYearOfExperience(int yearOfExperience) {
+		this.yearOfExperience = yearOfExperience;
+	}
+
+	public byte[] getProfilePhoto() {
+		return profilePhoto;
+	}
+
+	public void setProfilePhoto(byte[] profilePhoto) {
+		this.profilePhoto = profilePhoto;
+	}
+
+	public String getProfileSummary() {
+		return profileSummary;
+	}
+
+	public void setProfileSummary(String profileSummary) {
+		this.profileSummary = profileSummary;
+	}
+
+	public byte[] getResume() {
+		return resume;
+	}
+
+	public void setResume(byte[] resume) {
+		this.resume = resume;
+	}
+
+	public Set<Skills> getSeekerSkills() {
+		return seekerSkills;
+	}
+
+	public void setSeekerSkills(Set<Skills> seekerSkills) {
+		this.seekerSkills = seekerSkills;
+	}
+
+	public List<Education> getEducations() {
+		return educations;
+	}
+
+	public void setEducations(List<Education> educations) {
+		this.educations = educations;
+	}
+
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
+	}
+
+	public List<Experience> getExperiences() {
+		return experiences;
+	}
+
+	public void setExperiences(List<Experience> experiences) {
+		this.experiences = experiences;
+	}
+
+	public List<Certification> getCertifications() {
+		return certifications;
+	}
+
+	public void setCertifications(List<Certification> certifications) {
+		this.certifications = certifications;
+	}
+
+	public JobPreference getJobPreference() {
+		return jobPreference;
+	}
+
+	public void setJobPreference(JobPreference jobPreference) {
+		this.jobPreference = jobPreference;
+	}
+
+	public Set<Jobs> getSavedJobs() {
+		return savedJobs;
+	}
+
+	public void setSavedJobs(Set<Jobs> savedJobs) {
+		this.savedJobs = savedJobs;
+	}
+
+	public Set<Language> getSeekerLanguages() {
+		return seekerLanguages;
+	}
+
+	public void setSeekerLanguages(Set<Language> seekerLanguages) {
+		this.seekerLanguages = seekerLanguages;
+	}
+
+	public List<JobApplication> getJobApplications() {
+		return jobApplications;
+	}
+
+	public void setJobApplications(List<JobApplication> jobApplications) {
+		this.jobApplications = jobApplications;
+	}
+    
 }

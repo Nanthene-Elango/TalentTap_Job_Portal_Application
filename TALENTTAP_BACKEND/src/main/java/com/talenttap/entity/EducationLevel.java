@@ -28,4 +28,28 @@ public class EducationLevel {
 	@OneToMany(mappedBy = "educationLevel")
 	private List<Education> educations;
 
+	public int getEducationLevelId() {
+		return educationLevelId;
+	}
+
+	public void setEducationLevelId(int educationLevelId) {
+		this.educationLevelId = educationLevelId;
+	}
+
+	public String getEducationLevel() {
+		return educationLevel;
+	}
+
+	public void setEducationLevel(String educationLevel) {
+		this.educationLevel = educationLevel;
+	}
+
+	public List<Education> getEducations() {
+		return educations;
+	}
+
+	public void setEducations(List<Education> educations) {
+		this.educations = educations;
+	}
+
 }

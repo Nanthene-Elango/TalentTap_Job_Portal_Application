@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class JobCategory {
 
@@ -22,4 +19,21 @@ public class JobCategory {
 	
 	@Column(name="job_category" , nullable = false , unique= true)
 	private String jobCategory;
+
+	public int getJobCategoryId() {
+		return jobCategoryId;
+	}
+
+	public void setJobCategoryId(int jobCategoryId) {
+		this.jobCategoryId = jobCategoryId;
+	}
+
+	public String getJobCategory() {
+		return jobCategory;
+	}
+
+	public void setJobCategory(String jobCategory) {
+		this.jobCategory = jobCategory;
+	}
+	
 }

@@ -1,7 +1,9 @@
 package com.talenttap.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -119,7 +121,7 @@ public class JobseekerService {
 		return response.getBody();
 	}
 
-	public String updateProfilePicture(MultipartFile file, Integer jobSeekerId) {
+	public void updateProfilePicture(MultipartFile file, Integer jobSeekerId) {
 
 		try {
 
@@ -140,7 +142,7 @@ public class JobseekerService {
 			// Send the POST request
 			ResponseEntity<String> response = restTemplate.postForEntity(backendUrl, requestEntity, String.class);
 
-			if (response.getStatusCode() == HttpStatus.OK) {
+			if (response.getStatusCode().is2xxSuccessful()) {
 				// Success
 			} else {
 				// Handle failure case
@@ -148,7 +150,31 @@ public class JobseekerService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		return "redirect:/jobseeker/profile";
 	}
+
+	public void updateProfile(Jobseeker jobSeeker) {
+		String url = "http://localhost:8083/jobseeker/update-profile";
+		ResponseEntity<String> response = restTemplate.postForEntity(url, jobSeeker , String.class);
+	}
+
+	public void updateSummary(String summary, int id) {
+		
+		Map<String, Object> requestMap = new HashMap<>();
+		requestMap.put("summary", summary);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestMap, headers);
+
+		ResponseEntity<String> response = restTemplate.postForEntity(
+		    "http://localhost:8083/jobseeker/update-summary/" + id,
+		    requestEntity,
+		    String.class
+		);
+
+		System.out.println(response.getBody());
+		
+	}
+
 }

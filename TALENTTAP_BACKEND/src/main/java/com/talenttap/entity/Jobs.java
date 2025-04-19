@@ -19,9 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class Jobs {
 	
@@ -106,4 +103,173 @@ public class Jobs {
 	    inverseJoinColumns = @JoinColumn(name = "location_id")
 	)
 	private Set<Location> jobLocation = new HashSet<>();
+
+	public int getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(int jobId) {
+		this.jobId = jobId;
+	}
+
+	public Employer getEmployer() {
+		return employer;
+	}
+
+	public void setEmployer(Employer employer) {
+		this.employer = employer;
+	}
+
+	public String getJobRole() {
+		return jobRole;
+	}
+
+	public void setJobRole(String jobRole) {
+		this.jobRole = jobRole;
+	}
+
+	public EmploymentType getJobType() {
+		return jobType;
+	}
+
+	public void setJobType(EmploymentType jobType) {
+		this.jobType = jobType;
+	}
+
+	public JobCategory getJobCategory() {
+		return jobCategory;
+	}
+
+	public void setJobCategory(JobCategory jobCategory) {
+		this.jobCategory = jobCategory;
+	}
+
+	public String getJobDescription() {
+		return jobDescription;
+	}
+
+	public void setJobDescription(String jobDescription) {
+		this.jobDescription = jobDescription;
+	}
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
+	public String getResponsibilities() {
+		return responsibilities;
+	}
+
+	public void setResponsibilities(String responsibilities) {
+		this.responsibilities = responsibilities;
+	}
+
+	public String getBenefits() {
+		return benefits;
+	}
+
+	public void setBenefits(String benefits) {
+		this.benefits = benefits;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public double getStipend() {
+		return stipend;
+	}
+
+	public void setStipend(double stipend) {
+		this.stipend = stipend;
+	}
+
+	public SalaryRange getSalary_range() {
+		return salary_range;
+	}
+
+	public void setSalary_range(SalaryRange salary_range) {
+		this.salary_range = salary_range;
+	}
+
+	public String getYearsOfExperience() {
+		return yearsOfExperience;
+	}
+
+	public void setYearsOfExperience(String yearsOfExperience) {
+		this.yearsOfExperience = yearsOfExperience;
+	}
+
+	public WorkType getWorkType() {
+		return workType;
+	}
+
+	public void setWorkType(WorkType workType) {
+		this.workType = workType;
+	}
+
+	public int getOpenings() {
+		return openings;
+	}
+
+	public void setOpenings(int openings) {
+		this.openings = openings;
+	}
+
+	public LocalDateTime getPostedDate() {
+		return postedDate;
+	}
+
+	public void setPostedDate(LocalDateTime postedDate) {
+		this.postedDate = postedDate;
+	}
+
+	public LocalDateTime getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(LocalDateTime deadline) {
+		this.deadline = deadline;
+	}
+
+	public JobStatus getJobStatus() {
+		return jobStatus;
+	}
+
+	public void setJobStatus(JobStatus jobStatus) {
+		this.jobStatus = jobStatus;
+	}
+
+	public ApplicationStatus getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(ApplicationStatus approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+
+	public Set<Skills> getRequiredSkills() {
+		return requiredSkills;
+	}
+
+	public void setRequiredSkills(Set<Skills> requiredSkills) {
+		this.requiredSkills = requiredSkills;
+	}
+
+	public Set<Location> getJobLocation() {
+		return jobLocation;
+	}
+
+	public void setJobLocation(Set<Location> jobLocation) {
+		this.jobLocation = jobLocation;
+	}
+	
 }

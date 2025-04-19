@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class IndustryType {
 
@@ -22,4 +19,21 @@ public class IndustryType {
 	
 	@Column(name="industry_type")
 	private String industryType;
+
+	public int getIndustryTypeId() {
+		return industryTypeId;
+	}
+
+	public void setIndustryTypeId(int industryTypeId) {
+		this.industryTypeId = industryTypeId;
+	}
+
+	public String getIndustryType() {
+		return industryType;
+	}
+
+	public void setIndustryType(String industryType) {
+		this.industryType = industryType;
+	}
+
 }

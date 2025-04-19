@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class SalaryRange {
 
@@ -25,5 +22,29 @@ public class SalaryRange {
 	
 	@Column(name = "max_range" , nullable = false)
 	private double max_range;
-	
+
+	public int getSalaryRangeId() {
+		return salaryRangeId;
+	}
+
+	public void setSalaryRangeId(int salaryRangeId) {
+		this.salaryRangeId = salaryRangeId;
+	}
+
+	public double getMin_range() {
+		return min_range;
+	}
+
+	public void setMin_range(double min_range) {
+		this.min_range = min_range;
+	}
+
+	public double getMax_range() {
+		return max_range;
+	}
+
+	public void setMax_range(double max_range) {
+		this.max_range = max_range;
+	}
+
 }

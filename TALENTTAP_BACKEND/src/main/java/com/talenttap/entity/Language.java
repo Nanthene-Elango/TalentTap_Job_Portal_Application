@@ -13,9 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class Language {
 
@@ -28,5 +25,30 @@ public class Language {
 	private String language;
 	
 	@ManyToMany(mappedBy = "seekerLanguages")
-	private Set<JobSeeker> seekers = new HashSet<>();	
+	private Set<JobSeeker> seekers = new HashSet<>();
+
+	public int getLanguageId() {
+		return languageId;
+	}
+
+	public void setLanguageId(int languageId) {
+		this.languageId = languageId;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public Set<JobSeeker> getSeekers() {
+		return seekers;
+	}
+
+	public void setSeekers(Set<JobSeeker> seekers) {
+		this.seekers = seekers;
+	}	
+
 }

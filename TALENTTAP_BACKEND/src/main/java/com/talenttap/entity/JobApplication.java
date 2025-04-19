@@ -15,9 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class JobApplication {
 
@@ -43,5 +40,53 @@ public class JobApplication {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private ApplicationStatus status = ApplicationStatus.pending;
+
+	public int getJobApplicationId() {
+		return jobApplicationId;
+	}
+
+	public void setJobApplicationId(int jobApplicationId) {
+		this.jobApplicationId = jobApplicationId;
+	}
+
+	public Jobs getJob() {
+		return job;
+	}
+
+	public void setJob(Jobs job) {
+		this.job = job;
+	}
+
+	public JobSeeker getJobSeeker() {
+		return jobSeeker;
+	}
+
+	public void setJobSeeker(JobSeeker jobSeeker) {
+		this.jobSeeker = jobSeeker;
+	}
+
+	public LocalDate getDateOfApplication() {
+		return dateOfApplication;
+	}
+
+	public void setDateOfApplication(LocalDate dateOfApplication) {
+		this.dateOfApplication = dateOfApplication;
+	}
+
+	public LocalDate getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(LocalDate lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public ApplicationStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ApplicationStatus status) {
+		this.status = status;
+	}
 
 }
