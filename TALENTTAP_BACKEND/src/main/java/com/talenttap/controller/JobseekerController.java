@@ -9,20 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.EducationLevelDTO;
 import com.talenttap.DTO.JobseekerDTO;
-import com.talenttap.DTO.JobseekerRegisterDTO;
 import com.talenttap.DTO.LocationDTO;
 import com.talenttap.DTO.SkillsDTO;
 import com.talenttap.service.EducationService;
 import com.talenttap.service.JobseekerRegisterService;
 import com.talenttap.service.LocationService;
 import com.talenttap.service.SkillService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin("*")
@@ -69,5 +67,21 @@ public class JobseekerController {
 	@GetMapping("jobseeker/profile-photo/{id}")
 	public ResponseEntity<?> getProfilePhoto(@PathVariable Integer id) {
 		return jobseekerService.getProfilePhotoById(id);
+	}
+	
+	@PostMapping("jobseeker/upload-profile-photo")
+    public ResponseEntity<String> uploadProfilePhoto(@RequestParam("profilePhoto") MultipartFile file,
+                                                     @RequestParam("jobSeekerId") Integer jobSeekerId) {
+        return jobseekerService.uploadProfilePicture(file , jobSeekerId);
+    }
+	
+	@PostMapping("jobseeker/update-profile")
+	public ResponseEntity<String> updateProfile(@RequestBody JobseekerDTO request){
+		return jobseekerService.updateProfile(request);
+	}
+	
+	@PostMapping("jobseeker/update-summary/{id}")
+	public ResponseEntity<String> updateSummary(@RequestBody Map<String , String> summary , @PathVariable int id){
+		return jobseekerService.updateSummary(summary.get("summary") , id);
 	}
 }

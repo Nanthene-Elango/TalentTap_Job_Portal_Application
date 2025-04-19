@@ -72,6 +72,10 @@ public class PageRenderController {
             JwtToken token = new JwtToken(jwt.trim());
             Jobseeker jobseeker = jobseekerService.getJobseeker(token);
     		model.addAttribute("jobSeeker", jobseeker);
+    		
+    		List<Location> locations = jobseekerService.getAllLocations();
+ 	        System.out.println(locations.get(0).getLocation());
+ 	        model.addAttribute("locations", locations);
 		}
 		
 		return "jobseeker/profile";
@@ -106,7 +110,7 @@ public class PageRenderController {
     public String uploadProfilePhoto(@RequestParam("profilePhoto") MultipartFile file,
                                      @RequestParam("jobSeekerId") Integer jobSeekerId) {
         	jobseekerService.updateProfilePicture(file , jobSeekerId);
-        	return "redirect:/jobseeker/profile";
+        	return "redirect:/profile";
     }
 
 	@GetMapping("/employer/login")

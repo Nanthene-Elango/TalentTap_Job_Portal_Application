@@ -32,5 +32,36 @@ public class Employer {
 	
 	@Column(name="designation" , nullable = false)
 	private String designation;
-	
+
+	public int getEmployerId() {
+		return employerId;
+	}
+
+	public void setEmployerId(int employerId) {
+		this.employerId = employerId;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
 }

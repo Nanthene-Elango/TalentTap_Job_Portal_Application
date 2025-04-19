@@ -1,8 +1,9 @@
 package com.talenttap.service;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.JobseekerRegisterDTO;
+
 import com.talenttap.entity.AuthProvider;
 import com.talenttap.entity.Education;
+import com.talenttap.entity.Gender;
 import com.talenttap.entity.Users;
 import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
@@ -30,7 +34,6 @@ import com.talenttap.repository.UsersRepository;
 import com.talenttap.security.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -165,14 +168,13 @@ public class JobseekerRegisterService {
 		JobSeeker jobSeeker = jobseekerRepo.findById(id).orElse(null);
 
 	    if (jobSeeker == null || jobSeeker.getProfilePhoto() == null) {
-	        // Return redirect to frontend's default image
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setLocation(URI.create("http://localhost:8082/img/default_profile.png"));
-	        return new ResponseEntity<>(headers, HttpStatus.FOUND); // 302 Redirect
+	        return new ResponseEntity<>(headers, HttpStatus.FOUND);
 	    }
 
 	    byte[] imageBytes = jobSeeker.getProfilePhoto();
-	    String contentType = detectImageType(imageBytes); // JPEG or PNG
+	    String contentType = detectImageType(imageBytes);
 
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.parseMediaType(contentType));
@@ -182,7 +184,7 @@ public class JobseekerRegisterService {
 
 	private String detectImageType(byte[] imageBytes) {
 	    if (imageBytes == null || imageBytes.length < 4) {
-	        return "image/png"; // default
+	        return "image/png";
 	    }
 
 	    if (imageBytes[0] == (byte)0xFF && imageBytes[1] == (byte)0xD8) {
@@ -190,8 +192,76 @@ public class JobseekerRegisterService {
 	    } else if (imageBytes[0] == (byte)0x89 && imageBytes[1] == (byte)0x50) {
 	        return "image/png";
 	    } else {
-	        return "image/png"; // fallback
+	        return "image/png";
 	    }
+	}
+
+	public ResponseEntity<String> uploadProfilePicture(MultipartFile file, Integer jobSeekerId) {
+		
+		if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("No file uploaded");
+        }
+
+        try {
+            JobSeeker jobSeeker = jobseekerRepo.findById(jobSeekerId).orElse(null);
+            if (jobSeeker != null) {
+                jobSeeker.setProfilePhoto(file.getBytes());
+                jobseekerRepo.save(jobSeeker);
+                return ResponseEntity.ok("Profile photo updated");
+            } else {
+                return ResponseEntity.badRequest().body("Job Seeker not found");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading photo");
+        }
+	}
+
+	public ResponseEntity<String> updateProfile(JobseekerDTO request) {
+		
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(request.getId()).get();
+			System.out.println(jobseeker.getJobSeekerId());
+			Users user = userRepo.findById(jobseeker.getUser().getUserId()).get();
+			
+			user.setEmail(request.getEmail());
+			user.setFullName(request.getFullName());
+			user.setMobileNumber(request.getPhone());
+			user.setUsername(request.getUsername());
+			if (request.getPassword() != null && !request.getPassword().isBlank() && !request.getPassword().isBlank()) {
+				user.setPassword(request.getPassword());
+			}
+			user = userRepo.save(user);
+			
+			jobseeker.setUser(user);
+			jobseeker.setDob(request.getDob());
+			jobseeker.setLocation(locationRepo.findByLocation(request.getLocation()).get());
+
+			if(request.getGender() != null && !request.getGender().isBlank() && !request.getGender().isEmpty()) {
+				Gender gender = Gender.valueOf(request.getGender().toUpperCase());
+				jobseeker.setGender(gender);
+				
+			}
+			
+			jobseekerRepo.save(jobseeker);
+			
+			return ResponseEntity.ok("Updated Succsessfully!");
+		}
+		catch(Exception ex) {
+			return ResponseEntity.badRequest().body("failed to update profile!");
+		}
+		
+	
+	}
+
+	public ResponseEntity<String> updateSummary(String summary, int id) {
+		JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+		
+		jobseeker.setProfileSummary(summary);
+		jobseekerRepo.save(jobseeker);
+		
+		return ResponseEntity.ok().body("Updated summary successfully!");
+		
 	}
 
 }

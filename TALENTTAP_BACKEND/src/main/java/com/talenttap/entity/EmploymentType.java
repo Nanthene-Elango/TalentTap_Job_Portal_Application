@@ -22,5 +22,21 @@ public class EmploymentType {
 	
 	@Column(name = "employment_type" , nullable = false , unique = true)
 	private String employmentType;
+
+	public int getEmploymentTypeId() {
+		return employmentTypeId;
+	}
+
+	public void setEmploymentTypeId(int employmentTypeId) {
+		this.employmentTypeId = employmentTypeId;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
 	
 }

@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Location {
 
@@ -23,5 +20,29 @@ public class Location {
     
     @OneToMany(mappedBy = "location")
     private List<JobSeeker> jobSeekers;
+
+	public int getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public List<JobSeeker> getJobSeekers() {
+		return jobSeekers;
+	}
+
+	public void setJobSeekers(List<JobSeeker> jobSeekers) {
+		this.jobSeekers = jobSeekers;
+	}
   
 }

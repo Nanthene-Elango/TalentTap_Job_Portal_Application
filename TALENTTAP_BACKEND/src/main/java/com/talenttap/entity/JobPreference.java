@@ -17,9 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class JobPreference {
 
@@ -47,5 +44,45 @@ public class JobPreference {
         inverseJoinColumns = @JoinColumn(name = "job_preference_id")
     )
     private Set<Skills> preferredJobLocations = new HashSet<>();
+
+	public int getJobPreferenceId() {
+		return jobPreferenceId;
+	}
+
+	public void setJobPreferenceId(int jobPreferenceId) {
+		this.jobPreferenceId = jobPreferenceId;
+	}
+
+	public JobSeeker getJobSeeker() {
+		return jobSeeker;
+	}
+
+	public void setJobSeeker(JobSeeker jobSeeker) {
+		this.jobSeeker = jobSeeker;
+	}
+
+	public EmploymentType getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(EmploymentType employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public SalaryRange getPreferredSalaryRange() {
+		return preferredSalaryRange;
+	}
+
+	public void setPreferredSalaryRange(SalaryRange preferredSalaryRange) {
+		this.preferredSalaryRange = preferredSalaryRange;
+	}
+
+	public Set<Skills> getPreferredJobLocations() {
+		return preferredJobLocations;
+	}
+
+	public void setPreferredJobLocations(Set<Skills> preferredJobLocations) {
+		this.preferredJobLocations = preferredJobLocations;
+	}
 	
 }
