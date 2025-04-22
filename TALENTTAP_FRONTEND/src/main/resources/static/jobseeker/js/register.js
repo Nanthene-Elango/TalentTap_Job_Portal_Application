@@ -370,6 +370,7 @@ $(document).ready(function() {
 						phoneVerified = true;
 						verifiedPhoneNumber = $('#phoneNumber').val();
 						disableOTPInputs('phone');
+						$('#phoneResendContainer').hide();
 						$('#phoneNextBtn').hide();
 						$('#phoneSkipBtn, #changePhoneBtn').show();
 						$('#phoneResendBtn').prop('disabled', true);
@@ -377,6 +378,7 @@ $(document).ready(function() {
 						emailVerified = true;
 						verifiedEmail = $('#email').val();
 						disableOTPInputs('email');
+						$('#emailResendContainer').hide();
 						$('#emailNextBtn').hide();
 						$('#emailSkipBtn, #changeEmailBtn').show();
 						$('#emailResendBtn').prop('disabled', true);
@@ -458,13 +460,53 @@ $(document).ready(function() {
 		if (step === 4 && !validateProfessionalDetails()) return;
 		if (step === 5 && !validateEducationDetails()) return;
 
+		if (step == 6) {
+			
+			$('#summaryDetails').html(`
+					<p><strong>Basic Details: </strong></p>
+					<p><strong>Name:</strong> ${$('#fullName').val()}</p>
+                    <p><strong>Username:</strong> ${$('#username').val()}</p>
+                    <p><strong>Password:</strong> ${'*'.repeat($('#password').val().length)}</p>
+                    <p><strong>Email:</strong> ${$('#email').val()}</p>
+                    <p><strong>Phone:</strong> ${$('#phoneNumber').val()}</p>
+                    <p><strong>Location:</strong> ${$('#location option:selected').text()}</p>
+         			<br>
+                    <p><strong>Education Details: </strong></p>
+                    <p><strong>Highest Qualification: </strong>${$('#highestQualification option:selected').text()}</p>
+                    <p><strong>Board of Study: </strong>${$('#boardOfStudy').val()}</p>
+                    <p><strong>Degree: </strong>${$('#degree').val()}</p>
+                    <p><strong>Institution/University: </strong>${$('#university').val()}</p>
+                    <p><strong>Year: </strong>${$('#startYear').val()} - ${$('#endYear').val()}</p>
+                    <p><strong>Percentage: </strong>${$('#percentage').val()}</p>
+        			<br>
+        			<p><strong>Professional Details: </strong></p>
+        			<p><strong>Key Skills: </strong></p><span id="summarySkills"></span>
+        			<p><strong>Years of Experience: </strong>${$('#yearsOfExperience').val()}</p>
+        			
+			`);
+			showSelectedSkills();
+		}
 		animateProgressButton($(this), function() {
 			currentStep = step + 1;
 			showStep(currentStep);
 			updateProgressBar();
+			if (step === 7) {
+				showConfirmation();
+			}
 		});
 	});
 
+	function showSelectedSkills() {
+		var select = document.getElementById('keySkills');
+		var selected = [];
+		for (var i = 0; i < select.options.length; i++) {
+			if (select.options[i].selected) {
+				selected.push(select.options[i].text);
+			}
+		}
+		document.getElementById('summarySkills').innerText = selected.join(", ");
+	}
+	
 	$('.prev-btn').click(function() {
 		currentStep = parseInt($(this).data('step')) - 1;
 		showStep(currentStep);
@@ -543,9 +585,9 @@ $(document).ready(function() {
 	});
 
 	$('#registrationForm').submit(function(e) {
-		e.preventDefault(); // prevent default form submission
+		e.preventDefault();
 
-		const form = this; // reference to the form
+		const form = this;
 
 		animateProgressButton($('#submitBtn'), function() {
 			Swal.fire({

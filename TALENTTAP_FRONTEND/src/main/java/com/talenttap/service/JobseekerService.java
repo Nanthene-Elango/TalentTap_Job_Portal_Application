@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
@@ -154,7 +155,7 @@ public class JobseekerService {
 
 	public void updateProfile(Jobseeker jobSeeker) {
 		String url = "http://localhost:8083/jobseeker/update-profile";
-		ResponseEntity<String> response = restTemplate.postForEntity(url, jobSeeker , String.class);
+		restTemplate.put(url, jobSeeker);
 	}
 
 	public void updateSummary(String summary, int id) {
@@ -167,14 +168,23 @@ public class JobseekerService {
 
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestMap, headers);
 
-		ResponseEntity<String> response = restTemplate.postForEntity(
+		ResponseEntity<String> response = restTemplate.exchange(
 		    "http://localhost:8083/jobseeker/update-summary/" + id,
+		    HttpMethod.PUT,
 		    requestEntity,
 		    String.class
 		);
 
 		System.out.println(response.getBody());
 		
+	}
+
+	public Jobs getJobById(int id) {
+		String url = "http://localhost:8083/api/job/" + id;
+		
+		ResponseEntity<Jobs> response = restTemplate.getForEntity(url, Jobs.class);
+		
+		return response.getBody();
 	}
 
 }

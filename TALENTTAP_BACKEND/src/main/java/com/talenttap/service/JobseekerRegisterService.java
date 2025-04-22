@@ -3,7 +3,7 @@ package com.talenttap.service;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.JobseekerRegisterDTO;
-
 import com.talenttap.entity.AuthProvider;
 import com.talenttap.entity.Education;
 import com.talenttap.entity.Gender;
@@ -26,6 +26,8 @@ import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
 import com.talenttap.repository.EducationLevelRepository;
 import com.talenttap.repository.EducationRepository;
+import com.talenttap.repository.JobApplicationRepository;
+import com.talenttap.repository.JobsRepository;
 import com.talenttap.repository.JobseekerRepository;
 import com.talenttap.repository.LocationRepository;
 import com.talenttap.repository.RoleRepository;
@@ -52,12 +54,15 @@ public class JobseekerRegisterService {
 	private LocationRepository locationRepo;
 	private EducationLevelRepository educationLevelRepo;
 	private PasswordEncoder passwordEncoder;
+	private JobsRepository jobRepo;
+	private JobApplicationRepository jobApplicationRepo;
 	
 	
 	public JobseekerRegisterService(UsersRepository userRepo , JobseekerRepository jobseekerRepo ,
 			EducationRepository educationRepo , SkillsRepository skillsRepo , 
 			RoleRepository roleRepo , LocationRepository locationRepo , 
-			EducationLevelRepository educationLevelRepo , PasswordEncoder passwordEncoder) {
+			EducationLevelRepository educationLevelRepo , PasswordEncoder passwordEncoder , JobsRepository jobRepo
+			,JobApplicationRepository jobApplicationRepo) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.skillsRepo = skillsRepo;
@@ -66,6 +71,8 @@ public class JobseekerRegisterService {
 		this.roleRepo = roleRepo;
 		this.educationLevelRepo = educationLevelRepo;
 		this.passwordEncoder = passwordEncoder;
+		this.jobRepo = jobRepo;
+		this.jobApplicationRepo = jobApplicationRepo;
 	}
 
 	public ResponseEntity<?> register(@Valid JobseekerRegisterDTO request) {
@@ -234,7 +241,11 @@ public class JobseekerRegisterService {
 			user = userRepo.save(user);
 			
 			jobseeker.setUser(user);
-			jobseeker.setDob(request.getDob());
+			
+			if (request.getDob() != null) {
+				jobseeker.setDob(request.getDob());
+			}
+			
 			jobseeker.setLocation(locationRepo.findByLocation(request.getLocation()).get());
 
 			if(request.getGender() != null && !request.getGender().isBlank() && !request.getGender().isEmpty()) {
@@ -262,6 +273,26 @@ public class JobseekerRegisterService {
 		
 		return ResponseEntity.ok().body("Updated summary successfully!");
 		
+	}
+
+	public ResponseEntity<List<JobDTO>> getAllJobs() {
+		
+		List<JobDTO> jobs = jobRepo.findAll().stream().map(JobDTO::new).toList();
+		
+		for (JobDTO j : jobs) {
+			j.setApplicants(jobApplicationRepo.countByJob_JobId(j.getJobId()));
+		}
+		
+		return ResponseEntity.ok(jobs);
+		
+	}
+
+	public ResponseEntity<JobDTO> getJobById(int id) {
+		
+		JobDTO job = new JobDTO(jobRepo.findById(id).get());
+		job.setApplicants(jobApplicationRepo.countByJob_JobId(job.getJobId()));
+		
+		return ResponseEntity.ok(job);
 	}
 
 }

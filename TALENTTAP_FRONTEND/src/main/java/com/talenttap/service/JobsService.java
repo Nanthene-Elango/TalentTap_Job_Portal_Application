@@ -16,6 +16,7 @@ import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.JobCategory;
+import com.talenttap.model.Jobs;
 import com.talenttap.model.JwtToken;
 
 @Service
@@ -93,5 +94,19 @@ public class JobsService {
 		        System.err.println("Error fetching profile: " + e.getMessage());
 		        return null;
 		    }
+	}
+
+
+	public List<Jobs> getAllJobs() {
+		String url = "http://localhost:8083/api/jobs";
+		
+		ResponseEntity<Jobs[]> response = restTemplate.getForEntity(url, Jobs[].class);
+		
+		if (response.getStatusCode().is2xxSuccessful()) {
+			return Arrays.asList(response.getBody());
+		}
+		else {
+			return null;
+		}
 	}
 }

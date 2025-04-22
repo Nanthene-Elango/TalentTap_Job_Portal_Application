@@ -1,0 +1,106 @@
+<div th:fragment="job-detail" class="job-detail">
+	<div class="detail-header">
+		<h3 class="job-title" th:text="${job.jobTitle}"></h3>
+		<div class="d-flex justify-content-between">
+			<div class="company-name mb-3" th:text="${job.company}">TechCorp
+				Inc.</div>
+			<a href="" class="text-decoration-none">View Profile <i
+				class="fas fa-sm fa-external-link ms-1"></i>
+			</a>
+		</div>
+		<div class="text-muted small"
+			th:text="'Posted ' + ${job.postedAgo} + ' ago'">Posted 7 days
+			ago</div>
+
+		<button class="btn btn-primary apply-btn">Apply Now</button>
+		<button class="btn btn-primary save-btn" onclick="savejob()">
+			<i class="far fa-bookmark"></i> save
+		</button>
+		<button class="btn btn-primary save-btn d-none" onclick="unsavejob()">
+			<i class="fas fa-bookmark"></i> saved
+		</button>
+
+		<div class="detail-section mt-3">
+			<h6 class="detail-title">Skills & Categories</h6>
+			<div class="mb-3">
+				<span class="job-tag" th:each="skill : ${job.skills}"
+					th:text="${skill.skill}">Skill</span>
+			</div>
+
+			<div>
+				<strong>Category:</strong> <span th:text="${job.jobCategory}">Category</span>
+			</div>
+		</div>
+
+		<div class="row my-4">
+			<div class="col-md-6 mb-3 mb-md-0">
+				<div class="card h-100">
+					<div class="card-body">
+						<h6 class="card-title">Job Details</h6>
+						<ul class="list-unstyled mb-0">
+							<li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>
+								<span th:each="loc, iterStat : ${job.location}"> <span
+									th:text="${loc.location}"></span><span
+									th:if="!${iterStat.last}">, </span>
+							</span></li>
+							<li class="mb-2"
+								th:if="${job.jobType == 'Full Time' or job.jobType == 'Part Time'}">
+								<i class="fas fa-dollar-sign me-2"></i> <span
+								th:text="${job.salaryRange}"></span>
+							</li>
+							<li th:if="${job.jobType == 'Internship'}"><i
+								class="fas fa-clock me-2"></i> <span th:text="${job.duration}"></span>
+								weeks</li>
+							<li th:if="${job.jobType == 'Internship'}"><i
+								class="fas fa-dollar-sign me-2"></i> <span
+								th:text="${job.stipend}"></span> /month</li>
+							<li class="mb-2"><i class="fas fa-briefcase me-2"></i> <span
+								th:text="${job.jobType}"></span></li>
+							<li class="mb-2"><i class="fas fa-user-friends me-2"></i> <span
+								th:text="${job.applicants}"></span></li>
+							<li class="mb-2"><i class="fas fa-users me-2"></i> <span
+								th:text="${job.openings}"></span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="card h-100">
+					<div class="card-body">
+						<h6 class="card-title">Important Dates</h6>
+						<ul class="list-unstyled mb-0">
+							<li class="mb-2"><i class="fas fa-calendar-plus me-2"></i> <strong>Posted:</strong>
+								<span th:text="${job.postedDate}"></span></li>
+							<li class="mb-2"><i class="fas fa-calendar-times me-2"></i>
+								<strong>Deadline:</strong> <span th:text="${job.deadline}"></span>
+							</li>
+							<li class="mb-2"><i class="fas fa-hourglass-half me-2"></i>
+								<strong>Time Left:</strong> <span th:text="${job.timeleft}"></span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="job-description">
+		<p th:text="${job.description}"></p>
+
+		<div class="job-responsibilities">
+			<h5>Responsibilities:</h5>
+			<p th:text="${job.responsibilities}"></p>
+		</div>
+
+		<div class="job-roles">
+			<h5>Roles:</h5>
+			<p th:text="${job.roles}"></p>
+		</div>
+
+		<div class="job-benefits">
+			<h5>Benefits:</h5>
+			<p th:text="${job.benefits}"></p>
+		</div>
+	</div>
+</div>

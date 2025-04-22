@@ -15,6 +15,7 @@ import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
+import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
@@ -35,7 +36,7 @@ public class PageRenderController {
 	private JobsService jobService;
 	
 	public PageRenderController(JobseekerService jobseekerRegisterService, EmployerAuthService employerService,JobsService jobService){
-		this.jobseekerRegisterService = jobseekerRegisterService;
+		this.jobseekerService = jobseekerRegisterService;
 		this.employerService = employerService;
 		this.jobService = jobService;
 	}
@@ -51,7 +52,11 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/jobs")
-	public String LoadJobsPage() {
+	public String LoadJobsPage(Model model) {
+		List<Jobs> jobs = jobService.getAllJobs();
+		if (jobs != null) {
+			model.addAttribute("jobs", jobs);
+		}
 		return "jobseeker/jobs";
 	}
 

@@ -1,11 +1,15 @@
 package com.talenttap.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.service.JobseekerService;
 
@@ -30,5 +34,11 @@ public class JobseekerController {
 		return "redirect:/profile";
 	}
 	
+	@GetMapping("job/{id}/detail")
+	public String getJobDetail(@PathVariable int id, Model model) {
+		 Jobs job = jobseekerService.getJobById(id);
+		 model.addAttribute("job", job);
+		 return "jobseeker/jobDetail"; 
+	}
 	
 }

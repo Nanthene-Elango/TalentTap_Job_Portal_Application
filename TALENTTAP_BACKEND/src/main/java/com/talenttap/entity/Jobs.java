@@ -55,10 +55,10 @@ public class Jobs {
 	private String benefits;
 	
 	@Column(name = "duration")
-	private int duration;
+	private Integer duration;
 	
 	@Column(name = "stipend")
-	private double stipend;
+	private Double stipend;
 	
 	@ManyToOne
 	@JoinColumn(name="salary_range_id")
