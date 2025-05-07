@@ -265,7 +265,8 @@ body {
     line-height: 1.6;
 }
 
-.job-requirements h5,
+.job-roles h5,
+.job-benefits h5,
 .job-responsibilities h5 {
     color: var(--dark-purple);
     font-weight: 600;

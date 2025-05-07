@@ -8,15 +8,19 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.EducationLevelDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.LocationDTO;
 import com.talenttap.DTO.SkillsDTO;
+import com.talenttap.DTO.JobDTO;
+import com.talenttap.DTO.JobFilterDTO;
 import com.talenttap.service.EducationService;
 import com.talenttap.service.JobseekerRegisterService;
 import com.talenttap.service.LocationService;
@@ -75,13 +79,43 @@ public class JobseekerController {
         return jobseekerService.uploadProfilePicture(file , jobSeekerId);
     }
 	
-	@PostMapping("jobseeker/update-profile")
+	@PutMapping("jobseeker/update-profile")
 	public ResponseEntity<String> updateProfile(@RequestBody JobseekerDTO request){
 		return jobseekerService.updateProfile(request);
 	}
 	
-	@PostMapping("jobseeker/update-summary/{id}")
+	@PutMapping("jobseeker/update-summary/{id}")
 	public ResponseEntity<String> updateSummary(@RequestBody Map<String , String> summary , @PathVariable int id){
 		return jobseekerService.updateSummary(summary.get("summary") , id);
+	}
+	
+	@GetMapping("jobseeker/educations/{id}")
+	public ResponseEntity<List<EducationDTO>> getAllEducation(@PathVariable Integer id){
+		return jobseekerService.getAllEducation(id);
+	}
+	
+	@GetMapping("jobseeker/skills/{id}")
+	public ResponseEntity<List<SkillsDTO>> getAllSkillsById(@PathVariable Integer id){
+		return jobseekerService.getAllSkillsById(id);
+	}
+	
+	@GetMapping("jobseeker/delete/skill/{id}")
+	public ResponseEntity<String> deleteSkillById(@PathVariable Integer id){
+		return jobseekerService.deleteSkillById(id);
+	}
+	
+	@GetMapping("api/jobs")
+	public ResponseEntity<List<JobDTO>> getAllJobs(){
+		return jobseekerService.getAllJobs();
+	}
+	
+	@GetMapping("api/job/{id}")
+	public ResponseEntity<JobDTO> getJobById(@PathVariable int id){
+		return jobseekerService.getJobById(id);
+	}
+	
+	@PostMapping("api/jobs/filter")
+	public ResponseEntity<List<JobDTO>> filterJobs(@RequestBody JobFilterDTO jobFilter){
+		return jobseekerService.filterJobs(jobFilter);
 	}
 }

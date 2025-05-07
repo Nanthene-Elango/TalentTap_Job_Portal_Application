@@ -2,6 +2,8 @@ package com.talenttap.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +20,7 @@ public class Location {
     @Column(nullable = false, unique = true)
     private String location;
     
+    @JsonIgnore
     @OneToMany(mappedBy = "location")
     private List<JobSeeker> jobSeekers;
 

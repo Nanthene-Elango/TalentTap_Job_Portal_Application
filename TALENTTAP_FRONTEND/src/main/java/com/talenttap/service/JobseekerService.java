@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.JobFilter;
+import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
@@ -154,11 +156,11 @@ public class JobseekerService {
 
 	public void updateProfile(Jobseeker jobSeeker) {
 		String url = "http://localhost:8083/jobseeker/update-profile";
-		ResponseEntity<String> response = restTemplate.postForEntity(url, jobSeeker , String.class);
+		restTemplate.put(url, jobSeeker);
 	}
 
 	public void updateSummary(String summary, int id) {
-		
+
 		Map<String, Object> requestMap = new HashMap<>();
 		requestMap.put("summary", summary);
 
@@ -167,13 +169,65 @@ public class JobseekerService {
 
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestMap, headers);
 
-		ResponseEntity<String> response = restTemplate.postForEntity(
-		    "http://localhost:8083/jobseeker/update-summary/" + id,
+		ResponseEntity<String> response = restTemplate.exchange("http://localhost:8083/jobseeker/update-summary/" + id,
+				HttpMethod.PUT, requestEntity, String.class);
+
+		System.out.println(response.getBody());
+
+	}
+
+	public Jobs getJobById(int id) {
+		String url = "http://localhost:8083/api/job/" + id;
+
+		ResponseEntity<Jobs> response = restTemplate.getForEntity(url, Jobs.class);
+
+		return response.getBody();
+	}
+
+	public List<Jobs> filterJobs(JobFilter jobFilter) {
+
+		String url = "http://localhost:8083/api/jobs/filter";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<JobFilter> requestEntity = new HttpEntity<>(jobFilter, headers);
+
+		ResponseEntity<Jobs[]> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Jobs[].class);
+
+		return Arrays.asList(response.getBody());
+	}
+
+	public List<Education> getAllEducation(int id) {
+
+		String url = "http://localhost:8083/jobseeker/educations/" + id;
+
+		ResponseEntity<Education[]> response = restTemplate.getForEntity(url, Education[].class);
+
+		return Arrays.asList(response.getBody());
+	}
+
+	public List<Skills> getAllSkillsById(int id) {
+		
+		String url = "http://localhost:8083/jobseeker/skills/" + id;
+		
+		ResponseEntity<Skills[]> response = restTemplate.getForEntity(url, Skills[].class);
+		
+		return Arrays.asList(response.getBody());
+	}
+
+	public void deleteSkillById(Long id) {
+		String url = "http://localhost:8083/jobseeker/delete/skill/" + id;
+		
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(
+		    url,
+		    HttpMethod.DELETE,
 		    requestEntity,
 		    String.class
 		);
-
-		System.out.println(response.getBody());
 		
 	}
 
