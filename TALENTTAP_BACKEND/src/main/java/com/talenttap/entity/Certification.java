@@ -28,7 +28,7 @@ public class Certification {
 	@Column(name = "certification_number")
 	private String certificationNumber;
 	
-	@Column(name = "certification_name")
+	@Column(name = "certification_name" , nullable = false)
 	private String certificationName;
 	
 	@Column(name = "certificate_url")

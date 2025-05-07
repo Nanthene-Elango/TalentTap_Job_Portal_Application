@@ -40,7 +40,7 @@
 						<ul class="list-unstyled mb-0">
 							<li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>
 								<span th:each="loc, iterStat : ${job.location}"> <span
-									th:text="${loc.location}"></span><span
+									th:text="${loc}"></span><span
 									th:if="!${iterStat.last}">, </span>
 							</span></li>
 							<li class="mb-2"
@@ -56,9 +56,9 @@
 								th:text="${job.stipend}"></span> /month</li>
 							<li class="mb-2"><i class="fas fa-briefcase me-2"></i> <span
 								th:text="${job.jobType}"></span></li>
-							<li class="mb-2"><i class="fas fa-user-friends me-2"></i> <span
+							<li class="mb-2"><i class="fas fa-user-friends me-2"></i> Applicants: <span
 								th:text="${job.applicants}"></span></li>
-							<li class="mb-2"><i class="fas fa-users me-2"></i> <span
+							<li class="mb-2"><i class="fas fa-users me-2"></i> Openings: <span
 								th:text="${job.openings}"></span></li>
 						</ul>
 					</div>

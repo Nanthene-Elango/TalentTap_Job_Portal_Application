@@ -12,9 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
+import com.talenttap.model.JobCategory;
+import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
@@ -57,6 +60,15 @@ public class PageRenderController {
 		if (jobs != null) {
 			model.addAttribute("jobs", jobs);
 		}
+		List<Location> location = jobseekerService.getAllLocations();
+		if (location != null) {
+			model.addAttribute("locations" , location);
+		}
+		List<JobCategory> categories = jobService.getJobCategories();
+		if (categories != null) {
+			model.addAttribute("categories" , categories);
+		}
+		model.addAttribute("jobFilter", new JobFilter());
 		return "jobseeker/jobs";
 	}
 
@@ -79,8 +91,13 @@ public class PageRenderController {
     		model.addAttribute("jobSeeker", jobseeker);
     		
     		List<Location> locations = jobseekerService.getAllLocations();
- 	        System.out.println(locations.get(0).getLocation());
  	        model.addAttribute("locations", locations);
+ 	        
+ 	        List<Education> educations = jobseekerService.getAllEducation(jobseeker.getId());
+ 	        model.addAttribute("educationList", educations);
+ 	        
+ 	        List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
+ 	        model.addAttribute("skills", skills);
 		}
 		
 		return "jobseeker/profile";

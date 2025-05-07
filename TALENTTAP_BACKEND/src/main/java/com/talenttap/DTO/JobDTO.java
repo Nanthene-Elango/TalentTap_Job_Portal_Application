@@ -4,9 +4,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.talenttap.entity.Jobs;
-import com.talenttap.entity.Location;
 import com.talenttap.entity.Skills;
 
 public class JobDTO {
@@ -16,7 +16,7 @@ public class JobDTO {
 	private Set<Skills> skills;
 	private String jobTitle;
 	private String jobCategory;
-	private Set<Location> location;
+	private Set<String> location;
 	private String salaryRange;
 	private int openings;
 	private LocalDate postedDate;
@@ -40,7 +40,7 @@ public class JobDTO {
 		this.skills = job.getRequiredSkills();
 		this.jobTitle = job.getJobRole();
 		this.jobCategory = job.getJobCategory().getJobCategory();
-		this.location = job.getJobLocation();
+		this.location = job.getJobLocation().stream().map(x -> x.getLocation().split(",")[0].trim()).collect(Collectors.toSet());
 		this.salaryRange = job.getSalary_range().getMin_range() + " - " + job.getSalary_range().getMax_range() + " LPA";
 		this.openings = job.getOpenings();
 		this.postedDate = formatDate(job.getPostedDate());
@@ -120,10 +120,10 @@ public class JobDTO {
 	public void setJobCategory(String jobCategory) {
 		this.jobCategory = jobCategory;
 	}
-	public Set<Location> getLocation() {
+	public Set<String> getLocation() {
 		return location;
 	}
-	public void setLocation(Set<Location> location) {
+	public void setLocation(Set<String> location) {
 		this.location = location;
 	}
 	public String getSalaryRange() {

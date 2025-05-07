@@ -112,14 +112,27 @@ function toggleFilters() {
 	// Hide appropriate filters based on job type
 	if (jobType === 'internship') {
 		salaryFilter.style.display = 'none';
-	} else if (jobType === 'fulltime' || jobType === 'parttime') {
+	} else if (jobType === 'full-time' || jobType === 'part-time') {
 		durationFilter.style.display = 'none';
 		stipendFilter.style.display = 'none';
 	}
 }
 
+function activateCard(jobId) {
+    // Remove 'active' class from all job cards
+    let selectedCard = document.getElementById(`jobcard${jobId}`);
+    document.querySelectorAll('.job-card').forEach(card => {
+        card.classList.remove('active');
+    });
+
+    // Add 'active' class to the clicked one
+    selectedCard.classList.add('active');
+}
+
 // Function to show job details
 function showJobDetail(jobId) {
+
+	activateCard(jobId);
 	fetch('/job/' + jobId + '/detail')
 		.then(response => {
 			if (!response.ok) {

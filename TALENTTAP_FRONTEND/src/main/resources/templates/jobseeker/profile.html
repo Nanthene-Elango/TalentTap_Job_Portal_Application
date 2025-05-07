@@ -265,6 +265,7 @@
 						</div>
 					</div>
 				</div>
+
 				<!-- Education Section -->
 				<div class="profile-card">
 					<div class="d-flex justify-content-between align-items-center mb-3">
@@ -275,42 +276,39 @@
 						</button>
 					</div>
 
-					<div class="section-item">
+					<!-- Loop through each education entry -->
+					<div th:each="education : ${educationList}" class="section-item">
 						<div class="item-actions">
 							<button class="btn btn-sm btn-link text-violet"
+								th:attr="data-id=${education.educationId}"
 								data-bs-toggle="modal" data-bs-target="#editEducationModal">
 								<i class="fas fa-edit"></i>
 							</button>
-							<button class="btn btn-sm btn-link text-secondary">
+							<button class="btn btn-sm btn-link text-secondary"
+								th:attr="data-id=${education.educationId}">
 								<i class="fas fa-trash-alt"></i>
 							</button>
 						</div>
 						<br>
-						<h6 class="card-title" id="degree">Master of Computer Science</h6>
-						<p class="card-subtitle mb-1" id="institution">Stanford
-							University</p>
-						<p class="card-text" id="year">2014 - 2016</p>
-						<p class="card-text" id="percentage">Percentage: 86</p>
-					</div>
 
-					<div class="section-item">
-						<div class="item-actions">
-							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editEducationModal">
-								<i class="fas fa-edit"></i>
-							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
-						</div>
-						<br>
-						<h6 class="card-title">Bachelor of Engineering in Computer
-							Science</h6>
-						<p class="card-subtitle mb-1">MIT</p>
-						<p class="card-text">2010 - 2014</p>
-						<p class="card-text">Percentage: 74</p>
+						<!-- Degree or Board of Study Display -->
+						<h6 class="card-title">
+							<span th:if="${education.boardOfStudy!=null}"
+								th:text="${education.boardOfStudy}">Board of Study</span> <span
+								th:if="${education.boardOfStudy==null}"
+								th:text="${education.degree}">Degree</span>
+						</h6>
+
+						<p class="card-subtitle mb-1" th:text="${education.institution}">Institution
+							Name</p>
+						<p class="card-text"
+							th:text="${education.startYear} + ' - ' + ${education.endYear}">Start
+							- End</p>
+						<p class="card-text"
+							th:text="'Percentage: ' + ${education.percentage}">Percentage</p>
 					</div>
 				</div>
+
 
 				<!-- Skills Section -->
 				<div class="profile-card">
@@ -323,40 +321,27 @@
 					</div>
 
 					<div>
-						<span class="skill-badge">JavaScript
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">React.js
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">Node.js
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">Python
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">SQL
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">HTML/CSS
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">Git
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span> <span class="skill-badge">Docker
-							<button class="btn btn-sm text-secondary p-0 ms-1">
-								<i class="fas fa-times"></i>
-							</button>
-						</span>
+						<th:block th:if="${#lists.isEmpty(skills)}">
+							<p class="text-muted">No skills added yet.</p>
+						</th:block>
+						
+						<th:block th:each="skill : ${skills}">
+							<div class="skill-badge d-inline-block me-1">
+								<span th:text="${skill.skill}"></span>
+
+								<form th:action="@{'/profile/delete-skill/' + ${skill.skillId}}"
+									method="post" style="display: inline;">
+									<button class="btn btn-sm text-secondary p-0 ms-1"
+										type="submit" title="Remove Skill">
+										<i class="fas fa-times"></i>
+									</button>
+								</form>
+							</div>
+						</th:block>
 					</div>
+
+					<div th:if="${message}" class="alert alert-success mt-2"
+						th:text="${message}"></div>
 				</div>
 
 				<!-- Certifications Section -->
@@ -683,12 +668,13 @@
 
 						<div class="mb-3">
 							<label for="dob" class="form-label">Date of Birth</label> <input
-								type="date" class="form-control" id="dob" th:field="*{dob}"  th:value="*{dob}">
+								type="date" class="form-control" id="dob" th:field="*{dob}"
+								th:value="*{dob}">
 						</div>
 
 						<div class="mb-3">
 							<label for="gender" class="form-label">Gender</label> <select
-								th:field="*{gender}" class ="form-control">
+								th:field="*{gender}" class="form-control">
 								<option th:each="g : ${T(com.talenttap.model.Gender).values()}"
 									th:value="${g}" th:text="${g}" th:selected="${g} == *{gender}">
 								</option>

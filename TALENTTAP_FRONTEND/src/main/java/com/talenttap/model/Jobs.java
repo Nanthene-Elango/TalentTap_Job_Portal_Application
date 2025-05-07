@@ -10,7 +10,7 @@ public class Jobs {
 	private Set<Skills> skills;
 	private String jobTitle;
 	private String jobCategory;
-	private Set<Location> location;
+	private Set<String> location;
 	private String salaryRange;
 	private int openings;
 	private LocalDate postedDate;
@@ -56,10 +56,10 @@ public class Jobs {
 	public void setJobCategory(String jobCategory) {
 		this.jobCategory = jobCategory;
 	}
-	public Set<Location> getLocation() {
+	public Set<String> getLocation() {
 		return location;
 	}
-	public void setLocation(Set<Location> location) {
+	public void setLocation(Set<String> location) {
 		this.location = location;
 	}
 	public String getSalaryRange() {

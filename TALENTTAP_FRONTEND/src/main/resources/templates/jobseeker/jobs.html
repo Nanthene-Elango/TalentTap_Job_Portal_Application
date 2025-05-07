@@ -44,172 +44,178 @@
 
 	<!-- Filter Section -->
 	<div class="container mt-4">
-		<div class="filter-section">
-			<div class="row mb-3">
-				<div class="col-md-8">
-					<h5 class="filter-heading mb-0">
-						Filters <span
-							class="filter-count badge rounded-pill bg-light text-dark">0
-							selected</span>
-					</h5>
-				</div>
-
-				<div class="col-md-4 text-end">
-					<a href="#" class="clear-filter" onclick="clearFilters()">Clear
-						All Filters</a>
-					<button class="btn btn-sm filter-toggle-btn ms-2" type="button"
-						data-bs-toggle="collapse" data-bs-target="#filterCollapse"
-						aria-expanded="true" aria-controls="filterCollapse">
-						<i class="bi bi-chevron-up"></i>
-					</button>
-				</div>
-			</div>
-
-			<div class="row my-3">
-				<div class="col-12">
-					<div class="filter-tags" id="activeFilterTags">
-						<!-- Active filter tags will appear here -->
+		<form th:action="@{/filterJobs}" th:object="${jobFilter}" method="post">
+			<div class="filter-section">
+				<div class="row mb-3">
+					<div class="col-md-8">
+						<h5 class="filter-heading mb-0">
+							Filters <span
+								class="filter-count badge rounded-pill bg-light text-dark">0
+								selected</span>
+						</h5>
 					</div>
-				</div>
-			</div>
-
-			<div class="collapse show" id="filterCollapse">
-				<div class="row">
-					<div class="col-md-3 mb-3">
-						<div class="filter-group">
-							<div class="filter-label">Job Type</div>
-							<select class="filter-select" id="job-type"
-								onchange="toggleFilters()">
-								<option value="">Any Type</option>
-								<option value="fulltime">Full Time</option>
-								<option value="parttime">Part Time</option>
-								<option value="internship">Internship</option>
-								<option value="contract">Contract</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col-md-3 mb-3">
-						<div class="filter-group">
-							<div class="filter-label">Location</div>
-							<select class="filter-select" id="location">
-								<option value="">Any Location</option>
-								<option value="remote">Remote</option>
-								<option value="new-york">New York</option>
-								<option value="san-francisco">San Francisco</option>
-								<option value="london">London</option>
-								<option value="bangalore">Bangalore</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col-md-3 mb-3">
-						<div class="filter-group">
-							<div class="filter-label">Experience</div>
-							<select class="filter-select" id="experience">
-								<option value="">Any Experience</option>
-								<option value="entry">Entry Level</option>
-								<option value="mid">Mid Level</option>
-								<option value="senior">Senior Level</option>
-								<option value="executive">Executive</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="col-md-3 mb-3">
-						<div class="filter-group">
-							<div class="filter-label">Industry</div>
-							<select class="filter-select" id="industry">
-								<option value="">Any Industry</option>
-								<option value="tech">Technology</option>
-								<option value="finance">Finance</option>
-								<option value="healthcare">Healthcare</option>
-								<option value="education">Education</option>
-								<option value="retail">Retail</option>
-							</select>
-						</div>
-					</div>
-				</div>
-
-				<div class="row mt-2">
-					<div class="col-12">
-						<button class="btn btn-sm filter-more-btn" type="button"
-							data-bs-toggle="collapse" data-bs-target="#advancedFilters"
-							aria-expanded="false" aria-controls="advancedFilters">
-							<i class="bi bi-sliders"></i> More Filters
+					<div class="col-md-4 text-end">
+						<a th:href="@{/jobs}" class="clear-filter">Clear All Filters</a>
+						<button class="btn btn-sm filter-toggle-btn ms-2" type="button"
+							data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+							aria-expanded="true" aria-controls="filterCollapse">
+							<i class="bi bi-chevron-up"></i>
 						</button>
 					</div>
 				</div>
 
-				<div class="collapse mt-3" id="advancedFilters">
+				<div class="collapse show" id="filterCollapse">
 					<div class="row">
-						<div class="col-md-3 mb-3 salary-filter">
-							<div class="filter-group">
-								<div class="filter-label">Salary</div>
-								<select class="filter-select" id="salary">
-									<option value="">Any Salary</option>
-									<option value="0-30k">$0 - $30k</option>
-									<option value="30k-60k">$30k - $60k</option>
-									<option value="60k-100k">$60k - $100k</option>
-									<option value="100k+">$100k+</option>
-								</select>
-							</div>
-						</div>
-
+						<!-- Job Type -->
 						<div class="col-md-3 mb-3">
 							<div class="filter-group">
-								<div class="filter-label">Freshness</div>
-								<select class="filter-select" id="freshness">
-									<option value="">Any Time</option>
-									<option value="24h">Last 24 Hours</option>
-									<option value="3d">Last 3 Days</option>
-									<option value="7d">Last 7 Days</option>
-									<option value="14d">Last 14 Days</option>
+								<div class="filter-label">Job Type</div>
+								<select class="filter-select" th:field="*{jobType}" id="job-type" onchange="toggleFilters()">
+									<option value="" selected>Any Type</option>
+									<option value="Full Time">Full Time</option>
+									<option value="Part Time">Part Time</option>
+									<option value="Internship">Internship</option>
 								</select>
 							</div>
 						</div>
 
-						<div class="col-md-3 mb-3 duration-filter">
+						<!-- Location -->
+						<div class="col-md-3 mb-3">
 							<div class="filter-group">
-								<div class="filter-label">Duration</div>
-								<select class="filter-select" id="duration">
-									<option value="">Any Duration</option>
-									<option value="1-3">1-3 Months</option>
-									<option value="3-6">3-6 Months</option>
-									<option value="6+">6+ Months</option>
+								<div class="filter-label">Location</div>
+								<select class="filter-select" th:field="*{location}" id="location">
+									<option value="" selected>Any Location</option>
+									<option th:each="loc : ${locations}" th:value="${loc.locationId}"
+										th:text="${loc.location}"></option>
 								</select>
 							</div>
 						</div>
 
-						<div class="col-md-3 mb-3 stipend-filter">
+						<!-- Experience -->
+						<div class="col-md-3 mb-3">
 							<div class="filter-group">
-								<div class="filter-label">Stipend</div>
-								<select class="filter-select" id="stipend">
-									<option value="">Any Stipend</option>
-									<option value="0-5k">$0 - $5k</option>
-									<option value="5k-10k">$5k - $10k</option>
-									<option value="10k+">$10k+</option>
+								<div class="filter-label">Experience</div>
+								<select class="filter-select" th:field="*{experience}" id="experience">
+									<option value="" selected>Any Experience</option>
+									<option th:value="'0-2'">0-2 years</option>
+									<option th:value="'2-5'">2-5 years</option>
+									<option th:value="'5-10'">5-10 years</option>
+									<option th:value="'10+'">10+ years</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Industry -->
+						<div class="col-md-3 mb-3">
+							<div class="filter-group">
+								<div class="filter-label">Category</div>
+								<select class="filter-select" th:field="*{category}" id="industry">
+									<option value="" selected>Any Category</option>
+									<option th:each="cat : ${categories}" th:value="${cat.jobCategoryId}"
+										th:text="${cat.jobCategory}"></option>
 								</select>
 							</div>
 						</div>
 					</div>
+
+					<!-- More Filters -->
+					<div class="row mt-2">
+						<div class="col-12">
+							<button class="btn btn-sm filter-more-btn" type="button"
+								data-bs-toggle="collapse" data-bs-target="#advancedFilters"
+								aria-expanded="false" aria-controls="advancedFilters">
+								<i class="bi bi-sliders"></i> More Filters
+							</button>
+						</div>
+					</div>
+
+					<div class="collapse mt-3" id="advancedFilters">
+						<div class="row">
+							<!-- Salary -->
+							<div class="col-md-3 mb-3 salary-filter">
+								<div class="filter-group">
+									<div class="filter-label">Salary</div>
+									<select class="filter-select" th:field="*{salary}" id="salary">
+										<option value="">Any Salary</option>
+										<option th:value="'3-5'">3-5 LPA</option>
+										<option th:value="'5-8'">5-8 LPA</option>
+										<option th:value="'8-12'">8-12 LPA</option>
+										<option th:value="'12+'">12+ LPA</option>
+									</select>
+								</div>
+							</div>
+
+							<!-- Freshness -->
+							<div class="col-md-3 mb-3">
+								<div class="filter-group">
+									<div class="filter-label">Freshness</div>
+									<select class="filter-select" th:field="*{freshness}" id="freshness">
+										<option value="">Any Time</option>
+										<option th:value = "0">less than a day</option>
+										<option th:value = "1">1 day ago</option>
+										<option th:value = "7">1 week ago</option>
+										<option th:value = "14">2 weeks ago</option>
+										<option th:value = "30">1 month ago</option>			
+									</select>
+								</div>
+							</div>
+
+							<!-- Duration -->
+							<div class="col-md-3 mb-3 duration-filter">
+								<div class="filter-group">
+									<div class="filter-label">Duration</div>
+									<select class="filter-select" th:field="*{duration}" id="duration">
+										<option value="">Any Duration</option>
+										<option th:value="2">2 weeks</option>
+										<option th:value="4">1 month</option>
+										<option th:value="8">2 months</option>
+										<option th:value="24">6 months</option>
+									</select>
+								</div>
+							</div>
+
+							<!-- Stipend -->
+							<div class="col-md-3 mb-3 stipend-filter">
+								<div class="filter-group">
+									<div class="filter-label">Stipend</div>
+									<select class="filter-select" th:field="*{stipend}" id="stipend">
+										<option value="">Any Stipend</option>
+										<option th:value="10000">10,000/month</option>
+										<option th:value="15000">15,000/month</option>
+										<option th:value="25000">25,000/month</option>
+										<option th:value="50000">50000/month</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Submit Filter -->
+					<div class="row mt-3">
+						<div class="col-12 text-end">
+							<button type="submit" class="btn btn-primary btn-sm">Apply
+								Filters</button>
+						</div>
+					</div>
+
 				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 
 	<div class="main-content container mb-5">
 		<!-- Job List -->
 		<div class="job-list-container">
-			
+
 			<div th:if="${jobs != null} and ${!jobs.isEmpty()}"
 				th:each="job, jobStat : ${jobs}" class="job-card"
+				th:id="'jobcard' + ${job.jobId}"
 				th:classappend="${jobStat.index == 0} ? ' active' : ''"
-				th:onclick="'showJobDetail(' + ${job.jobId} + ')'">
-				
+				th:attr="onclick=|showJobDetail(${job.jobId})|">
+
 				<span th:if="${jobStat.index == 0}" id="firstJobId"
-				th:text="${job.jobId}" style="display: none;"></span>
-				
+					th:text="${job.jobId}" style="display: none;"></span>
+
 				<h5 class="job-title" th:text="${job.jobTitle}">Job Title</h5>
 				<div class="company-name" th:text="${job.company}">Company
 					Name</div>
@@ -219,7 +225,7 @@
 					<span class="job-tag"> <i class="fas fa-suitcase"></i> <span
 						th:text="${job.jobType}">Job Type</span>
 					</span> <span class="job-tag"> <i class="fas fa-location-dot"></i>
-						<span th:text="${job.location.iterator().next().location}"></span></span>
+						<span th:text="${job.location.iterator().next()}"></span></span>
 
 
 					<!-- Salary or Stipend + Duration based on Job Type -->
