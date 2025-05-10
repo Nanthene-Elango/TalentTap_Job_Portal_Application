@@ -329,7 +329,7 @@
 							<div class="skill-badge d-inline-block me-1">
 								<span th:text="${skill.skill}"></span>
 
-								<form th:action="@{'/profile/delete-skill/' + ${skill.skillId}}"
+								<form th:action="@{'/profile/delete-skill/' + ${skill.skillId} +'/' + ${jobSeeker.id}}"
 									method="post" style="display: inline;">
 									<button class="btn btn-sm text-secondary p-0 ms-1"
 										type="submit" title="Remove Skill">

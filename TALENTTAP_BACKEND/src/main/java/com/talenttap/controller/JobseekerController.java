@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,7 +69,7 @@ public class JobseekerController {
 		return jobseekerService.getJobseeker(jwt.get("jwt"));
 	}
 
-	@GetMapping("jobseeker/profile-photo/{id}")
+	@GetMapping("jobseeker/profile-photo/{id}/{jobseekerId}")
 	public ResponseEntity<?> getProfilePhoto(@PathVariable Integer id) {
 		return jobseekerService.getProfilePhotoById(id);
 	}
@@ -99,9 +100,9 @@ public class JobseekerController {
 		return jobseekerService.getAllSkillsById(id);
 	}
 	
-	@GetMapping("jobseeker/delete/skill/{id}")
-	public ResponseEntity<String> deleteSkillById(@PathVariable Integer id){
-		return jobseekerService.deleteSkillById(id);
+	@DeleteMapping("jobseeker/delete/skill/{id}/{jobseekerId}")
+	public ResponseEntity<String> deleteSkillById(@PathVariable Integer id , @PathVariable Integer jobseekerId){
+		return jobseekerService.deleteSkillById(id , jobseekerId);
 	}
 	
 	@GetMapping("api/jobs")
