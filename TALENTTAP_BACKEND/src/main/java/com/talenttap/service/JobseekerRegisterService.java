@@ -30,6 +30,7 @@ import com.talenttap.entity.Users;
 import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
 import com.talenttap.entity.Jobs;
+import com.talenttap.entity.Skills;
 import com.talenttap.repository.EducationLevelRepository;
 import com.talenttap.repository.EducationRepository;
 import com.talenttap.repository.JobApplicationRepository;
@@ -48,10 +49,9 @@ import jakarta.validation.Valid;
 @Service
 public class JobseekerRegisterService {
 
-	
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	private UsersRepository userRepo;
 	private JobseekerRepository jobseekerRepo;
 	private EducationRepository educationRepo;
@@ -62,13 +62,11 @@ public class JobseekerRegisterService {
 	private PasswordEncoder passwordEncoder;
 	private JobsRepository jobRepo;
 	private JobApplicationRepository jobApplicationRepo;
-	
-	
-	public JobseekerRegisterService(UsersRepository userRepo , JobseekerRepository jobseekerRepo ,
-			EducationRepository educationRepo , SkillsRepository skillsRepo , 
-			RoleRepository roleRepo , LocationRepository locationRepo , 
-			EducationLevelRepository educationLevelRepo , PasswordEncoder passwordEncoder , JobsRepository jobRepo
-			,JobApplicationRepository jobApplicationRepo) {
+
+	public JobseekerRegisterService(UsersRepository userRepo, JobseekerRepository jobseekerRepo,
+			EducationRepository educationRepo, SkillsRepository skillsRepo, RoleRepository roleRepo,
+			LocationRepository locationRepo, EducationLevelRepository educationLevelRepo,
+			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.skillsRepo = skillsRepo;
@@ -92,20 +90,20 @@ public class JobseekerRegisterService {
 		user.setMobileNumber(request.getPhoneNumber());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setUsername(request.getUsername());
-		
+
 		user = userRepo.save(user);
-		
+
 		JobSeeker jobseeker = new JobSeeker();
 		jobseeker.setLocation(locationRepo.findById(request.getLocation()).get());
 		jobseeker.setUser(user);
 		jobseeker.setYearOfExperience(request.getYearsOfExperience());
-		
+
 		for (Integer skillId : request.getSkillIds()) {
 			jobseeker.getSeekerSkills().add(skillsRepo.findById(skillId).get());
 		}
 
 		jobseeker = jobseekerRepo.save(jobseeker);
-		
+
 		Education education = new Education();
 		education.setJobSeeker(jobseeker);
 		education.setEducationLevel(educationLevelRepo.findById(request.getHighestQualification()).get());
@@ -115,128 +113,127 @@ public class JobseekerRegisterService {
 		education.setPercentage(request.getPercentage());
 		education.setEndYear(request.getEndYear());
 		education.setStartYear(request.getStartYear());
-		
+
 		educationRepo.save(education);
-		
+
 		return ResponseEntity.ok().body("Jobseeker Registered Successfully!");
 	}
 
-	public ResponseEntity<?> login(String username , String password , HttpServletResponse response) {
-		
+	public ResponseEntity<?> login(String username, String password, HttpServletResponse response) {
+
 		Users user = userRepo.findByUsername(username).get();
-		
-		if (user != null && passwordEncoder.matches(password , user.getPassword())) {
+
+		if (user != null && passwordEncoder.matches(password, user.getPassword())) {
 			String jwt = jwtUtil.generateToken(username, "JOBSEEKER");
 
 			System.out.println(jwt);
-	        Cookie cookie = new Cookie("jwt", jwt);
-	        cookie.setHttpOnly(true);
-	        cookie.setPath("/");
-	        cookie.setSecure(false);
-	        cookie.setMaxAge(24 * 60 * 60);
-	        response.addCookie(cookie);
-	        
-	        return ResponseEntity.ok().body("User Logged in Successfully");
-		}
-		else {
+			Cookie cookie = new Cookie("jwt", jwt);
+			cookie.setHttpOnly(true);
+			cookie.setPath("/");
+			cookie.setSecure(false);
+			cookie.setMaxAge(24 * 60 * 60);
+			response.addCookie(cookie);
+
+			return ResponseEntity.ok().body("User Logged in Successfully");
+		} else {
 			throw new InvalidCredentialsException("Invalid Username/Password!");
 		}
 	}
 
 	public ResponseEntity<String> getFullName(String jwt) {
-		
+
 		System.out.println(jwt);
 		if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
 			return ResponseEntity.badRequest().body("Jwt Token is Empty!");
 		}
 		String username = jwtUtil.extractIdentifier(jwt);
 		Users user = userRepo.findByUsername(username).get();
-		
+
 		return ResponseEntity.ok().body(user.getFullName());
 	}
 
 	public ResponseEntity<JobseekerDTO> getJobseeker(String token) {
 
-	    String username = jwtUtil.extractIdentifier(token);
+		String username = jwtUtil.extractIdentifier(token);
 
-	    Optional<Users> optionalUser = userRepo.findByUsername(username);
-	    if (optionalUser.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	    }
+		Optional<Users> optionalUser = userRepo.findByUsername(username);
+		if (optionalUser.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 
-	    Users user = optionalUser.get();
+		Users user = optionalUser.get();
 
-	    Optional<JobSeeker> optionalJobseeker = jobseekerRepo.findByUser(user);
-	    if (optionalJobseeker.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	    }
+		Optional<JobSeeker> optionalJobseeker = jobseekerRepo.findByUser(user);
+		if (optionalJobseeker.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 
-	    JobSeeker jobseeker = optionalJobseeker.get();
-	    JobseekerDTO response = new JobseekerDTO(jobseeker, user);
+		JobSeeker jobseeker = optionalJobseeker.get();
+		JobseekerDTO response = new JobseekerDTO(jobseeker, user);
 
-	    return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
 	}
 
 	public ResponseEntity<?> getProfilePhotoById(int id) {
 		JobSeeker jobSeeker = jobseekerRepo.findById(id).orElse(null);
 
-	    if (jobSeeker == null || jobSeeker.getProfilePhoto() == null) {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.setLocation(URI.create("http://localhost:8082/img/default_profile.png"));
-	        return new ResponseEntity<>(headers, HttpStatus.FOUND);
-	    }
+		if (jobSeeker == null || jobSeeker.getProfilePhoto() == null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setLocation(URI.create("http://localhost:8082/img/default_profile.png"));
+			return new ResponseEntity<>(headers, HttpStatus.FOUND);
+		}
 
-	    byte[] imageBytes = jobSeeker.getProfilePhoto();
-	    String contentType = detectImageType(imageBytes);
+		byte[] imageBytes = jobSeeker.getProfilePhoto();
+		String contentType = detectImageType(imageBytes);
 
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.parseMediaType(contentType));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType(contentType));
 
-	    return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+		return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
 	}
 
 	private String detectImageType(byte[] imageBytes) {
-	    if (imageBytes == null || imageBytes.length < 4) {
-	        return "image/png";
-	    }
+		if (imageBytes == null || imageBytes.length < 4) {
+			return "image/png";
+		}
 
-	    if (imageBytes[0] == (byte)0xFF && imageBytes[1] == (byte)0xD8) {
-	        return "image/jpeg";
-	    } else if (imageBytes[0] == (byte)0x89 && imageBytes[1] == (byte)0x50) {
-	        return "image/png";
-	    } else {
-	        return "image/png";
-	    }
+		if (imageBytes[0] == (byte) 0xFF && imageBytes[1] == (byte) 0xD8) {
+			return "image/jpeg";
+		} else if (imageBytes[0] == (byte) 0x89 && imageBytes[1] == (byte) 0x50) {
+			return "image/png";
+		} else {
+			return "image/png";
+		}
 	}
 
 	public ResponseEntity<String> uploadProfilePicture(MultipartFile file, Integer jobSeekerId) {
-		
-		if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("No file uploaded");
-        }
 
-        try {
-            JobSeeker jobSeeker = jobseekerRepo.findById(jobSeekerId).orElse(null);
-            if (jobSeeker != null) {
-                jobSeeker.setProfilePhoto(file.getBytes());
-                jobseekerRepo.save(jobSeeker);
-                return ResponseEntity.ok("Profile photo updated");
-            } else {
-                return ResponseEntity.badRequest().body("Job Seeker not found");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading photo");
-        }
+		if (file.isEmpty()) {
+			return ResponseEntity.badRequest().body("No file uploaded");
+		}
+
+		try {
+			JobSeeker jobSeeker = jobseekerRepo.findById(jobSeekerId).orElse(null);
+			if (jobSeeker != null) {
+				jobSeeker.setProfilePhoto(file.getBytes());
+				jobseekerRepo.save(jobSeeker);
+				return ResponseEntity.ok("Profile photo updated");
+			} else {
+				return ResponseEntity.badRequest().body("Job Seeker not found");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading photo");
+		}
 	}
 
 	public ResponseEntity<String> updateProfile(JobseekerDTO request) {
-		
+
 		try {
 			JobSeeker jobseeker = jobseekerRepo.findById(request.getId()).get();
 			System.out.println(jobseeker.getJobSeekerId());
 			Users user = userRepo.findById(jobseeker.getUser().getUserId()).get();
-			
+
 			user.setEmail(request.getEmail());
 			user.setFullName(request.getFullName());
 			user.setMobileNumber(request.getPhone());
@@ -245,119 +242,113 @@ public class JobseekerRegisterService {
 				user.setPassword(request.getPassword());
 			}
 			user = userRepo.save(user);
-			
+
 			jobseeker.setUser(user);
-			
+
 			if (request.getDob() != null) {
 				jobseeker.setDob(request.getDob());
 			}
-			
+
 			jobseeker.setLocation(locationRepo.findByLocation(request.getLocation()).get());
 
-			if(request.getGender() != null && !request.getGender().isBlank() && !request.getGender().isEmpty()) {
+			if (request.getGender() != null && !request.getGender().isBlank() && !request.getGender().isEmpty()) {
 				Gender gender = Gender.valueOf(request.getGender().toUpperCase());
 				jobseeker.setGender(gender);
-				
+
 			}
-			
+
 			jobseekerRepo.save(jobseeker);
-			
+
 			return ResponseEntity.ok("Updated Succsessfully!");
-		}
-		catch(Exception ex) {
+		} catch (Exception ex) {
 			return ResponseEntity.badRequest().body("failed to update profile!");
 		}
-		
-	
+
 	}
 
 	public ResponseEntity<String> updateSummary(String summary, int id) {
 		JobSeeker jobseeker = jobseekerRepo.findById(id).get();
-		
+
 		jobseeker.setProfileSummary(summary);
 		jobseekerRepo.save(jobseeker);
-		
+
 		return ResponseEntity.ok().body("Updated summary successfully!");
-		
+
 	}
 
 	public ResponseEntity<List<JobDTO>> getAllJobs() {
-		
+
 		List<JobDTO> jobs = jobRepo.findAll().stream().map(JobDTO::new).toList();
-		
+
 		for (JobDTO j : jobs) {
 			j.setApplicants(jobApplicationRepo.countByJob_JobId(j.getJobId()));
 		}
-		
+
 		return ResponseEntity.ok(jobs);
-		
+
 	}
 
 	public ResponseEntity<JobDTO> getJobById(int id) {
-		
+
 		JobDTO job = new JobDTO(jobRepo.findById(id).get());
 		job.setApplicants(jobApplicationRepo.countByJob_JobId(job.getJobId()));
-		
+
 		return ResponseEntity.ok(job);
 	}
 
 	public ResponseEntity<List<JobDTO>> filterJobs(JobFilterDTO jobFilter) {
-		
+
 		List<Jobs> jobs = jobRepo.findAll();
-		
+
 		if (jobs != null) {
 			if (jobFilter.getExperience() != null && !jobFilter.getExperience().isBlank()) {
-			    ExperienceRange filterRange = new ExperienceRange(jobFilter.getExperience());
+				ExperienceRange filterRange = new ExperienceRange(jobFilter.getExperience());
 
-			    jobs = jobs.stream()
-			        .filter(job -> {
-			            ExperienceRange jobRange = new ExperienceRange(job.getYearsOfExperience());
-			            return jobRange.overlapsWith(filterRange);
-			        })
-			        .toList();
+				jobs = jobs.stream().filter(job -> {
+					ExperienceRange jobRange = new ExperienceRange(job.getYearsOfExperience());
+					return jobRange.overlapsWith(filterRange);
+				}).toList();
 			}
 			if (jobFilter.getCategory() != null) {
-				jobs = jobs.stream()
-						.filter(x -> x.getJobCategory().getJobCategoryId() == jobFilter.getCategory()).toList();
+				jobs = jobs.stream().filter(x -> x.getJobCategory().getJobCategoryId() == jobFilter.getCategory())
+						.toList();
 			}
 			if (jobFilter.getLocation() != null) {
-				jobs = jobs.stream()
-						.filter(x -> x.getJobLocation().stream().anyMatch( loc->loc.getLocationId() == jobFilter.getLocation())).toList();
+				jobs = jobs.stream().filter(x -> x.getJobLocation().stream()
+						.anyMatch(loc -> loc.getLocationId() == jobFilter.getLocation())).toList();
 			}
 		}
-		
+
 		List<JobDTO> jobsDTO = jobs.stream().map(JobDTO::new).toList();
-		
+
 		if (jobsDTO != null) {
-			
+
 			if (jobFilter.getDuration() != null) {
-				jobsDTO = jobsDTO.stream()
-						.filter(x -> x.getDuration() == jobFilter.getDuration()).toList();
+				jobsDTO = jobsDTO.stream().filter(x -> x.getDuration() == jobFilter.getDuration()).toList();
 			}
-			
+
 			if (jobFilter.getFreshness() != null && jobFilter.getFreshness() != 0) {
 				jobsDTO = jobsDTO.stream()
-						.filter(x -> x.getPostedAgo().contains("days") && Integer.valueOf(x.getPostedAgo().split(" ")[0])<=jobFilter.getFreshness()).toList();
+						.filter(x -> x.getPostedAgo().contains("days")
+								&& Integer.valueOf(x.getPostedAgo().split(" ")[0]) <= jobFilter.getFreshness())
+						.toList();
 			}
-			
+
 			if (jobFilter.getFreshness() != null && jobFilter.getFreshness() == 0) {
-				jobsDTO = jobsDTO.stream()
-						.filter(x -> x.getPostedAgo().contains("hours")).toList();
+				jobsDTO = jobsDTO.stream().filter(x -> x.getPostedAgo().contains("hours")).toList();
 			}
-			
+
 			if (jobFilter.getJobType() != null && !jobFilter.getJobType().isBlank()) {
-				jobsDTO = jobsDTO.stream()
-						.filter(x -> x.getJobType().equals(jobFilter.getJobType())).toList();
+				jobsDTO = jobsDTO.stream().filter(x -> x.getJobType().equals(jobFilter.getJobType())).toList();
 			}
-			
-			
-			
+
 			if (jobFilter.getSalary() != null && !jobFilter.getSalary().isBlank()) {
-				jobsDTO = jobsDTO.stream()
-						.filter(x -> x.getSalaryRange().split(" ")[0].trim().contains(jobFilter.getSalary().split(" ")[0].trim()) 
-						&& x.getSalaryRange().split(" ")[2].trim().contains(jobFilter.getSalary().split(" ")[2].trim())).toList();
+				jobsDTO = jobsDTO.stream().filter(x -> x.getSalaryRange().split(" ")[0].trim()
+						.contains(jobFilter.getSalary().split(" ")[0].trim())
+						&& x.getSalaryRange().split(" ")[2].trim().contains(jobFilter.getSalary().split(" ")[2].trim()))
+						.toList();
 			}
-			
+
 			if (jobFilter.getStipend() != null) {
 				jobsDTO = jobsDTO.stream().filter(x -> x.getStipend().equals(jobFilter.getStipend())).toList();
 			}
@@ -366,19 +357,27 @@ public class JobseekerRegisterService {
 	}
 
 	public ResponseEntity<List<EducationDTO>> getAllEducation(Integer id) {
-		List<EducationDTO> educations = educationRepo.findByJobSeeker_JobSeekerId(id).stream().map(EducationDTO::new).toList();
+		List<EducationDTO> educations = educationRepo.findByJobSeeker_JobSeekerId(id).stream().map(EducationDTO::new)
+				.toList();
 		return ResponseEntity.ok().body(educations);
 	}
 
 	public ResponseEntity<List<SkillsDTO>> getAllSkillsById(Integer id) {
-		List<SkillsDTO> skills = jobseekerRepo.findById(id).get().getSeekerSkills().stream().map(SkillsDTO::new).collect(Collectors.toList());
+		List<SkillsDTO> skills = jobseekerRepo.findById(id).get().getSeekerSkills().stream().map(SkillsDTO::new)
+				.collect(Collectors.toList());
 		return ResponseEntity.ok().body(skills);
 	}
 
-	public ResponseEntity<String> deleteSkillById(Integer id) {
-		if(skillsRepo.findById(id).isPresent()) {
-			skillsRepo.deleteById(id);
-			return ResponseEntity.ok("Skill Deleted Successfully!");
+	public ResponseEntity<String> deleteSkillById(Integer id, Integer jobseekerId) {
+		JobSeeker jobSeeker = jobseekerRepo.findById(jobseekerId).get();
+
+		Skills skill = skillsRepo.findById(id).get();
+				
+		
+		if (jobSeeker != null && skill!= null && jobSeeker.getSeekerSkills().contains(skill)) {
+			jobSeeker.getSeekerSkills().remove(skill);
+			jobseekerRepo.save(jobSeeker);
+			return ResponseEntity.ok().body("Skill deleted successfully!");
 		}
 		return ResponseEntity.notFound().build();
 	}

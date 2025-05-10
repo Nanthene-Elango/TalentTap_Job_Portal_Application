@@ -239,8 +239,8 @@ public class PageRenderController {
 		    model.addAttribute("jobForm", new JobFormDTO());
 	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
 	        model.addAttribute("jobCategories", jobService.getJobCategories());
-	        model.addAttribute("skills", jobseekerRegisterService.getAllSkills());
-	        model.addAttribute("locations", jobseekerRegisterService.getAllLocations());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
 		return "employer/postjob";
 	}
 }

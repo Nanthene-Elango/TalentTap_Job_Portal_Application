@@ -216,8 +216,8 @@ public class JobseekerService {
 		return Arrays.asList(response.getBody());
 	}
 
-	public void deleteSkillById(Long id) {
-		String url = "http://localhost:8083/jobseeker/delete/skill/" + id;
+	public void deleteSkillById(Long id , Long jobseekerId) {
+		String url = "http://localhost:8083/jobseeker/delete/skill/" + id + "/" + jobseekerId;
 		
 		HttpHeaders headers = new HttpHeaders();
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);

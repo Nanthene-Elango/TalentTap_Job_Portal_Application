@@ -79,9 +79,9 @@ public class JobseekerController {
 		}
 	}
 
-	@PostMapping("/profile/delete-skill/{id}")
-	public String deleteSkill(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-		jobseekerService.deleteSkillById(id);
+	@PostMapping("/profile/delete-skill/{id}/{jobseekerId}")
+	public String deleteSkill(@PathVariable Long id, @PathVariable Long jobseekerId ,  RedirectAttributes redirectAttributes) {
+		jobseekerService.deleteSkillById(id , jobseekerId);
 		redirectAttributes.addFlashAttribute("message", "Skill deleted successfully!");
 		return "redirect:/profile";
 	}
