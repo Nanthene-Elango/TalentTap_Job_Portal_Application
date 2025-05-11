@@ -98,6 +98,8 @@ public class PageRenderController {
  	        
  	        List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
  	        model.addAttribute("skills", skills);
+ 	        
+ 	        
 		}
 		
 		return "jobseeker/profile";
@@ -202,8 +204,8 @@ public class PageRenderController {
 	            if (profile != null) {
 	                model.addAttribute("Fullname", profile.getFullname());
 	                model.addAttribute("username", profile.getUsername());
-                model.addAttribute("email", profile.getEmail());
-                model.addAttribute("phoneNumber", profile.getPhoneNumber());
+	                model.addAttribute("email", profile.getEmail());
+	                model.addAttribute("phoneNumber", profile.getPhoneNumber());
 	                model.addAttribute("companyName", profile.getCompanyName());
 	                model.addAttribute("companyIndustry", profile.getIndustryType());
 	                model.addAttribute("companyEmail", profile.getCompanyEmail());

@@ -45,14 +45,14 @@
 							</span></li>
 							<li class="mb-2"
 								th:if="${job.jobType == 'Full Time' or job.jobType == 'Part Time'}">
-								<i class="fas fa-dollar-sign me-2"></i> <span
+								<i class="fas fa-rupee-sign me-2"></i> <span
 								th:text="${job.salaryRange}"></span>
 							</li>
 							<li th:if="${job.jobType == 'Internship'}"><i
 								class="fas fa-clock me-2"></i> <span th:text="${job.duration}"></span>
-								weeks</li>
-							<li th:if="${job.jobType == 'Internship'}"><i
-								class="fas fa-dollar-sign me-2"></i> <span
+								weeks
+							</li>
+							<li th:if="${job.jobType == 'Internship'}"><i class="fas fa-rupee-sign me-2"></i> <span
 								th:text="${job.stipend}"></span> /month</li>
 							<li class="mb-2"><i class="fas fa-briefcase me-2"></i> <span
 								th:text="${job.jobType}"></span></li>

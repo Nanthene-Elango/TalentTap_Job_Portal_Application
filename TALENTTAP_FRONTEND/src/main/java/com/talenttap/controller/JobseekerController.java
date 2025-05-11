@@ -2,14 +2,17 @@ package com.talenttap.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.model.JobCategory;
@@ -84,5 +87,27 @@ public class JobseekerController {
 		jobseekerService.deleteSkillById(id , jobseekerId);
 		redirectAttributes.addFlashAttribute("message", "Skill deleted successfully!");
 		return "redirect:/profile";
+	}
+	
+	@PostMapping("/resume/upload")
+    public String handleResumeUpload(@RequestParam("file") MultipartFile file,
+                                     @CookieValue(value = "jwt", required = false) String jwt,
+                                     RedirectAttributes redirectAttributes) {
+		return jobseekerService.handleResumeUpload(file, jwt, redirectAttributes);
+	}
+	
+	@GetMapping("/downloadResume")
+	public ResponseEntity<byte[]> downloadResume(@CookieValue(value = "jwt", required = false) String jwt) {
+	   return jobseekerService.downloadResume(jwt);
+	}
+	
+	@GetMapping("/previewResume")
+	public ResponseEntity<byte[]> previewResumeViaRestTemplate(@CookieValue(value = "jwt", required = false) String jwt) {
+	    return jobseekerService.previewResume(jwt);
+	}
+	
+	@PostMapping("/deleteResume")
+	public String removeResume(@CookieValue(value = "jwt", required = false) String jwt, RedirectAttributes redirectAttributes) {
+	   return jobseekerService.deleteResume(jwt , redirectAttributes);
 	}
 }
