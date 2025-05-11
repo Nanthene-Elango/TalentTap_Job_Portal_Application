@@ -19,6 +19,7 @@ public class Jobseeker {
 	private String password;
 	private String username;
 	private String email;
+	private byte[] resume;
 	
 	public int getId() {
 		return id;
@@ -86,5 +87,11 @@ public class Jobseeker {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	public byte[] getResume() {
+		return resume;
+	}
+	public void setResume(byte[] resume) {
+		this.resume = resume;
+	}
+
 }

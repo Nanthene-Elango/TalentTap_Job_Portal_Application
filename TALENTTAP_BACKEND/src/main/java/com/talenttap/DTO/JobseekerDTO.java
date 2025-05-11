@@ -20,6 +20,7 @@ public class JobseekerDTO {
 	private String password;
 	private String username;
 	private String email;
+	private byte[] resume;
 	
 	
 	public JobseekerDTO() {
@@ -40,6 +41,7 @@ public class JobseekerDTO {
 		this.password = user.getPassword();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
+		this.resume = jobseeker.getResume();
 	}
 
 	public int getId() {
@@ -129,5 +131,13 @@ public class JobseekerDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
+	public byte[] getResume() {
+		return resume;
+	}
+
+	public void setResume(byte[] resume) {
+		this.resume = resume;
+	}
+
 }

@@ -142,7 +142,6 @@ public class JobseekerRegisterService {
 
 	public ResponseEntity<String> getFullName(String jwt) {
 
-		System.out.println(jwt);
 		if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
 			return ResponseEntity.badRequest().body("Jwt Token is Empty!");
 		}
@@ -380,6 +379,69 @@ public class JobseekerRegisterService {
 			return ResponseEntity.ok().body("Skill deleted successfully!");
 		}
 		return ResponseEntity.notFound().build();
+	}
+
+	public ResponseEntity<String> uploadResume(MultipartFile file, String jwt) {
+		if (jwt == null || jwt.trim().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+		}
+
+		try {
+			byte[] resumeBytes = file.getBytes();
+			if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
+				return ResponseEntity.badRequest().body("Jwt Token is Empty!");
+			}
+			String username = jwtUtil.extractIdentifier(jwt);
+			Users user = userRepo.findByUsername(username).get();
+			
+			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
+			
+			
+			jobseeker.setResume(resumeBytes);
+			jobseekerRepo.save(jobseeker);
+
+			return ResponseEntity.ok("Resume uploaded successfully");
+
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload resume");
+		}
+	}
+
+	public ResponseEntity<?> getResume(String jwt) {
+		if (jwt != null && !jwt.trim().isEmpty()) {
+			if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
+				return ResponseEntity.badRequest().body("Jwt Token is Empty!");
+			}
+			String username = jwtUtil.extractIdentifier(jwt);
+			Users user = userRepo.findByUsername(username).get();
+			
+			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
+			
+	        byte[] resume = jobseeker.getResume();
+	        if (resume != null) {
+	            return ResponseEntity.ok()
+	                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	                .body(resume); 
+	        }
+	    }
+	    return ResponseEntity.notFound().build();
+	}
+
+	public ResponseEntity<Void> deleteResume(String jwt) {
+		if (jwt != null && !jwt.trim().isEmpty()) {
+	        
+			String username = jwtUtil.extractIdentifier(jwt);
+			Users user = userRepo.findByUsername(username).get();
+			
+			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
+
+	        if (jobseeker != null && jobseeker.getResume() != null) {
+	            jobseeker.setResume(null);
+	            jobseekerRepo.save(jobseeker); 
+	            return ResponseEntity.ok().build();
+	        }
+	    }
+	    return ResponseEntity.notFound().build();
 	}
 
 }

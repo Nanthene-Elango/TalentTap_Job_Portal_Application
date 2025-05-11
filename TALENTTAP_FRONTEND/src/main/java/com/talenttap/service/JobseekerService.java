@@ -1,6 +1,7 @@
 package com.talenttap.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
@@ -132,8 +135,8 @@ public class JobseekerService {
 			String backendUrl = "http://localhost:8083/jobseeker/upload-profile-photo";
 
 			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			body.add("profilePhoto",
-					new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename()));
+			body.add("profilePhoto", new MultipartInputStreamFileResource(file.getInputStream(),
+					file.getOriginalFilename(), file.getSize()));
 			body.add("jobSeekerId", jobSeekerId);
 
 			HttpHeaders headers = new HttpHeaders();
@@ -208,27 +211,130 @@ public class JobseekerService {
 	}
 
 	public List<Skills> getAllSkillsById(int id) {
-		
+
 		String url = "http://localhost:8083/jobseeker/skills/" + id;
-		
+
 		ResponseEntity<Skills[]> response = restTemplate.getForEntity(url, Skills[].class);
-		
+
 		return Arrays.asList(response.getBody());
 	}
 
-	public void deleteSkillById(Long id , Long jobseekerId) {
+	public void deleteSkillById(Long id, Long jobseekerId) {
 		String url = "http://localhost:8083/jobseeker/delete/skill/" + id + "/" + jobseekerId;
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-		ResponseEntity<String> response = restTemplate.exchange(
-		    url,
-		    HttpMethod.DELETE,
-		    requestEntity,
-		    String.class
-		);
-		
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
+
 	}
 
+	public String handleResumeUpload(MultipartFile file, String jwt, RedirectAttributes redirectAttributes) {
+
+		if (file.isEmpty() || jwt == null || jwt.trim().isEmpty()) {
+			redirectAttributes.addFlashAttribute("error", "Invalid request");
+			return "redirect:/profile";
+		}
+
+		try {
+			// Create headers with JWT cookie
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			headers.add("Cookie", "jwt=" + jwt);
+
+			// Convert file to resource
+			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+			body.add("file", new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename(),
+					file.getSize()));
+
+			HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+			String url = "http://localhost:8083/jobseeker/resume/upload";
+			ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+
+			redirectAttributes.addFlashAttribute("message", response.getBody());
+
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Upload failed: " + e.getMessage());
+		}
+
+		return "redirect:/profile";
+	}
+
+	public ResponseEntity<byte[]> downloadResume(String jwt) {
+		if (jwt == null || jwt.trim().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+			headers.add("Cookie", "jwt=" + jwt.trim());
+
+			HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+			String url = "http://localhost:8083/jobseeker/resume";
+
+			ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, byte[].class);
+
+			if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"resume.pdf\"")
+						.body(response.getBody());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	public ResponseEntity<byte[]> previewResume(String jwt) {
+		if (jwt == null || jwt.trim().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_PDF));
+			headers.add("Cookie", "jwt=" + jwt.trim());
+
+			HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+			String url = "http://localhost:8083/jobseeker/resume";
+
+			ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, byte[].class);
+
+			if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(response.getBody());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.notFound().build();
+	}
+
+	public String deleteResume(String jwt , RedirectAttributes redirectAttributes) {
+		if (jwt != null && !jwt.trim().isEmpty()) {
+			try {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("Cookie", "jwt=" + jwt.trim());
+
+				HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+				String url = "http://localhost:8083/jobseeker/resume/delete";
+
+				restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);
+				redirectAttributes.addFlashAttribute("success", "Resume removed successfully.");
+
+			} catch (Exception e) {
+				redirectAttributes.addFlashAttribute("error", "Failed to remove resume.");
+				e.printStackTrace();
+			}
+		}
+		return "redirect:/profile";
+	}
 }
