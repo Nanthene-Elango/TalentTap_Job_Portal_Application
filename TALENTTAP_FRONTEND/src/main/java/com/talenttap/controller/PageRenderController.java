@@ -38,8 +38,9 @@ public class PageRenderController {
 
 	private JobsService jobService;
 	
-	public PageRenderController(JobseekerService jobseekerRegisterService, EmployerAuthService employerService,JobsService jobService){
-		this.jobseekerService = jobseekerRegisterService;
+
+	public PageRenderController(JobseekerService jobseekerService, EmployerAuthService employerService,JobsService jobService){
+		this.jobseekerService = jobseekerService;
 		this.employerService = employerService;
 		this.jobService = jobService;
 	}
@@ -239,8 +240,19 @@ public class PageRenderController {
 		    model.addAttribute("jobForm", new JobFormDTO());
 	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
 	        model.addAttribute("jobCategories", jobService.getJobCategories());
-	        model.addAttribute("skills", jobseekerRegisterService.getAllSkills());
-	        model.addAttribute("locations", jobseekerRegisterService.getAllLocations());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
 		return "employer/postjob";
+	}
+	
+	@GetMapping("/admin/login")
+    public String renderAdminLogin(Model model) {
+		model.addAttribute("Login",new Login());
+        return "admin/admin-login";
+    }
+	
+	@GetMapping("/admin/index")
+	public String loadAdminIndex() {
+		return "admin/index";
 	}
 }
