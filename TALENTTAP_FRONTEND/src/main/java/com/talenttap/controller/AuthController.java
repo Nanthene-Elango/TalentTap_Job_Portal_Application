@@ -1,17 +1,14 @@
 package com.talenttap.controller;
 
-import java.io.Console;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.Login;
 import com.talenttap.service.JobseekerService;
+
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,6 +56,8 @@ public class AuthController {
 	    jobseekerRegisterService.login(login , response);
 	    return "redirect:/";
 	}
+	
+
 	
 	@GetMapping("/logout")
 	public String logout(HttpServletResponse response) {
