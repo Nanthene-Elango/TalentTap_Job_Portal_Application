@@ -44,7 +44,8 @@
 
 	<!-- Filter Section -->
 	<div class="container mt-4">
-		<form th:action="@{/filterJobs}" th:object="${jobFilter}" method="post">
+		<form th:action="@{/filterJobs}" th:object="${jobFilter}"
+			method="post">
 			<div class="filter-section">
 				<div class="row mb-3">
 					<div class="col-md-8">
@@ -70,7 +71,8 @@
 						<div class="col-md-3 mb-3">
 							<div class="filter-group">
 								<div class="filter-label">Job Type</div>
-								<select class="filter-select" th:field="*{jobType}" id="job-type" onchange="toggleFilters()">
+								<select class="filter-select" th:field="*{jobType}"
+									id="job-type" onchange="toggleFilters()">
 									<option value="" selected>Any Type</option>
 									<option value="Full Time">Full Time</option>
 									<option value="Part Time">Part Time</option>
@@ -83,10 +85,11 @@
 						<div class="col-md-3 mb-3">
 							<div class="filter-group">
 								<div class="filter-label">Location</div>
-								<select class="filter-select" th:field="*{location}" id="location">
+								<select class="filter-select" th:field="*{location}"
+									id="location">
 									<option value="" selected>Any Location</option>
-									<option th:each="loc : ${locations}" th:value="${loc.locationId}"
-										th:text="${loc.location}"></option>
+									<option th:each="loc : ${locations}"
+										th:value="${loc.locationId}" th:text="${loc.location}"></option>
 								</select>
 							</div>
 						</div>
@@ -95,7 +98,8 @@
 						<div class="col-md-3 mb-3">
 							<div class="filter-group">
 								<div class="filter-label">Experience</div>
-								<select class="filter-select" th:field="*{experience}" id="experience">
+								<select class="filter-select" th:field="*{experience}"
+									id="experience">
 									<option value="" selected>Any Experience</option>
 									<option th:value="'0-2'">0-2 years</option>
 									<option th:value="'2-5'">2-5 years</option>
@@ -109,10 +113,11 @@
 						<div class="col-md-3 mb-3">
 							<div class="filter-group">
 								<div class="filter-label">Category</div>
-								<select class="filter-select" th:field="*{category}" id="industry">
+								<select class="filter-select" th:field="*{category}"
+									id="industry">
 									<option value="" selected>Any Category</option>
-									<option th:each="cat : ${categories}" th:value="${cat.jobCategoryId}"
-										th:text="${cat.jobCategory}"></option>
+									<option th:each="cat : ${categories}"
+										th:value="${cat.jobCategoryId}" th:text="${cat.jobCategory}"></option>
 								</select>
 							</div>
 						</div>
@@ -149,13 +154,14 @@
 							<div class="col-md-3 mb-3">
 								<div class="filter-group">
 									<div class="filter-label">Freshness</div>
-									<select class="filter-select" th:field="*{freshness}" id="freshness">
+									<select class="filter-select" th:field="*{freshness}"
+										id="freshness">
 										<option value="">Any Time</option>
-										<option th:value = "0">less than a day</option>
-										<option th:value = "1">1 day ago</option>
-										<option th:value = "7">1 week ago</option>
-										<option th:value = "14">2 weeks ago</option>
-										<option th:value = "30">1 month ago</option>			
+										<option th:value="0">less than a day</option>
+										<option th:value="1">1 day ago</option>
+										<option th:value="7">1 week ago</option>
+										<option th:value="14">2 weeks ago</option>
+										<option th:value="30">1 month ago</option>
 									</select>
 								</div>
 							</div>
@@ -164,7 +170,8 @@
 							<div class="col-md-3 mb-3 duration-filter">
 								<div class="filter-group">
 									<div class="filter-label">Duration</div>
-									<select class="filter-select" th:field="*{duration}" id="duration">
+									<select class="filter-select" th:field="*{duration}"
+										id="duration">
 										<option value="">Any Duration</option>
 										<option th:value="2">2 weeks</option>
 										<option th:value="4">1 month</option>
@@ -178,7 +185,8 @@
 							<div class="col-md-3 mb-3 stipend-filter">
 								<div class="filter-group">
 									<div class="filter-label">Stipend</div>
-									<select class="filter-select" th:field="*{stipend}" id="stipend">
+									<select class="filter-select" th:field="*{stipend}"
+										id="stipend">
 										<option value="">Any Stipend</option>
 										<option th:value="10000">10,000/month</option>
 										<option th:value="15000">15,000/month</option>
@@ -193,8 +201,8 @@
 					<!-- Submit Filter -->
 					<div class="row mt-3">
 						<div class="col-12 text-end">
-							<button type="submit" class="btn btn-primary btn-sm">Apply
-								Filters</button>
+							<button type="submit" class="btn btn-violet btn-sm">Apply
+								Filter</button>
 						</div>
 					</div>
 
