@@ -7,9 +7,9 @@
             
             <div class="d-flex align-items-center order-lg-3">
                 
-                <button class="btn btn-violet post-job-btn d-none d-lg-flex">
+                <a class="btn btn-violet post-job-btn d-none d-lg-flex" th:href="@{/employer/postjob}">
                     <i class="fas fa-plus-circle"></i> Post a Job
-                </button>
+                </a>
                 
                 <div class="dropdown ms-3">
                     <div class="profile-dropdown" id="accountDropdown" data-bs-toggle="dropdown" th:if="${loggedIn}" aria-expanded="false" >

@@ -41,41 +41,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validateUsernameOrEmail() {
         const username = usernameInput.value.trim();
+        let isValid = true;
+
         if (!username) {
             setFieldState(usernameInput, false, 'Username or email is required');
-            return false;
+            isValid = false;
+        } else if (!emailRegex.test(username) && (!usernameRegex.test(username) || username.length < 3)) {
+            setFieldState(usernameInput, false, !usernameRegex.test(username) ? 'Username must only contain letters and numbers' : 'Must be at least 3 characters');
+            isValid = false;
+        } else {
+            setFieldState(usernameInput, true, '');
         }
-        if (!emailRegex.test(username) && (!usernameRegex.test(username) || username.length < 3)) {
-            setFieldState(usernameInput, false, 'Invalid username or email');
-            return false;
-        }
-        setFieldState(usernameInput, true, '');
-        return true;
+
+        return isValid;
     }
 
     function validatePassword() {
         const password = passwordInput.value;
+        let isValid = true;
+
         if (!password) {
             setFieldState(passwordInput, false, 'Password is required');
-            return false;
-        }
-        if (!passwordRegex.test(password)) {
+            isValid = false;
+        } else if (!passwordRegex.test(password)) {
             setFieldState(passwordInput, false, 'Must be 8+ characters with uppercase, lowercase, number, and special character');
-            return false;
+            isValid = false;
+        } else {
+            setFieldState(passwordInput, true, '');
         }
-        setFieldState(passwordInput, true, '');
-        return true;
+
+        return isValid;
     }
 
     usernameInput.addEventListener('input', validateUsernameOrEmail);
     passwordInput.addEventListener('input', validatePassword);
 
     form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
         const isUsernameValid = validateUsernameOrEmail();
         const isPasswordValid = validatePassword();
 
-        if (!isUsernameValid || !isPasswordValid) {
-            event.preventDefault();
+        if (isUsernameValid && isPasswordValid) {
+            this.submit();
         }
     });
 });

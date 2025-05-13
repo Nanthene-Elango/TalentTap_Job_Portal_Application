@@ -12,10 +12,19 @@
 			th:text="'Posted ' + ${job.postedAgo} + ' ago'">Posted 7 days
 			ago</div>
 
-		<button class="btn btn-primary apply-btn">Apply Now</button>
-		<button class="btn btn-primary save-btn" onclick="savejob()">
-			<i class="far fa-bookmark"></i> save
-		</button>
+		<form th:action="@{'/applyJob/' + ${job.jobId}}" method="post"
+			style="display: inline;">
+			<button type="submit" class="btn btn-primary apply-btn">Apply
+				Now</button>
+		</form>
+
+
+		<form th:action="@{/saveJob}" method="post" style="display: inline;">
+			<input type="hidden" name="jobId" th:value="${job.jobId}" />
+			<button type="submit" class="btn btn-primary save-btn">
+				<i class="far fa-bookmark"></i> Save
+			</button>
+		</form>
 		<button class="btn btn-primary save-btn d-none" onclick="unsavejob()">
 			<i class="fas fa-bookmark"></i> saved
 		</button>
@@ -40,26 +49,26 @@
 						<ul class="list-unstyled mb-0">
 							<li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>
 								<span th:each="loc, iterStat : ${job.location}"> <span
-									th:text="${loc}"></span><span
-									th:if="!${iterStat.last}">, </span>
+									th:text="${loc}"></span><span th:if="!${iterStat.last}">,
+								</span>
 							</span></li>
 							<li class="mb-2"
 								th:if="${job.jobType == 'Full Time' or job.jobType == 'Part Time'}">
-								<i class="fas fa-dollar-sign me-2"></i> <span
+								<i class="fas fa-rupee-sign me-2"></i> <span
 								th:text="${job.salaryRange}"></span>
 							</li>
 							<li th:if="${job.jobType == 'Internship'}"><i
 								class="fas fa-clock me-2"></i> <span th:text="${job.duration}"></span>
 								weeks</li>
 							<li th:if="${job.jobType == 'Internship'}"><i
-								class="fas fa-dollar-sign me-2"></i> <span
+								class="fas fa-rupee-sign me-2"></i> <span
 								th:text="${job.stipend}"></span> /month</li>
 							<li class="mb-2"><i class="fas fa-briefcase me-2"></i> <span
 								th:text="${job.jobType}"></span></li>
-							<li class="mb-2"><i class="fas fa-user-friends me-2"></i> Applicants: <span
-								th:text="${job.applicants}"></span></li>
-							<li class="mb-2"><i class="fas fa-users me-2"></i> Openings: <span
-								th:text="${job.openings}"></span></li>
+							<li class="mb-2"><i class="fas fa-user-friends me-2"></i>
+								Applicants: <span th:text="${job.applicants}"></span></li>
+							<li class="mb-2"><i class="fas fa-users me-2"></i> Openings:
+								<span th:text="${job.openings}"></span></li>
 						</ul>
 					</div>
 				</div>
