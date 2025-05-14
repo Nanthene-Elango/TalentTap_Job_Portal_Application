@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sidebar Fragment</title>
+</head>
+<body>
+    <div th:fragment="sidebar">
+        <div class="sidebar bg-dark text-white" id="sidebar">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a th:href="@{#dashboard}" class="nav-link active" data-section="dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{#jobs}" class="nav-link" data-section="jobs"><i class="fas fa-briefcase me-2"></i> Jobs</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{#employers}" class="nav-link" data-section="employers"><i class="fas fa-building me-2"></i> Employers</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{#jobseekers}" class="nav-link" data-section="jobseekers"><i class="fas fa-users me-2"></i> Job Seekers</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{#applications}" class="nav-link" data-section="applications"><i class="fas fa-file-alt me-2"></i> Applications</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{#settings}" class="nav-link" data-section="settings"><i class="fas fa-cog me-2"></i> Settings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

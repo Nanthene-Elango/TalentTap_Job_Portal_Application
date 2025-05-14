@@ -118,6 +118,14 @@ public class EmployerAuthController {
 	    jobseekerService.login(login , response);
 	    return "redirect:/employer/employerDashboard";
 	}
+    
+//    @PostMapping("/adminLogin")
+//	public String loginAdmin(@ModelAttribute Login login, HttpServletResponse response) {
+//    	System.out.println("Username"+login.getUsername());
+//    	System.out.println("Password"+login.getPassword());
+//	    jobseekerService.login(login , response);
+//	    return "redirect:/admin/index";
+//	}
 	
 	@GetMapping("/employerLogout")
 	public String logout(HttpServletResponse response) {

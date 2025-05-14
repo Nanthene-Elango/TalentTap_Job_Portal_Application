@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Admin Login</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/admin/css/login.css}">
+    <script th:src="@{/admin/js/login.js}"></script>
+</head>
+<body>
+    <div class="login-container">
+        <form id="loginForm" novalidate th:action="@{/admin/admin-login}" th:object="${Login}" method="post">
+            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                <img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="TalentTap Logo" style="height: 60px;">
+            </div>
+            <h2>Admin Login</h2>
+
+            <div th:if="${error}" class="error-message visible" th:text="${error}"></div>
+
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input 
+                    class="form-control" 
+                    id="username" 
+                    name="username"
+                    type="text" 
+                    th:field="*{username}"
+                    placeholder="Enter username or email"
+                    required
+                >
+                <div id="usernameError" class="error-message"></div>
+            </div>
+
+            <div class="form-group password-container">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input 
+                        class="form-control" 
+                        id="password" 
+                        name="password"
+                        type="password"
+                        th:field="*{password}" 
+                        placeholder="Enter your password"
+                        required
+                    >
+                    <span class="toggle-password">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <div id="passwordError" class="error-message"></div>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+
+            <button id="loginButton" class="btn" type="submit">
+                Log In
+            </button>
+        </form>
+    </div>
+</body>
+</html>

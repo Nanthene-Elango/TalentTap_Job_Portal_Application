@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.talenttap.DTO.EditJob;
+import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.EmploymentTypeDTO;
 import com.talenttap.DTO.JobCategoryDTO;
 import com.talenttap.DTO.JobDisplayDTO;
@@ -350,6 +350,75 @@ public class JobService {
 	        return jobsRepo.searchByKeyword(keyword, pageable);
 	    }
 	
-	
-	
+ // Admin section
+ 	// Jobs to display in admins page
+ 	public List<AdminJobDTO> getAllJobsAdmin(String jwt) {
+ 		// Validate JWT
+         if (jwt == null || jwt.isBlank()) {
+             throw new IllegalArgumentException("JWT token is empty or null");
+         }
+
+         // Extract username from JWT
+         String username = jwtutil.extractIdentifier(jwt);
+         Users user = userRepo.findByUsername(username)
+                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+         // Fetch employer
+         Employer employer = employerRepo.findByUser(user)
+                 .orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
+
+         // Fetch top 2 active jobs (not expired, ordered by posted date)
+         List<Jobs> jobs = jobsRepo.findAll();
+
+         // Map to JobDisplayDTO
+         return jobs.stream().map(job -> {
+             AdminJobDTO dto = new AdminJobDTO();
+
+             dto.setJobId(job.getJobId());
+             dto.setJobRole(job.getJobRole());
+             dto.setJobType(job.getJobType().getEmploymentType());
+             dto.setJobCategory(job.getJobCategory().getJobCategory());
+             dto.setJobDescription(job.getJobDescription());
+             dto.setRoles(job.getRoles());
+             dto.setResponsibilities(job.getResponsibilities());
+             dto.setBenefits(job.getBenefits());
+             dto.setDuration(job.getDuration() != 0 ? job.getDuration() : null);
+             dto.setStipend(job.getStipend() != 0 ? job.getStipend() : null);
+
+             if (job.getSalary_range() != null) {
+                 dto.setSalaryMin(job.getSalary_range().getMin_range());
+                 dto.setSalaryMax(job.getSalary_range().getMax_range());
+             }
+
+             dto.setYearsOfExperience(job.getYearsOfExperience());
+             dto.setWorkType(job.getWorkType().name());
+             dto.setOpenings(job.getOpenings());
+             dto.setPostedDate(job.getPostedDate());
+             dto.setDeadline(job.getDeadline());
+             dto.setJobStatus(job.getJobStatus().name());
+             dto.setApprovalStatus(job.getApprovalStatus().name());
+             dto.setExpired(job.getDeadline().isBefore(LocalDateTime.now()));
+
+             // Extract skills
+             dto.setRequiredSkills(job.getRequiredSkills()
+                     .stream()
+                     .map(Skills::getSkill)
+                     .collect(Collectors.toSet()));
+
+             // Extract locations
+             dto.setLocations(job.getJobLocation()
+                     .stream()
+                     .map(Location::getLocation)
+                     .collect(Collectors.toSet()));
+
+             // Add company name from employer → user → company name
+             dto.setCompanyName(job.getEmployer().getCompany().getCompanyName());
+
+             // Add applicants count (if you have job.getApplications())
+             dto.setApplicants(0);
+
+             return dto;
+         }).collect(Collectors.toList());
+ 	}
+    
 }
