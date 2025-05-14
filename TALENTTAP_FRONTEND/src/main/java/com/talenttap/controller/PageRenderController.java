@@ -198,33 +198,37 @@ public class PageRenderController {
 	}
 
 	@GetMapping("/employer/employerDashboard")
-	public String loadEmployerDashboard() {
+	public String loadEmployerDashboard(Model model) {
+		model.addAttribute("currentPage", "dashboard");
 		return "employer/employerDashboard";
 	}
 
 	@GetMapping("/employer/jobs")
-	public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
-		try {
-			if (jwt == null || jwt.trim().isEmpty()) {
-				model.addAttribute("error", "Please log in to view jobs.");
-				return "error"; // Or redirect to login
-			}
-			JwtToken token = new JwtToken(jwt.trim());
-			List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
-			System.out.println(jobs.get(0).getJobType());
-			model.addAttribute("jobs", jobs);
-			return "employer/jobs";
-		} catch (IllegalArgumentException e) {
-			model.addAttribute("error", "Invalid JWT token: " + e.getMessage());
-			return "error";
-		} catch (RuntimeException e) {
-			model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
-			return "error";
-		}
-	}
 
+    public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+		model.addAttribute("currentPage", "jobs");
+        try {
+            if (jwt == null || jwt.trim().isEmpty()) {
+                model.addAttribute("error", "Please log in to view jobs.");
+                return "error"; // Or redirect to login
+            }
+            JwtToken token = new JwtToken(jwt.trim());
+            List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
+            System.out.println(jobs.get(0).getJobType());
+            model.addAttribute("jobs", jobs);
+            return "employer/jobs";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", "Invalid JWT token: " + e.getMessage());
+            return "error";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
+            return "error";
+        }
+    }
 	@GetMapping("/employer/candidates")
-	public String loadCandidates() {
+	public String loadCandidates(Model model) {
+		model.addAttribute("currentPage","candidates");
+		
 		return "employer/candidates";
 	}
 
@@ -286,6 +290,41 @@ public class PageRenderController {
 		return "employer/postjob";
 	}
 	
+	// edit job
+	@GetMapping("/employer/postjob/edit/{jobId}")
+	public String updateJob(@PathVariable int jobId, 
+	                       @CookieValue(value = "jwt", required = false) String jwt, 
+	                       Model model) {
+	    try {
+	        if (jwt == null || jwt.trim().isEmpty()) {
+	            model.addAttribute("error", "Please log in to update jobs.");
+	            return "error";
+	        }
+	        JwtToken token = new JwtToken(jwt.trim());
+	        
+	        // Fetch job details by jobId
+	        JobFormDTO jobForm = jobService.getJobById(jobId, token);
+	        if (jobForm == null) {
+	            model.addAttribute("error", "Job not found.");
+	            return "error";
+	        }
+	        
+	        // Add jobForm and other required attributes to the model
+	        model.addAttribute("jobForm", jobForm);
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
+	        
+	        return "employer/editjob"; // Render the edit job page
+	    } catch (IllegalArgumentException e) {
+	        model.addAttribute("error", "Invalid JWT token: " + e.getMessage());
+	        return "error";
+	    } catch (RuntimeException e) {
+	        model.addAttribute("error", "Failed to fetch job: " + e.getMessage());
+	        return "error";
+	    }
+
 	@GetMapping("/admin/login")
     public String renderAdminLogin(Model model) {
 		model.addAttribute("Login",new Login());
@@ -295,5 +334,6 @@ public class PageRenderController {
 	@GetMapping("/admin/index")
 	public String loadAdminIndex() {
 		return "admin/index";
+
 	}
 }

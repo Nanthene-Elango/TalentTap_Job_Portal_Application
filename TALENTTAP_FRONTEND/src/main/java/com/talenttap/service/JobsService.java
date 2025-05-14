@@ -109,4 +109,54 @@ public class JobsService {
 			return null;
 		}
 	}
+	
+	public JobFormDTO getJobById(int jobId, JwtToken jwtToken) {
+        String url = "http://localhost:8083/jobs/" + jobId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + jwtToken.getJwt());
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<JobFormDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                request,
+                JobFormDTO.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            } else {
+                System.err.println("Failed to fetch job. Status: " + response.getStatusCode());
+                return null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching job: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public ResponseEntity<String> updateJob(JobFormDTO jobFormDTO, String jwt) {
+        String url = "http://localhost:8083/jobs/update";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (jwt != null && !jwt.trim().isEmpty()) {
+            headers.set("Authorization", "Bearer " + jwt.trim());
+        } else {
+            throw new IllegalArgumentException("JWT token is required for authentication");
+        }
+
+        HttpEntity<JobFormDTO> request = new HttpEntity<>(jobFormDTO, headers);
+
+        return restTemplate.exchange(
+            url,
+            HttpMethod.PUT,
+            request,
+            String.class
+        );
+    }
 }
