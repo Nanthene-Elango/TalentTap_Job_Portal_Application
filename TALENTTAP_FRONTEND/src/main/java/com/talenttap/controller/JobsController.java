@@ -1,5 +1,7 @@
 package com.talenttap.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,10 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.DTO.JobUpdateFormDTO;
 import com.talenttap.model.JwtToken;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
@@ -89,5 +95,52 @@ public class JobsController {
             return "employer/postjob";
         }
     }
+    
+//    @PutMapping("/jobs/update/{jobId}")
+//    public String updateJob(@PathVariable int jobId,
+//                           @Valid @ModelAttribute("jobForm") JobUpdateFormDTO jobFormDTO, 
+//                           BindingResult result, 
+//                           Model model,
+//                           @CookieValue(value = "jwt", required = false) String jwt) {
+//        System.out.println("--- Updating JobFormDTO ---");
+//        System.out.println("Job ID: " + jobId);
+//        System.out.println("Job Role: " + jobFormDTO.getJobRole());
+//        System.out.println("Job Type ID: " + jobFormDTO.getJobTypeId());
+//        System.out.println("Job Category ID: " + jobFormDTO.getJobCategoryId());
+//        // Add more logging as needed
+//
+//        if (jwt == null || jwt.trim().isEmpty()) {
+//            model.addAttribute("error", "Authentication required. Please log in.");
+//            return "employer/editjob";
+//        }
+//
+//        if (result.hasErrors()) {
+//            model.addAttribute("employmentTypes", jobService.getEmploymentType());
+//            model.addAttribute("jobCategories", jobService.getJobCategories());
+//            model.addAttribute("skills", jobseekerService.getAllSkills());
+//            model.addAttribute("locations", jobseekerService.getAllLocations());
+//            System.out.println("Validation errors: " + result.getAllErrors());
+//            return "employer/editjob";
+//        }
+//
+//        try {
+//            jobFormDTO.setJobId(jobId); // Ensure jobId is set
+//            ResponseEntity<String> response = jobService.updateJob(jobFormDTO, jwt);
+//            if (response.getStatusCode().is2xxSuccessful()) {
+//                System.out.println("Job updated successfully: " + response.getBody());
+//                return "redirect:/employer/jobs";
+//            } else {
+//                System.out.println("Failed to update job: " + response.getStatusCode() + " - " + response.getBody());
+//                model.addAttribute("error", "Failed to update job. Please try again.");
+//                return "employer/editjob";
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Error updating job: " + e.getMessage());
+//            model.addAttribute("error", "An error occurred while updating the job.");
+//            return "employer/editjob";
+//        }
+//    }
+//    
+ 
     
 }

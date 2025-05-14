@@ -15,7 +15,11 @@
 </head>
 <body>
 <div class="container">
+	 <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
     <div class="form-container" id="formContainer" th:object="${jobForm}">
+    
         <h1 class="text-violet text-center mb-4">Post a New Job</h1>
 
         <form id="jobPostForm" class="needs-validation" th:action="@{/employer/post-job}" method="post" novalidate>

@@ -5,10 +5,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.talenttap.DTO.EditJob;
 import com.talenttap.DTO.EmploymentTypeDTO;
 import com.talenttap.DTO.JobCategoryDTO;
 import com.talenttap.DTO.JobDisplayDTO;
@@ -21,7 +26,9 @@ import com.talenttap.entity.EmploymentType;
 import com.talenttap.entity.JobCategory;
 import com.talenttap.entity.JobStatus;
 import com.talenttap.entity.Jobs;
+import com.talenttap.entity.Location;
 import com.talenttap.entity.SalaryRange;
+import com.talenttap.entity.Skills;
 import com.talenttap.entity.Users;
 import com.talenttap.entity.WorkType;
 import com.talenttap.repository.EmployerRepository;
@@ -227,4 +234,122 @@ public class JobService {
                 .map(JobDisplayDTO::new)
                 .toList();
     }
+    
+    public Jobs changeJobStatus(int id) {
+    	Jobs job = jobsRepo.findById(id).get();
+    	JobStatus status = job.getJobStatus();
+    	job.setJobStatus(status == JobStatus.open ? JobStatus.closed :  JobStatus.open);
+    	return jobsRepo.save(job);
+    }
+
+	public boolean deleteJob(int id) {
+		  Optional<Jobs> jobOpt = jobsRepo.findById(id);
+
+	        if (jobOpt.isEmpty()) {
+	           // logger.warn("Job with ID {} not found.", id);
+	            return false;
+	        }
+
+	        Jobs job = jobOpt.get();
+	        
+
+	        // Clear ManyToMany relations first
+	        job.getRequiredSkills().clear();
+	        job.getJobLocation().clear();
+	        
+
+	        jobsRepo.save(job);
+
+	        jobsRepo.delete(job);
+	       // logger.info("Job with ID {} deleted successfully.", id);
+	        return true;
+	}
+
+	public Jobs editJob(EditJob dto) {
+		Jobs job = jobsRepo.findById(dto.getJobId()).get();
+		
+	    // Fetch job category and employment type
+	    JobCategory jobCategory = jobCategoryRepository.findById(dto.getJobCategoryId())
+	            .orElseThrow(() -> new RuntimeException("Job category not found: " + dto.getJobCategoryId()));
+	    EmploymentType employmentType = employmentTypeRepo.findById(dto.getJobTypeId())
+	            .orElseThrow(() -> new RuntimeException("Employment type not found: " + dto.getJobTypeId()));
+
+	    job.setJobRole(dto.getJobRole());
+	    job.setJobCategory(jobCategory);
+	    job.setJobType(employmentType);
+	    job.setJobDescription(dto.getJobDescription());
+
+	    // Add skills
+	    for (Integer skillId : dto.getSkillIds()) {
+	        job.getRequiredSkills().add(skillsRepo.findById(skillId)
+	                .orElseThrow(() -> new RuntimeException("Skill not found: " + skillId)));
+	    }
+
+	    // Add locations
+	    for (Integer locationId : dto.getLocationIds()) {
+	        job.getJobLocation().add(locationRepo.findById(locationId)
+	                .orElseThrow(() -> new RuntimeException("Location not found: " + locationId)));
+	    }
+
+	    // Handle SalaryRange
+	    SalaryRange salary = new SalaryRange();
+	    salary.setMax_range(dto.getSalaryMax() != null ? dto.getSalaryMax() : 0.0);
+	    salary.setMin_range(dto.getSalaryMin() != null ? dto.getSalaryMin() : 0.0);
+	    // Save and flush SalaryRange to ensure it's persisted
+	    salary = salaryRangeRepo.saveAndFlush(salary);
+	    job.setSalary_range(salary);
+
+	    // Set other job fields
+	    job.setRoles(dto.getRequirements());
+	    job.setResponsibilities(dto.getResponsibilities());
+	    job.setBenefits(dto.getBenefits());
+	    job.setOpenings(dto.getOpenings());
+	    job.setStipend(dto.getStipend() != null ? dto.getStipend() : 0.0);
+	    job.setDuration(dto.getDuration() != null ? dto.getDuration() : 0);
+	    job.setYearsOfExperience(dto.getYearsOfExperience());
+	    job.setPostedDate(LocalDateTime.now());
+
+	    // Convert workType string to WorkType enum
+	    WorkType workType;
+	    try {
+	        workType = WorkType.valueOf(dto.getWorkType().toUpperCase());
+	    } catch (IllegalArgumentException | NullPointerException e) {
+	        throw new IllegalArgumentException("Invalid work type: " + dto.getWorkType() + ". Must be HYBRID, REMOTE, or ONSITE.");
+	    }
+	    job.setWorkType(workType);
+
+	    // Parse deadline string to LocalDateTime
+	    LocalDateTime dateTime;
+	    try {
+	        LocalDate localDate =dto.getDeadline();
+	        dateTime = localDate.atTime(23, 59, 59); // Set to end of day
+	    } catch (DateTimeParseException | NullPointerException e) {
+	        throw new IllegalArgumentException("Invalid deadline format: " + dto.getDeadline() + ". Must be YYYY-MM-DD.");
+	    }
+	    job.setDeadline(dateTime);
+
+	    job.setJobStatus(JobStatus.open);
+
+	  
+
+	    // Save the job
+	    jobsRepo.saveAndFlush(job);
+
+	    return job;
+		
+	}
+
+	public Jobs getJobById(int id) {
+		// TODO Auto-generated method stub
+		Jobs job = jobsRepo.findById(id).get();
+		return job;
+	}
+
+	
+	 public Page<Jobs> searchJobs(String keyword, Pageable pageable) {
+	        return jobsRepo.searchByKeyword(keyword, pageable);
+	    }
+	
+	
+	
 }

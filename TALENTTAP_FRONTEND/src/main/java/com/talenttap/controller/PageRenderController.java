@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -160,12 +161,14 @@ public class PageRenderController {
 	}
 	
 	@GetMapping("/employer/employerDashboard")
-	public String loadEmployerDashboard() {
+	public String loadEmployerDashboard(Model model) {
+		model.addAttribute("currentPage", "dashboard");
 		return "employer/employerDashboard";
 	}
 	
 	@GetMapping("/employer/jobs")
     public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+		model.addAttribute("currentPage", "jobs");
         try {
             if (jwt == null || jwt.trim().isEmpty()) {
                 model.addAttribute("error", "Please log in to view jobs.");
@@ -185,7 +188,9 @@ public class PageRenderController {
         }
     }
 	@GetMapping("/employer/candidates")
-	public String loadCandidates() {
+	public String loadCandidates(Model model) {
+		model.addAttribute("currentPage","candidates");
+		
 		return "employer/candidates";
 	}
 	
@@ -244,5 +249,42 @@ public class PageRenderController {
 	        model.addAttribute("skills", jobseekerService.getAllSkills());
 	        model.addAttribute("locations", jobseekerService.getAllLocations());
 		return "employer/postjob";
+	}
+	
+	
+	// edit job
+	@GetMapping("/employer/postjob/edit/{jobId}")
+	public String updateJob(@PathVariable int jobId, 
+	                       @CookieValue(value = "jwt", required = false) String jwt, 
+	                       Model model) {
+	    try {
+	        if (jwt == null || jwt.trim().isEmpty()) {
+	            model.addAttribute("error", "Please log in to update jobs.");
+	            return "error";
+	        }
+	        JwtToken token = new JwtToken(jwt.trim());
+	        
+	        // Fetch job details by jobId
+	        JobFormDTO jobForm = jobService.getJobById(jobId, token);
+	        if (jobForm == null) {
+	            model.addAttribute("error", "Job not found.");
+	            return "error";
+	        }
+	        
+	        // Add jobForm and other required attributes to the model
+	        model.addAttribute("jobForm", jobForm);
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
+	        
+	        return "employer/editjob"; // Render the edit job page
+	    } catch (IllegalArgumentException e) {
+	        model.addAttribute("error", "Invalid JWT token: " + e.getMessage());
+	        return "error";
+	    } catch (RuntimeException e) {
+	        model.addAttribute("error", "Failed to fetch job: " + e.getMessage());
+	        return "error";
+	    }
 	}
 }

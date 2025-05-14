@@ -21,7 +21,7 @@
                         <li><a class="dropdown-item" th:href="@{/employer/profile}"><i class="fas fa-cog"></i>Profile</a></li>
                         <li><a class="dropdown-item" th:href="@{/employer/help}"><i class="fas fa-question-circle"></i>Help Center</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="index.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                        <li><a class="dropdown-item text-danger" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
                     </ul>
                 </div>
                 
@@ -34,17 +34,20 @@
             <div class="collapse navbar-collapse order-lg-2" id="navbarNavDropdown">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link navbar-link active" th:href="@{/employer/employerDashboard}">
+                        <a class="nav-link navbar-link" th:href="@{/employer/employerDashboard}"
+                        th:classappend="${currentPage == 'dashboard'} ? 'active' : ''">
                             <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link navbar-link" th:href="@{/employer/jobs}">
+                        <a class="nav-link navbar-link" th:href="@{/employer/jobs}"
+                        th:classappend="${currentPage == 'jobs'} ? 'active' : ''">
                             <i class="fas fa-briefcase me-1"></i> Jobs
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link navbar-link" th:href="@{/employer/candidates}">
+                        <a class="nav-link navbar-link" th:href="@{/employer/candidates}"
+                        th:classappend="${currentPage == 'candidates'} ? 'active' : ''">
                             <i class="fas fa-users me-1"></i> Candidates
                         </a>
                     </li>
