@@ -324,6 +324,7 @@ public class PageRenderController {
 	        model.addAttribute("error", "Failed to fetch job: " + e.getMessage());
 	        return "error";
 	    }
+	}
 
 	@GetMapping("/admin/login")
     public String renderAdminLogin(Model model) {
