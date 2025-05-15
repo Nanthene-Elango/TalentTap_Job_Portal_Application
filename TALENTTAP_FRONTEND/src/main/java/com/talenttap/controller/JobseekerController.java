@@ -47,9 +47,17 @@ public class JobseekerController {
 	}
 
 	@GetMapping("job/{id}/detail")
-	public String getJobDetail(@PathVariable int id, Model model) {
+	public String getJobDetail(@PathVariable int id,@CookieValue(value = "jwt", required = false) String jwt, Model model) {
 		Jobs job = jobseekerService.getJobById(id);
 		model.addAttribute("job", job);
+		
+		boolean isApplied = false;
+	    if (jwt != null && !jwt.isBlank()) {
+	        isApplied = jobseekerService.hasApplied(jwt, id);
+	    }
+
+	    model.addAttribute("isApplied", isApplied);
+	    
 		return "jobseeker/jobDetail";
 	}
 
@@ -109,5 +117,16 @@ public class JobseekerController {
 	@PostMapping("/deleteResume")
 	public String removeResume(@CookieValue(value = "jwt", required = false) String jwt, RedirectAttributes redirectAttributes) {
 	   return jobseekerService.deleteResume(jwt , redirectAttributes);
+	}
+	
+	@PostMapping("/job-application/apply/{id}")
+	public String applyJob(@CookieValue(value = "jwt", required = false) String jwt,
+	                       @PathVariable int id,
+	                       RedirectAttributes redirectAttributes) {
+
+	    jobseekerService.applyJob(jwt, id);
+
+	    redirectAttributes.addFlashAttribute("success", "Job applied successfully.");
+	    return "redirect:/jobs";
 	}
 }

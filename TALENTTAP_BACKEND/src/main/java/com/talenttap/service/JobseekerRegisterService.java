@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,9 +24,11 @@ import com.talenttap.DTO.JobFilterDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.JobseekerRegisterDTO;
 import com.talenttap.DTO.SkillsDTO;
+import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.AuthProvider;
 import com.talenttap.entity.Education;
 import com.talenttap.entity.Gender;
+import com.talenttap.entity.JobApplication;
 import com.talenttap.entity.Users;
 import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
@@ -121,10 +124,10 @@ public class JobseekerRegisterService {
 
 	public ResponseEntity<?> login(String username, String password, HttpServletResponse response) {
 
-		Users user = userRepo.findByUsername(username).get();
+		Users user = userRepo.findByUsernameOrEmail(username , username).get();
 
 		if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-			String jwt = jwtUtil.generateToken(username, "JOBSEEKER");
+			String jwt = jwtUtil.generateToken(user.getUsername(), "JOBSEEKER");
 
 			System.out.println(jwt);
 			Cookie cookie = new Cookie("jwt", jwt);
@@ -237,8 +240,8 @@ public class JobseekerRegisterService {
 			user.setFullName(request.getFullName());
 			user.setMobileNumber(request.getPhone());
 			user.setUsername(request.getUsername());
-			if (request.getPassword() != null && !request.getPassword().isBlank() && !request.getPassword().isBlank()) {
-				user.setPassword(request.getPassword());
+			if (request.getPassword() != null && !request.getPassword().isBlank()) {
+				user.setPassword(passwordEncoder.encode(request.getPassword()));
 			}
 			user = userRepo.save(user);
 
@@ -371,9 +374,8 @@ public class JobseekerRegisterService {
 		JobSeeker jobSeeker = jobseekerRepo.findById(jobseekerId).get();
 
 		Skills skill = skillsRepo.findById(id).get();
-				
-		
-		if (jobSeeker != null && skill!= null && jobSeeker.getSeekerSkills().contains(skill)) {
+
+		if (jobSeeker != null && skill != null && jobSeeker.getSeekerSkills().contains(skill)) {
 			jobSeeker.getSeekerSkills().remove(skill);
 			jobseekerRepo.save(jobSeeker);
 			return ResponseEntity.ok().body("Skill deleted successfully!");
@@ -393,10 +395,9 @@ public class JobseekerRegisterService {
 			}
 			String username = jwtUtil.extractIdentifier(jwt);
 			Users user = userRepo.findByUsername(username).get();
-			
+
 			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
-			
-			
+
 			jobseeker.setResume(resumeBytes);
 			jobseekerRepo.save(jobseeker);
 
@@ -414,34 +415,91 @@ public class JobseekerRegisterService {
 			}
 			String username = jwtUtil.extractIdentifier(jwt);
 			Users user = userRepo.findByUsername(username).get();
-			
+
 			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
-			
-	        byte[] resume = jobseeker.getResume();
-	        if (resume != null) {
-	            return ResponseEntity.ok()
-	                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-	                .body(resume); 
-	        }
-	    }
-	    return ResponseEntity.notFound().build();
+
+			byte[] resume = jobseeker.getResume();
+			if (resume != null) {
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(resume);
+			}
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	public ResponseEntity<Void> deleteResume(String jwt) {
 		if (jwt != null && !jwt.trim().isEmpty()) {
-	        
+
 			String username = jwtUtil.extractIdentifier(jwt);
 			Users user = userRepo.findByUsername(username).get();
-			
+
 			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
 
-	        if (jobseeker != null && jobseeker.getResume() != null) {
-	            jobseeker.setResume(null);
-	            jobseekerRepo.save(jobseeker); 
-	            return ResponseEntity.ok().build();
-	        }
-	    }
-	    return ResponseEntity.notFound().build();
+			if (jobseeker != null && jobseeker.getResume() != null) {
+				jobseeker.setResume(null);
+				jobseekerRepo.save(jobseeker);
+				return ResponseEntity.ok().build();
+			}
+		}
+		return ResponseEntity.notFound().build();
 	}
 
+	public ResponseEntity<String> applyJob(String jwt, int jobId) {
+		if (jwt != null && !jwt.trim().isEmpty()) {
+
+			String username = jwtUtil.extractIdentifier(jwt);
+			Users user = userRepo.findByUsername(username).get();
+
+			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
+			Jobs job = jobRepo.findById(jobId).get();
+			
+			JobApplication application = new JobApplication();
+			application.setDateOfApplication(LocalDate.now());
+			application.setJob(job);
+			application.setJobSeeker(jobseeker);
+			application.setLastUpdated(LocalDate.now());
+			application.setStatus(ApplicationStatus.pending);
+
+			jobApplicationRepo.save(application);
+			
+			return ResponseEntity.ok().body("Job Applied Successfully!");
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	public ResponseEntity<Boolean> hasApplied(String jwt, int jobId) {
+		
+		boolean hasApplied = false;
+		if (jwt != null && !jwt.trim().isEmpty()) {
+
+			String username = jwtUtil.extractIdentifier(jwt);
+			Users user = userRepo.findByUsername(username).get();
+
+			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
+
+			if (jobApplicationRepo.existsByJobSeekerAndJob_JobId(jobseeker , jobId)) {
+				hasApplied = true;
+			}
+			
+		}
+		
+		return ResponseEntity.ok(hasApplied);
+	}
+
+	public ResponseEntity<?> existByUsername(String username) {
+		boolean exists = false;
+		if (userRepo.existsByUsername(username)) {
+			exists = true;
+		}
+		return ResponseEntity.ok().body(Map.of("exists" , exists));
+	}
+
+	public ResponseEntity<?> existByEmail(String email) {
+		boolean exists = false;
+		if (userRepo.existsByEmail(email)) {
+			exists = true;
+		}
+		return ResponseEntity.ok().body(Map.of("exists" , exists));
+	}
 }

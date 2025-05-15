@@ -119,28 +119,33 @@
 
 			<!-- Step 3: Submit Application -->
 			<div class="step-content" id="step3">
-				<h4 class="mb-4">Submit Application</h4>
-				<div class="card mb-4">
-					<div class="card-header bg-light">Application Summary</div>
-					<div class="card-body">
-						<p>
-							<strong>Role:</strong> <span th:text="${job.jobTitle}"></span>
-						</p>
-						<p>
-							<strong>Company:</strong> <span th:text="${job.company}"></span>
-						</p>
-						<p>
-							<strong>Resume:</strong> resume.pdf
-						</p>
-					</div>
-				</div>
 
-				<div class="mb-3">
-					<label for="coverLetter" class="form-label">Cover Letter or
-						Additional Notes (Optional)</label>
-					<textarea class="form-control" id="coverLetter" name="coverLetter"
-						rows="5" placeholder="Add any additional information..."></textarea>
-				</div>
+				<form th:action="@{'/job-application/apply/' + ${job.jobId}}"
+					method="post" id="jobApplyForm">
+					<h4 class="mb-4">Submit Application</h4>
+					<div class="card mb-4">
+						<div class="card-header bg-light">Application Summary</div>
+						<div class="card-body">
+							<p>
+								<strong>Role:</strong> <span th:text="${job.jobTitle}"></span>
+							</p>
+							<p>
+								<strong>Company:</strong> <span th:text="${job.company}"></span>
+							</p>
+							<p>
+								<strong>Resume:</strong> resume.pdf
+							</p>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="coverLetter" class="form-label">Cover Letter
+							or Additional Notes (Optional)</label>
+						<textarea class="form-control" id="coverLetter" name="coverLetter"
+							rows="5" placeholder="Add any additional information..."></textarea>
+					</div>
+				</form>
+
 			</div>
 
 			<!-- Success Message -->
@@ -173,8 +178,9 @@
 			</div>
 
 			<div class="action-buttons" id="step3-buttons" style="display: none;">
-				<button class="btn btn-light" onclick="goToStep(2)">Back</button>
-				<button class="btn btn-primary" onclick="showSuccess()">Submit
+				<button class="btn btn-light" type="button" onclick="goToStep(2)">Back</button>
+
+				<button class="btn btn-primary" type="submit" form="jobApplyForm">Submit
 					Application</button>
 			</div>
 		</div>
