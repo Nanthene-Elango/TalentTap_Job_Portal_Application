@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,10 +124,10 @@ public class JobseekerRegisterService {
 
 	public ResponseEntity<?> login(String username, String password, HttpServletResponse response) {
 
-		Users user = userRepo.findByUsername(username).get();
+		Users user = userRepo.findByUsernameOrEmail(username , username).get();
 
 		if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-			String jwt = jwtUtil.generateToken(username, "JOBSEEKER");
+			String jwt = jwtUtil.generateToken(user.getUsername(), "JOBSEEKER");
 
 			System.out.println(jwt);
 			Cookie cookie = new Cookie("jwt", jwt);
@@ -484,5 +485,21 @@ public class JobseekerRegisterService {
 		}
 		
 		return ResponseEntity.ok(hasApplied);
+	}
+
+	public ResponseEntity<?> existByUsername(String username) {
+		boolean exists = false;
+		if (userRepo.existsByUsername(username)) {
+			exists = true;
+		}
+		return ResponseEntity.ok().body(Map.of("exists" , exists));
+	}
+
+	public ResponseEntity<?> existByEmail(String email) {
+		boolean exists = false;
+		if (userRepo.existsByEmail(email)) {
+			exists = true;
+		}
+		return ResponseEntity.ok().body(Map.of("exists" , exists));
 	}
 }
