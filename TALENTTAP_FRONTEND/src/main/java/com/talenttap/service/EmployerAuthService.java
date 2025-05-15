@@ -3,7 +3,6 @@ package com.talenttap.service;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -12,15 +11,19 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
-import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Login;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class EmployerAuthService {
@@ -107,4 +110,41 @@ public class EmployerAuthService {
 	    }
 	}
 	
+	public boolean login(Login login, HttpServletResponse response, Model model) {
+	    try {
+	    	System.out.println("im reaching login");
+	    	System.out.println("Username"+login.getUsername());
+	    	System.out.println("Password"+login.getPassword());
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        HttpEntity<Login> request = new HttpEntity<>(login, headers);
+
+	        ResponseEntity<String> backendResponse = restTemplate.exchange(
+	            "http://localhost:8083/api/auth/login/employer",
+	            HttpMethod.POST,
+	            request,
+	            String.class
+	        );
+	        
+	        String responseBody = backendResponse.getBody();
+
+	        // Set cookies from backend if present
+	        List<String> cookieHeaders = backendResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
+	        if (cookieHeaders != null) {
+	            for (String cookieHeader : cookieHeaders) {
+	                response.addHeader(HttpHeaders.SET_COOKIE, cookieHeader);
+	            }
+	        }
+	        return true;
+	    } catch (HttpClientErrorException | HttpServerErrorException ex) {
+	        System.out.println("HTTP Status: " + ex.getStatusCode());
+	        if(ex.getStatusCode().toString().contains("401")) {
+	 	       model.addAttribute("error", "Invalid username/password");
+	        }else if(ex.getStatusCode().toString().contains("404")) {
+	 
+	 	       model.addAttribute("error", "No employer account found");
+	        }  
+	        return false;
+	    }
+	}
 }

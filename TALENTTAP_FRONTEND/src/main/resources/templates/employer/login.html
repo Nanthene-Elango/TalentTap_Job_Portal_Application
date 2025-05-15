@@ -12,19 +12,17 @@
 	<link rel="stylesheet" th:href="@{/jobseeker/css/style.css}">
     <link rel="stylesheet" th:href="@{/employer/css/login.css}">
     <script th:src="@{/employer/js/login.js}"></script>
-
 </head>
 <body>
     <div class="login-container">
         <button class="back-button" onclick="window.history.back()">
             <i class="fas fa-arrow-left"></i>
         </button>
-        <form id="loginForm" novalidate th:action="@{/employerLogin}" th:object="${Login}" method="post">
+        <form id="loginForm" novalidate th:action="@{/employer/Login}" th:object="${Login}" method="post">
             <div style="display: flex; justify-content: center; margin-bottom: 30px;">
                 <img th:src="@{/img/LOGO_TRANSPARENT.png}" alt="TalentTap Logo" style="height: 60px;">
             </div>
             <h2>Employer Login</h2>
-
             <div class="form-group">
                 <label for="username">Username or Email</label>
                 <input 
@@ -47,7 +45,7 @@
                         id="password" 
                         name="password"
                         type="password"
-                        th:field="*{password}" 
+                        th:field="*{password}"
                         placeholder="Enter your password"
                         required
                     >
@@ -56,6 +54,7 @@
                     </span>
                 </div>
                 <div id="passwordError" class="error-message"></div>
+                <h5 th:text="${error}">Employer Login</h5>
                 <a href="#" class="forgot-password">Forgot Password?</a>
             </div>
 
@@ -70,6 +69,5 @@
             </div>
         </form>
     </div>
-
 </body>
 </html>

@@ -23,6 +23,9 @@ import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.EmployerService;
 import com.talenttap.service.IndustryTypeService;
 
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin("*")
@@ -74,5 +77,10 @@ public class EmployerController {
 			@RequestHeader("Authorization") String authHeader){
 		String token = authHeader.replace("Bearer ", "");
 		return ResponseEntity.ok(employerService.verifyEmployer(verifyEmployer, token));
+	}
+	
+	@PostMapping("auth/login/employer")
+	public ResponseEntity<?> loginEmployer(@Valid @RequestBody LoginDTO loginRequest , HttpServletResponse response){
+		return employerAuthService.login(loginRequest.getUsername() , loginRequest.getPassword() , response);
 	}
 }

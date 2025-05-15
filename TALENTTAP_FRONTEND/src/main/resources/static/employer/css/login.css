@@ -121,6 +121,14 @@ h2 {
 	text-align: center;
 }
 
+h5{
+	font-size: 0.8rem;
+	color: red;
+	margin-bottom: 20px;
+	font-weight: 700;
+	text-align: center;
+}
+
 .forgot-password {
 	display: block;
 	text-align: right;
