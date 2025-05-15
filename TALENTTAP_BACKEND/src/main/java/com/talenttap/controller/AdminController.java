@@ -21,6 +21,10 @@ public class AdminController {
 
 	private JobService jobService;
 	
+	public AdminController(JobService jobService) {
+		this.jobService = jobService;
+	}
+	
     @GetMapping("/verify")
     public ResponseEntity<?> verifyAdmin() {
         return ResponseEntity.ok("Authorized");
@@ -36,11 +40,6 @@ public class AdminController {
         return ResponseEntity.ok("Logged out successfully");
     }
     
-
-	
-	public AdminController(JobService jobService) {
-		this.jobService = jobService;
-	}
 
 	// get all jobs
 	@GetMapping("/jobs")
