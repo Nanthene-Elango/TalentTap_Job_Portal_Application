@@ -337,4 +337,51 @@ public class JobseekerService {
 		}
 		return "redirect:/profile";
 	}
+
+	public void applyJob(String jwt, int id) {
+	    if (jwt != null && !jwt.trim().isEmpty()) {
+	        try {
+	            HttpHeaders headers = new HttpHeaders();
+	            headers.add("Cookie", "jwt=" + jwt.trim()); // Pass JWT as cookie
+
+	            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+	            String url = "http://localhost:8083/jobseeker/job/apply/" + id; // Backend API
+
+	            restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+	        } catch (Exception e) {
+	            e.printStackTrace(); // Ideally use a logger
+	            throw new RuntimeException("Failed to apply for job");
+	        }
+	    } else {
+	        throw new RuntimeException("JWT token not found");
+	    }
+	}
+
+	public boolean hasApplied(String jwt, int id) {
+		if (jwt != null && !jwt.trim().isEmpty()) {
+	        try {
+	            HttpHeaders headers = new HttpHeaders();
+	            headers.add("Cookie", "jwt=" + jwt.trim());
+
+	            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+	            String url = "http://localhost:8083/jobseeker/job/is-applied/" + id;
+
+	            ResponseEntity<Boolean> response = restTemplate.exchange(
+	                url,
+	                HttpMethod.GET,
+	                requestEntity,
+	                Boolean.class
+	            );
+
+	            return Boolean.TRUE.equals(response.getBody());
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
+	    return false;
+	}
+
 }

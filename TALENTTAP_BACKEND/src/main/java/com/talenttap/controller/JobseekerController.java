@@ -136,4 +136,16 @@ public class JobseekerController {
 	public ResponseEntity<List<JobDTO>> filterJobs(@RequestBody JobFilterDTO jobFilter) {
 		return jobseekerService.filterJobs(jobFilter);
 	}
+	
+	@PostMapping("/jobseeker/job/apply/{jobId}")
+	public ResponseEntity<String> applyForJob(@CookieValue("jwt") String jwt,
+	                                          @PathVariable int jobId) {
+	    return jobseekerService.applyJob(jwt , jobId);
+	}
+	
+	@GetMapping("/jobseeker/job/is-applied/{jobId}")
+	public ResponseEntity<Boolean> isJobAlreadyApplied(@CookieValue("jwt") String jwt,
+	                                                   @PathVariable int jobId) {
+		return jobseekerService.hasApplied(jwt, jobId);
+	}
 }

@@ -12,11 +12,19 @@
 			th:text="'Posted ' + ${job.postedAgo} + ' ago'">Posted 7 days
 			ago</div>
 
-		<form th:action="@{'/applyJob/' + ${job.jobId}}" method="post"
-			style="display: inline;">
-			<button type="submit" class="btn btn-primary apply-btn">Apply
-				Now</button>
-		</form>
+		<span>
+			<th:block th:if="${isApplied}">
+				<button class="btn btn-secondary apply-btn" disabled>Applied</button>
+			</th:block>
+
+			<th:block th:unless="${isApplied}">
+				<form th:action="@{'/applyJob/' + ${job.jobId}}" method="post"
+					style="display: inline;">
+					<button type="submit" class="btn btn-primary apply-btn">Apply
+						Now</button>
+				</form>
+			</th:block>
+		</span>
 
 
 		<form th:action="@{/saveJob}" method="post" style="display: inline;">
