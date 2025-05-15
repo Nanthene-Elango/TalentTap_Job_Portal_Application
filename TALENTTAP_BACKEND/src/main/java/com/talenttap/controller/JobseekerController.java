@@ -29,7 +29,7 @@ import com.talenttap.service.LocationService;
 import com.talenttap.service.SkillService;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class JobseekerController {
 
 	private LocationService locationService;
@@ -109,19 +109,19 @@ public class JobseekerController {
 	@PostMapping("jobseeker/resume/upload")
 	public ResponseEntity<String> uploadResume(@RequestParam("file") MultipartFile file,
 			@CookieValue(value = "jwt", required = false) String jwt) {
-		return jobseekerService.uploadResume(file , jwt);
+		return jobseekerService.uploadResume(file, jwt);
 	}
-	
+
 	@DeleteMapping("jobseeker/resume/delete")
 	public ResponseEntity<Void> deleteResume(@CookieValue(value = "jwt", required = false) String jwt) {
-	    return jobseekerService.deleteResume(jwt);
+		return jobseekerService.deleteResume(jwt);
 	}
 
 	@GetMapping("jobseeker/resume")
 	public ResponseEntity<?> downloadResume(@CookieValue(value = "jwt", required = false) String jwt) {
-	    return jobseekerService.getResume(jwt);
+		return jobseekerService.getResume(jwt);
 	}
-	
+
 	@GetMapping("api/jobs")
 	public ResponseEntity<List<JobDTO>> getAllJobs() {
 		return jobseekerService.getAllJobs();
@@ -136,16 +136,34 @@ public class JobseekerController {
 	public ResponseEntity<List<JobDTO>> filterJobs(@RequestBody JobFilterDTO jobFilter) {
 		return jobseekerService.filterJobs(jobFilter);
 	}
-	
+
 	@PostMapping("/jobseeker/job/apply/{jobId}")
-	public ResponseEntity<String> applyForJob(@CookieValue("jwt") String jwt,
-	                                          @PathVariable int jobId) {
-	    return jobseekerService.applyJob(jwt , jobId);
+	public ResponseEntity<String> applyForJob(@CookieValue("jwt") String jwt, @PathVariable int jobId) {
+		return jobseekerService.applyJob(jwt, jobId);
+	}
+
+	@GetMapping("/jobseeker/job/is-applied/{jobId}")
+	public ResponseEntity<Boolean> isJobAlreadyApplied(@CookieValue("jwt") String jwt, @PathVariable int jobId) {
+		return jobseekerService.hasApplied(jwt, jobId);
+	}
+
+	@GetMapping("api/check-username")
+	public ResponseEntity<?> checkUsername(@RequestParam String username) {
+		if (username == null || username.trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("Username parameter is missing or empty");
+		}
+		else {
+			return jobseekerService.existByUsername(username);
+		}
 	}
 	
-	@GetMapping("/jobseeker/job/is-applied/{jobId}")
-	public ResponseEntity<Boolean> isJobAlreadyApplied(@CookieValue("jwt") String jwt,
-	                                                   @PathVariable int jobId) {
-		return jobseekerService.hasApplied(jwt, jobId);
+	@GetMapping("api/check-email")
+	public ResponseEntity<?> checkEmail(@RequestParam String email) {
+		if (email == null || email.trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("Email parameter is missing or empty");
+		}
+		else {
+			return jobseekerService.existByEmail(email);
+		}
 	}
 }
