@@ -4,9 +4,16 @@ package com.talenttap.service;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.entity.*;
+import com.talenttap.exceptions.BadCredentialException;
+import com.talenttap.exceptions.EmployerNotFoundException;
+import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.repository.*;
 import com.talenttap.security.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmployerAuthService {
@@ -141,4 +151,46 @@ public class EmployerAuthService {
         System.out.println("Data isbeign sent from service");
         return profileData;
     }
+
+    public ResponseEntity<?> login(String input, String password, HttpServletResponse response) {
+        Users user;
+
+        // Check if input is email
+        if (input.contains("@")) {
+            user = userRepository.findByEmail(input)
+                    .orElseThrow(() -> new BadCredentialException("Invalid Email"));
+        } else {
+            user = userRepository.findByUsername(input)
+                    .orElseThrow(() -> new BadCredentialException("Invalid Username"));
+        }
+
+        // Check if user is an employer
+        Employer employer = employerRepository.findByUser(user)
+                .orElseThrow(() -> new EmployerNotFoundException("Employer not found with this account"));
+
+        // Check password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadCredentialException("Invalid Password!");
+        }
+
+        // Generate JWT
+        String jwt = jwtutil.generateToken(user.getUsername(), "EMPLOYER");
+
+        Cookie cookie = new Cookie("jwt", jwt);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(false);
+        cookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(cookie);
+        
+        Map<String, Object> response1 = new HashMap<>();
+		response1.put("message", "Login successful");
+		response1.put("code", 200);
+		response1.put("timestamp", LocalDateTime.now());
+       return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response1);
+    }
+
 }

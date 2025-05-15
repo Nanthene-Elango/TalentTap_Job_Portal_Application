@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.model.JwtToken;
+import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobseekerService;
 
 @Component
@@ -15,8 +17,11 @@ public class GlobalModelAttributes {
 
 	private JobseekerService jobseekerService;
 	
-	public GlobalModelAttributes(JobseekerService jobseekerService) {
+	private EmployerAuthService employerService;
+	
+	public GlobalModelAttributes(JobseekerService jobseekerService, EmployerAuthService employerService) {
 		this.jobseekerService = jobseekerService;
+		this.employerService = employerService;
 	}
 	
     @ModelAttribute
@@ -26,6 +31,8 @@ public class GlobalModelAttributes {
             if (jwt != null && !jwt.trim().isEmpty()) {
                 JwtToken token = new JwtToken(jwt.trim());
                 String fullName = jobseekerService.getFullName(token);
+                EmployerProfileDTO profile = employerService.profile(token);
+                model.addAttribute("companyName",profile.getCompanyName());
                 model.addAttribute("fullname", fullName);
                 model.addAttribute("loggedIn", true);
             } else {

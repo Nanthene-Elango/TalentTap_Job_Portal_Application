@@ -110,31 +110,23 @@ public class EmployerAuthController {
         }
     }
     
+    @PostMapping("/employer/Login")
+    public String loginUser(@ModelAttribute("Login") Login login, BindingResult result, HttpServletResponse response, Model model) {
+        boolean success = employerService.login(login, response, model);
+        if (!success) {
+            model.addAttribute("Login", login);
+            return "employer/login";
+        }
+        return "redirect:/employer/employerDashboard";
+    }
     
-    @PostMapping("/employerLogin")
-	public String loginUser(@ModelAttribute Login login, HttpServletResponse response) {
-    	System.out.println("Username"+login.getUsername());
-    	System.out.println("Password"+login.getPassword());
-	    jobseekerService.login(login , response);
-	    return "redirect:/employer/employerDashboard";
-	}
-    
-//    @PostMapping("/adminLogin")
-//	public String loginAdmin(@ModelAttribute Login login, HttpServletResponse response) {
-//    	System.out.println("Username"+login.getUsername());
-//    	System.out.println("Password"+login.getPassword());
-//	    jobseekerService.login(login , response);
-//	    return "redirect:/admin/index";
-//	}
-	
-	@GetMapping("/employerLogout")
+	@GetMapping("/employer/Logout")
 	public String logout(HttpServletResponse response) {
 	    Cookie cookie = new Cookie("jwt", null);
 	    cookie.setPath("/");             
 	    cookie.setHttpOnly(true);       
 	    cookie.setMaxAge(0);            
 	    response.addCookie(cookie);
-
 	    return "redirect:/";     
 	}
 	
