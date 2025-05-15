@@ -332,9 +332,9 @@ public class PageRenderController {
         return "admin/admin-login";
     }
 	
-	@GetMapping("/admin/index")
+	@GetMapping("/admin/adminDashboard")
 	public String loadAdminIndex() {
-		return "admin/index";
+		return "admin/adminDashboard";
 
 	}
 }
