@@ -32,8 +32,17 @@ public class JobDisplayDTO {
     private Set<String> requiredSkills; // Skill names
     private Set<String> locations; // Location names
     private boolean isExpired; // Derived field
+    private int applicants;
 
-    public JobDisplayDTO(Jobs job) {
+    public int getApplicants() {
+		return applicants;
+	}
+
+	public void setApplicants(int applicants) {
+		this.applicants = applicants;
+	}
+
+	public JobDisplayDTO(Jobs job) {
         this.jobId = job.getJobId();
         this.jobRole = job.getJobRole();
         this.jobType = job.getJobType().getEmploymentType();

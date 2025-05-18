@@ -152,9 +152,9 @@ public class EmployerAuthService {
         return profileData;
     }
 
-    public ResponseEntity<?> login(String input, String password, HttpServletResponse response) {
+    public Map<String, Object> login(String input, String password, HttpServletResponse response) {
+    	
         Users user;
-
         // Check if input is email
         if (input.contains("@")) {
             user = userRepository.findByEmail(input)
@@ -187,10 +187,7 @@ public class EmployerAuthService {
 		response1.put("message", "Login successful");
 		response1.put("code", 200);
 		response1.put("timestamp", LocalDateTime.now());
-       return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response1);
+       return response1;
     }
 
 }
