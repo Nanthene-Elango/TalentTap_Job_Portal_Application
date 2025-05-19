@@ -277,7 +277,7 @@ public class JobService {
 		Optional<Jobs> jobOpt = jobsRepo.findById(id);
 
 		if (jobOpt.isEmpty()) {
-			// logger.warn("Job with ID {} not found.", id);
+			logger.warn("Job with ID {} not found.", id);
 			return false;
 		}
 
@@ -351,8 +351,9 @@ public class JobService {
 		// Parse deadline string to LocalDateTime
 		LocalDateTime dateTime;
 		try {
-			LocalDate localDate = dto.getDeadline();
-			dateTime = localDate.atTime(23, 59, 59); // Set to end of day
+			String localDate = dto.getDeadline();
+			LocalDate dtp = LocalDate.parse(localDate);
+			dateTime = dtp.atTime(23, 59, 59); // Set to end of day
 		} catch (DateTimeParseException | NullPointerException e) {
 			throw new IllegalArgumentException(
 					"Invalid deadline format: " + dto.getDeadline() + ". Must be YYYY-MM-DD.");

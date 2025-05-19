@@ -289,126 +289,157 @@ $(document).ready(function() {
         }
     });
 
-    // Add/Edit Requirement
-    $('#addRequirementBtn').on('click', function() {
-        const input = $('#requirementInput');
-        const value = input.val().trim();
-        if (!value) return;
+	let isEditingRequirement = false;
 
-        if (editingRequirementIndex !== null) {
-            $(`#requirementsList li:eq(${editingRequirementIndex})`).html(`${value}<button type="button" class="btn btn-outline-violet edit-requirement-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-requirement-btn">Remove</button>`);
-            editingRequirementIndex = null;
-            $(this).text('Add');
-        } else {
-            if ($('#requirementsList').length === 0) {
-                $('body').append('<ul id="requirementsList" class="list-group"></ul>');
-            }
-            const li = $(`<li class="list-item">${value}<button type="button" class="btn btn-outline-violet edit-requirement-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-requirement-btn">Remove</button></li>`);
-            $('#requirementsList').append(li);
-        }
-        input.val('');
-        updateRequirements();
-        validateRequirements();
-    });
+	$('#addRequirementBtn').on('click', function() {
+	    const input = $('#requirementInput');
+	    const value = input.val().trim();
+	    if (!value) return;
 
-    $(document).on('click', '.edit-requirement-btn', function() {
-        const li = $(this).parent();
-        const text = li.contents().filter(function() { return this.nodeType === 3; }).text().trim();
-        $('#requirementInput').val(text);
-        editingRequirementIndex = li.index();
-        $('#addRequirementBtn').text('Update');
-    });
+	    if (isEditingRequirement) {
+	        // Update the single requirement string in the list
+	        $('#requirementsList li span').text(value);
+	        isEditingRequirement = false;
+	        $(this).text('Add');
+	    } else {
+	        // If no <li> yet, create it; else update existing
+	        if ($('#requirementsList li').length === 0) {
+	            const li = $(`
+	                <li class="list-item">
+	                    <span>${value}</span>
+	                    <button type="button" class="btn btn-outline-violet edit-requirement-btn">Edit</button>
+	                    <button type="button" class="btn btn-outline-violet remove-requirement-btn">Remove</button>
+	                </li>`);
+	            $('#requirementsList').append(li);
+	        } else {
+	            $('#requirementsList li span').text(value);
+	        }
+	    }
 
-    $(document).on('click', '.remove-requirement-btn', function() {
-        $(this).parent().remove();
-        if (editingRequirementIndex !== null) {
-            editingRequirementIndex = null;
-            $('#addRequirementBtn').text('Add');
-            $('#requirementInput').val('');
-        }
-        updateRequirements();
-        validateRequirements();
-    });
+	    input.val('');
+	    updateRequirements();
+	    validateRequirements();
+	});
 
-    // Add/Edit Benefit
-    $('#addBenefitBtn').on('click', function() {
-        const input = $('#benefitInput');
-        const value = input.val().trim();
-        if (!value) return;
+	$(document).on('click', '.edit-requirement-btn', function() {
+	    const text = $('#requirementsList li span').text().trim();
+	    $('#requirementInput').val(text);
+	    isEditingRequirement = true;
+	    $('#addRequirementBtn').text('Update');
+	});
 
-        if (editingBenefitIndex !== null) {
-            $(`#benefitsList li:eq(${editingBenefitIndex})`).html(`${value}<button type="button" class="btn btn-outline-violet edit-benefit-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-benefit-btn">Remove</button>`);
-            editingBenefitIndex = null;
-            $(this).text('Add');
-        } else {
-            if ($('#benefitsList').length === 0) {
-                $('body').append('<ul id="benefitsList" class="list-group"></ul>');
-            }
-            const li = $(`<li class="list-item">${value}<button type="button" class="btn btn-outline-violet edit-benefit-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-benefit-btn">Remove</button></li>`);
-            $('#benefitsList').append(li);
-        }
-        input.val('');
-        updateBenefits();
-    });
+	$(document).on('click', '.remove-requirement-btn', function() {
+	    $('#requirementsList').empty();
+	    $('#requirementInput').val('');
+	    isEditingRequirement = false;
+	    $('#addRequirementBtn').text('Add');
+	    updateRequirements();
+	    validateRequirements();
+	});
 
-    $(document).on('click', '.edit-benefit-btn', function() {
-        const li = $(this).parent();
-        const text = li.contents().filter(function() { return this.nodeType === 3; }).text().trim();
-        $('#benefitInput').val(text);
-        editingBenefitIndex = li.index();
-        $('#addBenefitBtn').text('Update');
-    });
+	function updateRequirements() {
+	    const text = $('#requirementsList li span').text().trim() || '';
+	    $('#requirements').val(text);
+	}
 
-    $(document).on('click', '.remove-benefit-btn', function() {
-        $(this).parent().remove();
-        if (editingBenefitIndex !== null) {
-            editingBenefitIndex = null;
-            $('#addBenefitBtn').text('Add');
-            $('#benefitInput').val('');
-        }
-        updateBenefits();
-    });
+	
 
-    // Add/Edit Role
-    $('#addRoleBtn').on('click', function() {
-        const input = $('#roleInput');
-        const value = input.val().trim();
-        if (!value) return;
+	// add edit benefit 
+	let isEditing = false;
+	$('#addBenefitBtn').on('click', function() {
+	    const input = $('#benefitInput');
+	    const value = input.val().trim();
+	    if (!value) return;
 
-        if (editingRoleIndex !== null) {
-            $(`#rolesList li:eq(${editingRoleIndex})`).html(`${value}<button type="button" class="btn btn-outline-violet edit-role-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-role-btn">Remove</button>`);
-            editingRoleIndex = null;
-            $(this).text('Add');
-        } else {
-            if ($('#rolesList').length === 0) {
-                $('body').append('<ul id="rolesList" class="list-group"></ul>');
-            }
-            const li = $(`<li class="list-item">${value}<button type="button" class="btn btn-outline-violet edit-role-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-role-btn">Remove</button></li>`);
-            $('#rolesList').append(li);
-        }
-        input.val('');
-        updateResponsibilities();
-        validateRoles();
-    });
+	    if (isEditing) {
+	        // Update the single benefit string in the list
+	        $('#benefitsList li span').text(value);
+	        isEditing = false;
+	        $(this).text('Add');
+	    } else {
+	        // If no <li> yet, create it; else update existing
+	        if ($('#benefitsList li').length === 0) {
+	            const li = $(`<li class="list-item"><span>${value}</span><button type="button" class="btn btn-outline-violet edit-benefit-btn">Edit</button><button type="button" class="btn btn-outline-violet remove-benefit-btn">Remove</button></li>`);
+	            $('#benefitsList').append(li);
+	        } else {
+	            $('#benefitsList li span').text(value);
+	        }
+	    }
+	    input.val('');
+	    updateBenefits();
+	});
 
-    $(document).on('click', '.edit-role-btn', function() {
-        const li = $(this).parent();
-        const text = li.contents().filter(function() { return this.nodeType === 3; }).text().trim();
-        $('#roleInput').val(text);
-        editingRoleIndex = li.index();
-        $('#addRoleBtn').text('Update');
-    });
+	$(document).on('click', '.edit-benefit-btn', function() {
+	    const text = $('#benefitsList li span').text().trim();
+	    $('#benefitInput').val(text);
+	    isEditing = true;
+	    $('#addBenefitBtn').text('Update');
+	});
 
-    $(document).on('click', '.remove-role-btn', function() {
-        $(this).parent().remove();
-        if (editingRoleIndex !== null) {
-            editingRoleIndex = null;
-            $('#addRoleBtn').text('Add');
-            $('#roleInput').val('');
-        }
-        updateResponsibilities();
-        validateRoles();
-    });
+	$(document).on('click', '.remove-benefit-btn', function() {
+	    $('#benefitsList').empty();
+	    $('#benefitInput').val('');
+	    isEditing = false;
+	    $('#addBenefitBtn').text('Add');
+	    updateBenefits();
+	});
+
+	
+
+
+	let isEditingRole = false;
+
+	$('#addRoleBtn').on('click', function() {
+	    const input = $('#roleInput');
+	    const value = input.val().trim();
+	    if (!value) return;
+
+	    if (isEditingRole) {
+	        // Update the single role string in the list
+	        $('#rolesList li span').text(value);
+	        isEditingRole = false;
+	        $(this).text('Add');
+	    } else {
+	        // If no <li> yet, create it; else update existing
+	        if ($('#rolesList li').length === 0) {
+	            const li = $(`
+	                <li class="list-item">
+	                    <span>${value}</span>
+	                    <button type="button" class="btn btn-outline-violet edit-role-btn">Edit</button>
+	                    <button type="button" class="btn btn-outline-violet remove-role-btn">Remove</button>
+	                </li>`);
+	            $('#rolesList').append(li);
+	        } else {
+	            $('#rolesList li span').text(value);
+	        }
+	    }
+
+	    input.val('');
+	    updateResponsibilities();
+	    validateRoles();
+	});
+
+	$(document).on('click', '.edit-role-btn', function() {
+	    const text = $('#rolesList li span').text().trim();
+	    $('#roleInput').val(text);
+	    isEditingRole = true;
+	    $('#addRoleBtn').text('Update');
+	});
+
+	$(document).on('click', '.remove-role-btn', function() {
+	    $('#rolesList').empty();
+	    $('#roleInput').val('');
+	    isEditingRole = false;
+	    $('#addRoleBtn').text('Add');
+	    updateResponsibilities();
+	    validateRoles();
+	});
+
+	function updateResponsibilities() {
+	    const text = $('#rolesList li span').text().trim() || '';
+	    $('#responsibilities').val(text);
+	}
+
 
     // Validate entire form
     function validateForm() {
@@ -565,27 +596,22 @@ $(document).ready(function() {
     }
 
     function updateRequirements() {
-        const requirements = $('#requirementsList li').map(function() {
-            return $(this).contents().filter(function() { return this.nodeType === 3; }).text().trim();
-        }).get().join(', ');
-        $('#requirements').val(requirements);
-        console.log('Requirements updated to:', requirements);
+		const text = $('#requirementsList li span').text().trim() || '';
+	    $('#requirements').val(text);
     }
 
-    function updateBenefits() {
-        const benefits = $('#benefitsList li').map(function() {
-            return $(this).contents().filter(function() { return this.nodeType === 3; }).text().trim();
-        }).get().join(', ');
-        $('#benefits').val(benefits);
-        console.log('Benefits updated to:', benefits);
-    }
+	function updateBenefits() {
+		    // Get the single benefit string or empty
+		    const text = $('#benefitsList li span').text().trim() || '';
+		    $('#benefits').val(text);
+		}
+
+
 
     function updateResponsibilities() {
-        const roles = $('#rolesList li').map(function() {
-            return $(this).contents().filter(function() { return this.nodeType === 3; }).text().trim();
-        }).get().join(', ');
-        $('#responsibilities').val(roles);
-        console.log('Responsibilities updated to:', roles);
+		const text = $('#rolesList li span').text().trim() || '';
+	    $('#responsibilities').val(text);
+		
     }
 
     if ($('#requirementsList').length) {

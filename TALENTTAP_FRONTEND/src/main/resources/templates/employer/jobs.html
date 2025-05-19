@@ -200,16 +200,16 @@
 				</div>
 				<div class="action-buttons mt-3">
 					<button class="btn btn-outline-violet action-btn view-details"
-						th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}, data-bs-target='#viewModal-' + ${job.jobId}"
+						th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}, data-bs-target='#viewModal-' + ${job.jobId} "
 						data-bs-toggle="modal">
 						<i class="fas fa-eye"></i> View
 					</button>
-					
-						<a class="btn btn-outline-violet action-btn"
-							th:href="@{'/employer/jobs/update/' + ${job.jobId}}"
-							aria-label="Edit job"> <i class="fas fa-edit"></i> Edit
-						</a>
-					
+
+					<a class="btn btn-outline-violet action-btn"
+						th:href="@{'/employer/jobs/update/' + ${job.jobId}}"
+						aria-label="Edit job"> <i class="fas fa-edit"></i> Edit
+					</a>
+
 
 
 					<form th:action="@{'/employer/job/' + ${job.jobId} + '/toggle'}"
@@ -245,8 +245,6 @@
 		</div>
 
 
-
-
 		<!-- View Job Modal -->
 		<div th:each="job : ${jobs}" class="modal fade"
 			th:attr="id='viewModal-' + ${job.jobId}" tabindex="-1"
@@ -274,23 +272,24 @@
 									th:text="${job.jobCategory != null} ? ${job.jobCategory} : 'N/A'"></span>
 							</p>
 							<p>
-								<strong>Description:</strong> <span id="viewDescription"
-									th:text="${job.jobDescription != null} ? ${job.jobDescription} : 'N/A'"></span>
+							<strong>Description: </strong> <span
+							th:text="${job.jobDescription != null ? #strings.replace(job.jobDescription, '\n', ' ') : 'N/A'}"></span>
 							</p>
 							<p>
-								<strong>Required Skills:</strong> <span id="viewSkills"
-									th:text="${job.requiredSkills != null and !#sets.isEmpty(job.requiredSkills)} ? ${#strings.listJoin(#lists.toList(job.requiredSkills), ', ')} : 'None'"></span>
+								<strong>Required Skills:</strong> <span
+									th:text="${job.requiredSkills != null and !#sets.isEmpty(job.requiredSkills)} ? ${#strings.listJoin(#lists.toList(job.requiredSkills), ' | | ')} : 'None'"></span>
 							</p>
+
 							<p>
-								<strong>Roles:</strong> <span id="viewDescription"
+								<strong>Roles:</strong> <span id="viewRoles"
 									th:text="${job.roles != null} ? ${job.roles} : 'N/A'"></span>
 							</p>
 							<p>
-								<strong>Responsibility</strong> <span id="viewDescription"
+								<strong>Responsibility</strong> <span id="viewResponsibilities"
 									th:text="${job.responsibilities != null} ? ${job.responsibilities} : 'N/A'"></span>
 							</p>
 							<p>
-								<strong>Benefits</strong> <span id="viewDescription"
+								<strong>Benefits</strong> <span id="viewBenefits"
 									th:text="${job.benefits != null} ? ${job.benefits} : 'N/A'"></span>
 							</p>
 						</div>
@@ -302,37 +301,39 @@
 									th:text="${job.workType != null} ? ${job.workType} : 'N/A'"></span>
 							</p>
 							<p>
-								<strong>Location(s):</strong> <span id="viewLocations"
-									th:text="${job.locations != null and !#sets.isEmpty(job.locations)} ? ${#strings.listJoin(#lists.toList(job.locations), ', ')} : 'N/A'"></span>
+								<strong>Location(s):</strong> <span
+									th:text="${job.locations != null and !#sets.isEmpty(job.locations)} ? ${#strings.listJoin(#lists.toList(job.locations), ' | | ')} : 'N/A'"></span>
 							</p>
+
+
 						</div>
 
-						<div class="form-section" id="viewFullTimeFields"
+						<div class="form-section"
 							th:classappend="${job.jobType == 'Full Time'} ? '' : 'd-none'">
 							<h6>Full-time Details</h6>
+
 							<p>
 								<strong>Experience Required:</strong> <span
-									id="viewExperienceYears"
-									th:text="${job.yearsOfExperience != null} ? ${job.yearsOfExperience} : 'N/A'"></span>
+									th:text="${job.yearsOfExperience != null ? job.yearsOfExperience : 'N/A'}"></span>
 							</p>
 							<p>
-								<strong>Salary Range:</strong> <span id="viewSalaryMinFT"
+								<strong>Salary Range:</strong> <span
 									th:text="${job.salaryMin != null} ? ${job.salaryMin} : 'N/A'"></span>
 								LPA - <span
 									th:text="${job.salaryMax != null} ? ${job.salaryMax} : 'N/A'">
-									LPA</span> <span id="viewSalaryMaxFT"></span> LPA
+								</span> LPA
 							</p>
 						</div>
 
-						<div class="form-section" id="viewPartTimeFields"
-							th:classappend="${job.jobType == 'Part Time'} ? '' : 'd-none'"
-							style="display: none;">
+						<div class="form-section"
+							th:classappend="${job.jobType == 'Part Time'} ? '' : 'd-none'">
 							<h6>Part-time Details</h6>
 							<p>
-								<strong>Salary Range:</strong> $<span
+								<strong>Salary Range:</strong> <span
 									th:text="${job.salaryMin != null} ? ${job.salaryMin} : 'N/A'"></span>
-								- $<span
-									th:text="${job.salaryMax != null} ? ${job.salaryMax} : 'N/A'"></span>
+								LPA -<span
+									th:text="${job.salaryMax != null} ? ${job.salaryMax} : 'N/A'">
+									LPA</span>
 							</p>
 						</div>
 
@@ -340,21 +341,11 @@
 							th:classappend="${job.jobType == 'Internship'} ? '' : 'd-none'">
 							<h6>Internship Details</h6>
 							<p>
-								<strong>Experience Required:</strong> <span
-									th:text="${job.yearsOfExperience != null} ? ${job.yearsOfExperience} : 'N/A'"></span>
-							</p>
-							<p>
-								<strong>Salary Range:</strong> $<span
-									th:text="${job.salaryMin != null} ? ${job.salaryMin} : 'N/A'"></span>
-								- $<span
-									th:text="${job.salaryMax != null} ? ${job.salaryMax} : 'N/A'"></span>
-							</p>
-							<p>
 								<strong>Duration (months):</strong> <span
 									th:text="${job.duration != null} ? ${job.duration} : 'N/A'"></span>
 							</p>
 							<p>
-								<strong>Stipend:</strong> $<span
+								<strong>Stipend:</strong> Rs: <span
 									th:text="${job.stipend != null} ? ${job.stipend} : 'N/A'"></span>
 							</p>
 						</div>
