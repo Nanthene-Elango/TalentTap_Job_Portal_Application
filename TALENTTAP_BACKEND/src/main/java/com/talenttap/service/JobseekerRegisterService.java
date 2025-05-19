@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.DTO.AddEducationDTO;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobFilterDTO;
@@ -502,5 +503,70 @@ public class JobseekerRegisterService {
 			exists = true;
 		}
 		return ResponseEntity.ok().body(Map.of("exists" , exists));
+	}
+
+	public ResponseEntity<String> addEducation(int id, AddEducationDTO request) {
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+			
+			Education education = new Education();
+			education.setJobSeeker(jobseeker);
+			education.setEducationLevel(educationLevelRepo.findById(request.getHighestQualification()).get());
+			education.setInstitution(request.getInstitution());
+			education.setBoardOfStudy(request.getBoardOfStudy());
+			education.setDegree(request.getDegree());
+			education.setPercentage(request.getPercentage());
+			education.setEndYear(request.getEndYear());
+			education.setStartYear(request.getStartYear());
+			
+			educationRepo.save(education);
+			
+			return ResponseEntity.ok().body("Education added Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<String> deleteEducation(int id) {
+		try {
+			educationRepo.deleteById(id);
+			return ResponseEntity.ok().body("Education deleted Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<String> updateEducation(int id, EducationDTO dto) {
+	    try {
+	        Education education = educationRepo.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Education not found"));
+
+	        education.setEducationLevel(educationLevelRepo.findByEducationLevel(dto.getEducationLevel()).orElse(null));
+	        education.setInstitution(dto.getInstitution());
+	        if (dto.getBoardOfStudy().isBlank() || dto.getBoardOfStudy().isEmpty()) {
+	        	education.setBoardOfStudy(null);
+	        }
+	        else {
+	        	education.setBoardOfStudy(dto.getBoardOfStudy());
+	        }
+	        
+	        if (dto.getDegree().isBlank() || dto.getDegree().isEmpty()) {
+	        	education.setDegree(null);
+	        }
+	        else {
+	        	education.setDegree(dto.getDegree());
+	        }
+	        education.setStartYear(dto.getStartYear());
+	        education.setEndYear(dto.getEndYear());
+	        education.setPercentage(dto.getPercentage());
+
+	        educationRepo.save(education);
+	        return ResponseEntity.ok("Education updated successfully!");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("Error updating education: " + e.getMessage());
+	    }
 	}
 }

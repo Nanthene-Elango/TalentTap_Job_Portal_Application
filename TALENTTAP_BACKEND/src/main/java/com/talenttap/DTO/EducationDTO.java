@@ -13,7 +13,11 @@ public class EducationDTO {
     private int startYear;
     private int endYear;
     
-    public EducationDTO(Education education) {
+    public EducationDTO() {
+		super();
+	}
+
+	public EducationDTO(Education education) {
     	this.educationId = education.getEducationId();
     	this.boardOfStudy = education.getBoardOfStudy();
     	this.degree = education.getDegree();

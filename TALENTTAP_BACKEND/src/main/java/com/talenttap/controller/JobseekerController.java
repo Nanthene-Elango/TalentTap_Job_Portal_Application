@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.DTO.AddEducationDTO;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.EducationLevelDTO;
 import com.talenttap.DTO.JobseekerDTO;
@@ -166,4 +167,20 @@ public class JobseekerController {
 			return jobseekerService.existByEmail(email);
 		}
 	}
+	
+	@PostMapping("jobseeker/education/add/{id}")
+	public ResponseEntity<String> addEducation(@PathVariable int id , @RequestBody AddEducationDTO education){
+		return jobseekerService.addEducation(id , education);
+	}
+	
+	@PutMapping("/jobseeker/education/update/{id}")
+	public ResponseEntity<String> updateEducation(@PathVariable int id, @RequestBody EducationDTO updatedEducation) {
+	    return jobseekerService.updateEducation(id, updatedEducation);
+	}
+	
+	@DeleteMapping("/jobseeker/education/delete/{id}")
+	public ResponseEntity<String> deleteEducation(@PathVariable int id){
+		return jobseekerService.deleteEducation(id );
+	}
+	
 }

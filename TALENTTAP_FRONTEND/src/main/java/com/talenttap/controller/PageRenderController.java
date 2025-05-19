@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
@@ -110,6 +110,12 @@ public class PageRenderController {
 			List<Location> locations = jobseekerService.getAllLocations();
 			model.addAttribute("locations", locations);
 
+			EducationDTO education = new EducationDTO();
+			model.addAttribute("educationDTO", education);
+			
+			List<EducationLevel> qualifications = jobseekerService.getEducationLevel();
+			model.addAttribute("qualifications", qualifications);
+			
 			List<Education> educations = jobseekerService.getAllEducation(jobseeker.getId());
 			model.addAttribute("educationList", educations);
 
