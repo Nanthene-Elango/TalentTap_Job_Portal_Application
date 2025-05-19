@@ -513,8 +513,19 @@ public class JobseekerRegisterService {
 			education.setJobSeeker(jobseeker);
 			education.setEducationLevel(educationLevelRepo.findById(request.getHighestQualification()).get());
 			education.setInstitution(request.getInstitution());
-			education.setBoardOfStudy(request.getBoardOfStudy());
-			education.setDegree(request.getDegree());
+			if (request.getBoardOfStudy().isBlank() || request.getBoardOfStudy().isEmpty()) {
+	        	education.setBoardOfStudy(null);
+	        }
+	        else {
+	        	education.setBoardOfStudy(request.getBoardOfStudy());
+	        }
+	        
+	        if (request.getDegree().isBlank() || request.getDegree().isEmpty()) {
+	        	education.setDegree(null);
+	        }
+	        else {
+	        	education.setDegree(request.getDegree());
+	        }
 			education.setPercentage(request.getPercentage());
 			education.setEndYear(request.getEndYear());
 			education.setStartYear(request.getStartYear());
@@ -567,6 +578,40 @@ public class JobseekerRegisterService {
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                             .body("Error updating education: " + e.getMessage());
+	    }
+	}
+
+	public ResponseEntity<String> addSkill(int id, List<Integer> skillIds) {
+		
+		try {
+	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
+	        if (optionalJobSeeker.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body("JobSeeker not found with ID: " + id);
+	        }
+
+	        JobSeeker jobseeker = optionalJobSeeker.get();
+
+	        for (Integer skillId : skillIds) {
+	            Optional<Skills> optionalSkill = skillsRepo.findById(skillId);
+	            if (optionalSkill.isPresent()) {
+	                Skills skill = optionalSkill.get();
+
+	                if (!jobseeker.getSeekerSkills().contains(skill)) {
+	                    jobseeker.getSeekerSkills().add(skill);
+	                }
+	            } else {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                        .body("Invalid Skill ID: " + skillId);
+	            }
+	        }
+
+	        jobseekerRepo.save(jobseeker);
+	        return ResponseEntity.ok("Skills added successfully!");
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error adding skills: " + e.getMessage());
 	    }
 	}
 }

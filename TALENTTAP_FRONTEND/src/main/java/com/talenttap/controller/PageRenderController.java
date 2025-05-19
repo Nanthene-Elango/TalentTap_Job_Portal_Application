@@ -122,6 +122,9 @@ public class PageRenderController {
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);
 
+			List<Skills> allSkills = jobseekerService.getAllSkills();
+			System.out.println(allSkills.get(0).getSkillId() + " " + allSkills.get(0).getSkill());
+			model.addAttribute("allSkills", allSkills);
 		}
 
 		return "jobseeker/profile";

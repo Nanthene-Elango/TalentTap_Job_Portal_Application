@@ -91,6 +91,14 @@ public class JobseekerController {
 			return "redirect:/jobs";
 		}
 	}
+	
+	@PostMapping("/jobseeker/skill/add/{id}")
+	public String addMultipleSkillsToJobSeeker(@PathVariable("id") Long jobSeekerId,
+	                                           @RequestParam("skillIds") List<Long> skillIds,
+	                                           RedirectAttributes redirectAttributes) {
+
+	    return jobseekerService.addSkills(jobSeekerId , skillIds , redirectAttributes);
+	}
 
 	@PostMapping("/profile/delete-skill/{id}/{jobseekerId}")
 	public String deleteSkill(@PathVariable Long id, @PathVariable Long jobseekerId ,  RedirectAttributes redirectAttributes) {

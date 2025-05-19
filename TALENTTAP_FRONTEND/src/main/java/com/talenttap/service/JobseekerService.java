@@ -447,4 +447,30 @@ public class JobseekerService {
 		return "redirect:/profile";
 	}
 
+	public String addSkills(Long jobSeekerId, List<Long> skillIds, RedirectAttributes redirectAttributes) {
+		
+		String url = "http://localhost:8083/jobseeker/skill/add/" + jobSeekerId;
+		
+		try {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+	        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+	        for (Long skillId : skillIds) {
+	            body.add("skillIds", skillId.toString());
+	        }
+
+	        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+	        restTemplate.postForEntity(url, request, String.class);
+
+	        redirectAttributes.addFlashAttribute("success", "Skills added successfully.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Failed to add skills: " + e.getMessage());
+	    }
+
+		
+		return "redirect:/profile";
+	}
+
 }
