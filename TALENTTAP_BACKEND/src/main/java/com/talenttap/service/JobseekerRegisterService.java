@@ -5,6 +5,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.DTO.AddEducationDTO;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobFilterDTO;
@@ -124,10 +126,10 @@ public class JobseekerRegisterService {
 
 	public ResponseEntity<?> login(String username, String password, HttpServletResponse response) {
 
-		Users user = userRepo.findByUsername(username).get();
+		Users user = userRepo.findByUsernameOrEmail(username , username).get();
 
 		if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-			String jwt = jwtUtil.generateToken(username, "JOBSEEKER");
+			String jwt = jwtUtil.generateToken(user.getUsername(), "JOBSEEKER");
 
 			System.out.println(jwt);
 			Cookie cookie = new Cookie("jwt", jwt);
@@ -485,5 +487,131 @@ public class JobseekerRegisterService {
 		}
 		
 		return ResponseEntity.ok(hasApplied);
+	}
+
+	public ResponseEntity<?> existByUsername(String username) {
+		boolean exists = false;
+		if (userRepo.existsByUsername(username)) {
+			exists = true;
+		}
+		return ResponseEntity.ok().body(Map.of("exists" , exists));
+	}
+
+	public ResponseEntity<?> existByEmail(String email) {
+		boolean exists = false;
+		if (userRepo.existsByEmail(email)) {
+			exists = true;
+		}
+		return ResponseEntity.ok().body(Map.of("exists" , exists));
+	}
+
+	public ResponseEntity<String> addEducation(int id, AddEducationDTO request) {
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+			
+			Education education = new Education();
+			education.setJobSeeker(jobseeker);
+			education.setEducationLevel(educationLevelRepo.findById(request.getHighestQualification()).get());
+			education.setInstitution(request.getInstitution());
+			if (request.getBoardOfStudy().isBlank() || request.getBoardOfStudy().isEmpty()) {
+	        	education.setBoardOfStudy(null);
+	        }
+	        else {
+	        	education.setBoardOfStudy(request.getBoardOfStudy());
+	        }
+	        
+	        if (request.getDegree().isBlank() || request.getDegree().isEmpty()) {
+	        	education.setDegree(null);
+	        }
+	        else {
+	        	education.setDegree(request.getDegree());
+	        }
+			education.setPercentage(request.getPercentage());
+			education.setEndYear(request.getEndYear());
+			education.setStartYear(request.getStartYear());
+			
+			educationRepo.save(education);
+			
+			return ResponseEntity.ok().body("Education added Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<String> deleteEducation(int id) {
+		try {
+			educationRepo.deleteById(id);
+			return ResponseEntity.ok().body("Education deleted Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<String> updateEducation(int id, EducationDTO dto) {
+	    try {
+	        Education education = educationRepo.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Education not found"));
+
+	        education.setEducationLevel(educationLevelRepo.findByEducationLevel(dto.getEducationLevel()).orElse(null));
+	        education.setInstitution(dto.getInstitution());
+	        if (dto.getBoardOfStudy().isBlank() || dto.getBoardOfStudy().isEmpty()) {
+	        	education.setBoardOfStudy(null);
+	        }
+	        else {
+	        	education.setBoardOfStudy(dto.getBoardOfStudy());
+	        }
+	        
+	        if (dto.getDegree().isBlank() || dto.getDegree().isEmpty()) {
+	        	education.setDegree(null);
+	        }
+	        else {
+	        	education.setDegree(dto.getDegree());
+	        }
+	        education.setStartYear(dto.getStartYear());
+	        education.setEndYear(dto.getEndYear());
+	        education.setPercentage(dto.getPercentage());
+
+	        educationRepo.save(education);
+	        return ResponseEntity.ok("Education updated successfully!");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("Error updating education: " + e.getMessage());
+	    }
+	}
+
+	public ResponseEntity<String> addSkill(int id, List<Integer> skillIds) {
+		
+		try {
+	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
+	        if (optionalJobSeeker.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body("JobSeeker not found with ID: " + id);
+	        }
+
+	        JobSeeker jobseeker = optionalJobSeeker.get();
+
+	        for (Integer skillId : skillIds) {
+	            Optional<Skills> optionalSkill = skillsRepo.findById(skillId);
+	            if (optionalSkill.isPresent()) {
+	                Skills skill = optionalSkill.get();
+
+	                if (!jobseeker.getSeekerSkills().contains(skill)) {
+	                    jobseeker.getSeekerSkills().add(skill);
+	                }
+	            } else {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                        .body("Invalid Skill ID: " + skillId);
+	            }
+	        }
+
+	        jobseekerRepo.save(jobseeker);
+	        return ResponseEntity.ok("Skills added successfully!");
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error adding skills: " + e.getMessage());
+	    }
 	}
 }

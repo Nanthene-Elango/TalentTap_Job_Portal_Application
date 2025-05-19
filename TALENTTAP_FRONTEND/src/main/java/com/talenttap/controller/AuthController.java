@@ -54,6 +54,7 @@ public class AuthController {
 	@PostMapping("/login")
 	public String loginUser(@ModelAttribute Login login, HttpServletResponse response) {
 	    jobseekerRegisterService.login(login , response);
+	    System.out.println("in login user method");
 	    return "redirect:/";
 	}
 	

@@ -53,11 +53,26 @@ $(document).ready(function() {
 		else clearError('fullName');
 	}
 
-	function validateUsernameDynamic() {
+	async function validateUsernameDynamic() {
 		const val = $('#username').val().trim();
 		if (!val) showError('username', 'Username is required');
 		else if (!usernameRegex.test(val)) showError('username', 'Only letters and numbers allowed');
+		else if (await isPresentUsername(val)) showError('username', "username already exists!");
 		else clearError('username');
+	}
+
+	async function isPresentUsername(val) {
+		try {
+			const response = await fetch(`http://localhost:8083/api/check-username?username=${encodeURIComponent(val)}`);
+			if (!response.ok) throw new Error("Network response was not ok");
+
+			const data = await response.json();
+			console.log(data.exists);
+			return data.exists; 
+		} catch (error) {
+			console.error("Error checking username:", error);
+			return false;
+		}
 	}
 
 	function validatePasswordDynamic() {
@@ -75,14 +90,29 @@ $(document).ready(function() {
 		return phoneRegex.test(val);
 	}
 
-	function validateEmailDynamic() {
+	async function validateEmailDynamic() {
 		const val = $('#email').val().trim();
 		if (!val) showError('email', 'Email is required');
 		else if (!emailRegex.test(val)) showError('email', 'Invalid email format');
+		else if (await isPresentEmail(val)) showError('email' , "Email already exists!");
 		else clearError('email');
 		return emailRegex.test(val);
 	}
 
+	async function isPresentEmail(val){
+		try {
+			const response = await fetch(`http://localhost:8083/api/check-email?email=${encodeURIComponent(val)}`);
+			if (!response.ok) throw new Error("Network response was not ok");
+
+			const data = await response.json();
+			console.log(data.exists);
+			return data.exists; 
+		} catch (error) {
+			console.error("Error checking username:", error);
+			return false;
+		}
+	}
+	
 	function validateBoardOfStudyDynamic() {
 		const val = $('#boardOfStudy').val().trim();
 		if ($('#boardOfStudyGroup').is(':visible')) {
@@ -461,7 +491,7 @@ $(document).ready(function() {
 		if (step === 5 && !validateEducationDetails()) return;
 
 		if (step == 6) {
-			
+
 			$('#summaryDetails').html(`
 					<p><strong>Basic Details: </strong></p>
 					<p><strong>Name:</strong> ${$('#fullName').val()}</p>
@@ -506,7 +536,7 @@ $(document).ready(function() {
 		}
 		document.getElementById('summarySkills').innerText = selected.join(", ");
 	}
-	
+
 	$('.prev-btn').click(function() {
 		currentStep = parseInt($(this).data('step')) - 1;
 		showStep(currentStep);
