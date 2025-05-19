@@ -1,6 +1,7 @@
 package com.talenttap.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,10 +33,10 @@ public class JobApplication {
 	private JobSeeker jobSeeker;
 	
 	@Column(name = "date_of_application" , nullable = false)
-	private LocalDate dateOfApplication;
+	private LocalDateTime dateOfApplication;
 	
 	@Column(name = "last_updated")
-	private LocalDate lastUpdated;
+	private LocalDateTime lastUpdated;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
@@ -65,19 +66,19 @@ public class JobApplication {
 		this.jobSeeker = jobSeeker;
 	}
 
-	public LocalDate getDateOfApplication() {
+	public LocalDateTime getDateOfApplication() {
 		return dateOfApplication;
 	}
 
-	public void setDateOfApplication(LocalDate dateOfApplication) {
+	public void setDateOfApplication(LocalDateTime dateOfApplication) {
 		this.dateOfApplication = dateOfApplication;
 	}
 
-	public LocalDate getLastUpdated() {
+	public LocalDateTime getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(LocalDate lastUpdated) {
+	public void setLastUpdated(LocalDateTime lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 

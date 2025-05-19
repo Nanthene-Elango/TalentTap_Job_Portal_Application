@@ -3,6 +3,7 @@ package com.talenttap.service;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -454,10 +455,10 @@ public class JobseekerRegisterService {
 			Jobs job = jobRepo.findById(jobId).get();
 			
 			JobApplication application = new JobApplication();
-			application.setDateOfApplication(LocalDate.now());
+			application.setDateOfApplication(LocalDateTime.now());
 			application.setJob(job);
 			application.setJobSeeker(jobseeker);
-			application.setLastUpdated(LocalDate.now());
+			application.setLastUpdated(LocalDateTime.now());
 			application.setStatus(ApplicationStatus.pending);
 
 			jobApplicationRepo.save(application);

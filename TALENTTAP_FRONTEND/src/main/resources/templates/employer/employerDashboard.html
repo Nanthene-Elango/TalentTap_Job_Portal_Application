@@ -35,19 +35,7 @@
     <div class="container my-4">
         <div class="row">
             <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0 fw-bold">Dashboard Overview</h3>
-                    <div class="d-flex">
-                        <select class="form-select me-2">
-                            <option>Last 30 days</option>
-                            <option>Last week</option>
-                            <option>Last 3 months</option>
-                        </select>
-                        <button class="btn btn-outline-violet">
-                            <i class="fas fa-download me-1"></i> Export
-                        </button>
-                    </div>
-                </div>
+          
 
                 <!-- Statistics Cards Row -->
                 <div class="row mb-4">
@@ -102,7 +90,7 @@
                     <div class="col-12">
                         <div class="section-header">
                             <h5 class="section-title">Recent Applicants</h5>
-                            <a href="candidates.html" class="view-all-link">
+                            <a th:href="@{/employer/candidates}" class="view-all-link">
                                 View All Candidates <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -110,89 +98,23 @@
                             <div class="card-body p-0">
                                 <div class="applicant-list">
                                     <!-- Applicant 1 -->
-                                    <div class="applicant-card">
-                                        <div class="applicant-img">JS</div>
+                                    <div class="applicant-card" th:each="applicant : ${applicants}">
+                                        <div class="applicant-img" th:text="${applicant.candidateName.substring(0, 1)}">JS</div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <div class="applicant-name">John Smith</div>
-                                                    <div class="applicant-position">Senior Frontend Developer <span class="job-badge job-fulltime">Full-time</span></div>
+                                                    <div class="applicant-name" th:text="${applicant.candidateName != null} ? ${applicant.candidateName} : 'N/A'">John Smith</div>
+                                                    <div class="applicant-position" th:text="${applicant.jobName != null ? applicant.jobName : 'N/A'}">Senior Frontend Developer <span class="job-badge job-fulltime">Full-time</span></div>
+                                                    <div class="applicant-position" th:text="${applicant.jobType != null ? applicant.jobType : 'N/A'}">Senior Frontend Developer</div>
+                                                    
                                                 </div>
                                                 <div class="text-end">
                                                     <div class="status-badge status-new">New</div>
-                                                    <div class="applicant-date mt-1">Applied 2 hours ago</div>
+                                                    <div class="applicant-date mt-1"  th:text="${applicant.appliedAgo != null ? applicant.appliedAgo : 'N/A'}">Applied 2 hours ago</div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    <!-- Applicant 2 -->
-                                    <div class="applicant-card">
-                                        <div class="applicant-img">AJ</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <div class="applicant-name">Amanda Johnson</div>
-                                                    <div class="applicant-position">Product Designer <span class="job-badge job-remote">Remote</span></div>
-                                                </div>
-                                                <div class="text-end">
-                                                    <div class="status-badge status-interview">Interview</div>
-                                                    <div class="applicant-date mt-1">Applied 1 day ago</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Applicant 3 -->
-                                    <div class="applicant-card">
-                                        <div class="applicant-img">RK</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <div class="applicant-name">Robert Kim</div>
-                                                    <div class="applicant-position">Marketing Specialist <span class="job-badge job-fulltime">Full-time</span></div>
-                                                </div>
-                                                <div class="text-end">
-                                                    <div class="status-badge status-shortlisted">Shortlisted</div>
-                                                    <div class="applicant-date mt-1">Applied 2 days ago</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Applicant 4 -->
-                                    <div class="applicant-card">
-                                        <div class="applicant-img">LP</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <div class="applicant-name">Lisa Patel</div>
-                                                    <div class="applicant-position">Backend Developer <span class="job-badge job-remote">Remote</span></div>
-                                                </div>
-                                                <div class="text-end">
-                                                    <div class="status-badge status-new">New</div>
-                                                    <div class="applicant-date mt-1">Applied 3 days ago</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Applicant 5 -->
-                                    <div class="applicant-card">
-                                        <div class="applicant-img">DW</div>
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <div class="applicant-name">David Wilson</div>
-                                                    <div class="applicant-position">Project Manager <span class="job-badge job-parttime">Part-time</span></div>
-                                                </div>
-                                                <div class="text-end">
-                                                    <div class="status-badge status-interview">Interview</div>
-                                                    <div class="applicant-date mt-1">Applied 4 days ago</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </div>                      
                                 </div>
                             </div>
                         </div>
@@ -201,19 +123,19 @@
 
                 <!-- Active Jobs Summary -->
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12" >
                         <div class="section-header">
                             <h5 class="section-title">Active Job Postings</h5>
-                            <a href="jobs.html" class="view-all-link">
+                            <a th:href="@{/employer/jobs}" class="view-all-link">
                                 Manage All Jobs <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
+                        <div class="row" >
+                            <div class="col-md-6 mb-4" th:each="job : ${jobs}">
                                 <div class="card job-card h-100">
                                     <div class="card-header">
-                                        <h6>Senior Frontend Developer</h6>
-                                        <span class="job-badge job-fulltime">Full-time</span>
+                                        <h6 th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'">Senior Frontend Developer</h6>
+                                        <span  th:text="${job.jobType != null} ? ${job.jobType} : 'N/A'"class="job-badge job-fulltime">Full-time</span>
                                     </div>
                                     <div class="card-body">
                                         <div class="job-info">
@@ -225,7 +147,7 @@
                                             <span>$110,000 - $140,000</span>
                                         </div>
                                         <div class="job-stats">
-                                            <div class="applicants">
+                                            <div class="applicants" th:text="${job.applicants != null} ? ${job.applicants} + ' Applicants' : '0 Applicants'">
                                                 <i class="fas fa-users me-1"></i> 18 Applicants
                                             </div>
                                             <div class="status">
@@ -236,33 +158,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="card job-card h-100">
-                                    <div class="card-header">
-                                        <h6>Product Designer</h6>
-                                        <span class="job-badge job-remote">Remote</span>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="job-info">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            <span>Anywhere (Remote)</span>
-                                        </div>
-                                        <div class="job-info">
-                                            <i class="fas fa-dollar-sign"></i>
-                                            <span>$90,000 - $120,000</span>
-                                        </div>
-                                        <div class="job-stats">
-                                            <div class="applicants">
-                                                <i class="fas fa-users me-1"></i> 12 Applicants
-                                            </div>
-                                            <div class="status">
-                                                <span class="badge bg-success">Active</span>
-                                                <span class="small text-muted">Expires in 21 days</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>

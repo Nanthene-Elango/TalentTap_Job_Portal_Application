@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,12 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.EmployerProfileDTO;
+import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.CompanyUpdateDTO;
+import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.IndustryTypeDTO;
 import com.talenttap.DTO.LoginDTO;
+import com.talenttap.entity.Jobs;
+import com.talenttap.entity.JobApplication;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.EmployerService;
 import com.talenttap.service.IndustryTypeService;
+import com.talenttap.service.JobService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -37,10 +44,13 @@ public class EmployerController {
 	
 	private EmployerService employerService;
 	
-	public EmployerController( IndustryTypeService industryTypeService, EmployerAuthService employerAuthService, EmployerService employerService) {
+	private JobService jobService;
+	
+	public EmployerController( IndustryTypeService industryTypeService, EmployerAuthService employerAuthService, EmployerService employerService, JobService jobService) {
 		this.industryTypeService = industryTypeService;	
 		this.employerAuthService = employerAuthService;
 		this.employerService = employerService;
+		this.jobService = jobService;
 	}
 	
 	@GetMapping("/industry")
@@ -79,8 +89,38 @@ public class EmployerController {
 		return ResponseEntity.ok(employerService.verifyEmployer(verifyEmployer, token));
 	}
 	
+	// Employer Login
 	@PostMapping("auth/login/employer")
-	public ResponseEntity<?> loginEmployer(@Valid @RequestBody LoginDTO loginRequest , HttpServletResponse response){
-		return employerAuthService.login(loginRequest.getUsername() , loginRequest.getPassword() , response);
+	public ResponseEntity<Map<String, Object>> loginEmployer(@Valid @RequestBody LoginDTO loginRequest , HttpServletResponse response){
+		return ResponseEntity.ok(employerAuthService.login(loginRequest.getUsername() , loginRequest.getPassword() , response));
+	}
+	
+	
+	@GetMapping("/employer/candidates")
+	public ResponseEntity<List<CandidatesDTO>> getAllAppliedCandidates(@RequestHeader("Authorization") String authHeader){
+		String token = authHeader.replace("Bearer ", "");
+		return ResponseEntity.ok(jobService.getAllAppliedCandidates(token));
+	}
+	
+	@PatchMapping("api/candidate/{id}/approve")
+	public ResponseEntity<Void> approveCandidate(@RequestHeader("Authorization") String authHeader, @RequestBody EmailDTO email,@PathVariable int id) {
+		String token = authHeader.replace("Bearer ", "");
+		JobApplication updatedJob = employerService.approveApplication(id, token);
+
+	    if (updatedJob == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+	    return ResponseEntity.ok().build();
+	}
+
+	@PatchMapping("api/candidate/{id}/reject")
+	public ResponseEntity<Void> rejectCandidate(@RequestHeader("Authorization") String authHeader, @RequestBody EmailDTO email,@PathVariable int id) {
+		String token = authHeader.replace("Bearer ", "");
+		JobApplication updatedJob = employerService.rejectApplication(id, token);
+
+	    if (updatedJob == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+	    return ResponseEntity.ok().build();
 	}
 }
