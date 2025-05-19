@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.talenttap.DTO.EducationDTO;
+import com.talenttap.model.Education;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
@@ -128,5 +130,20 @@ public class JobseekerController {
 
 	    redirectAttributes.addFlashAttribute("success", "Job applied successfully.");
 	    return "redirect:/jobs";
+	}
+	
+	@PostMapping("jobseeker/education/add/{id}")
+	public String addEducation(@PathVariable int id , @ModelAttribute EducationDTO education , RedirectAttributes redirectAttributes) {
+		return jobseekerService.addEducation(id , education , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/education/edit")
+	public String updateEducation(@ModelAttribute Education education, RedirectAttributes redirectAttributes) {
+		return jobseekerService.editEducation(education , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/education/delete/{id}")
+	public String deleteEducationById(@PathVariable int id , RedirectAttributes redirectAttributes) {
+		return jobseekerService.deleteEducation(id , redirectAttributes);
 	}
 }
