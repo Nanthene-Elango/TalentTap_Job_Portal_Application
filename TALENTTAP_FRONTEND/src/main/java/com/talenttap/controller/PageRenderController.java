@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -227,6 +229,9 @@ public class PageRenderController {
             }
             JwtToken token = new JwtToken(jwt.trim());
             List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
+           System.out.println("hi");
+           System.out.println(jobs.get(0).getJobId());
+            System.out.println(jobs.get(0).getJobDescription());
             if (jobs == null || jobs.isEmpty()) {
                 model.addAttribute("jobs", new ArrayList<>()); // ensures not null
             } else {
@@ -255,7 +260,7 @@ public class PageRenderController {
 	public String editJobs(@PathVariable("id") Long id,
 	                       Model model,
 	                       @CookieValue(value = "jwt", required = false) String jwt) {
-	    
+	    System.out.println(id);
 	    try {
 	        if (jwt == null || jwt.trim().isEmpty()) {
 	            model.addAttribute("error", "Please log in to view jobs.");
@@ -295,11 +300,44 @@ public class PageRenderController {
 	                .findFirst()
 	                .orElse(null);
 	        
+	        // get all skills
+	        List<Skills> allSkills = jobseekerService.getAllSkills(); 
+	     // From selected job
+	        Set<String> selectedSkillNames = selectedJob.getRequiredSkills(); // e.g., ["Java", "SQL"]
 
+	   
+
+	        // Map names to IDs
+	        List<Integer> selectedSkillIds = allSkills.stream()
+	            .filter(skill -> selectedSkillNames.contains(skill.getSkill()))
+	            .map(Skills::getSkillId)
+	            .collect(Collectors.toList());
+	        System.out.println(selectedSkillIds);
+
+	        // Set in form
+	        
+// Each Skill has id and name
+	        
+	        // locations
+	        List<Location> allLocations = jobseekerService.getAllLocations(); 
+	     // Each Location has locationId and locationName
+	        Set<String> selectedLocationNames = selectedJob.getLocations(); 
+	     // e.g., ["Chennai", "Bangalore"]
+
+	        List<Integer> selectedLocationIds = allLocations.stream()
+	        	    .filter(loc -> selectedLocationNames.contains(loc.getLocation()))
+	        	    .map(Location::getLocationId)
+	        	    .collect(Collectors.toList());
+	        
+
+	        
+	        
+
+	        System.out.println(id);
 	       
 	        
 	        EditJobFormDTO jobForm = new EditJobFormDTO();
-	        jobForm.setJobId(selectedJob.getJobId());
+	        jobForm.setJobId(id);
 	        jobForm.setJobRole(selectedJob.getJobRole());
 	        jobForm.setJobDescription(selectedJob.getJobDescription());
 	        System.out.println(selectedJob.getDeadline().toLocalDate());
@@ -308,13 +346,22 @@ public class PageRenderController {
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	        String formattedDate = selectedJob.getDeadline().format(formatter);
 	        jobForm.setWorkType(selectedJob.getWorkType());
-
+	        jobForm.setBenefits(selectedJob.getBenefits());
 	        jobForm.setDeadline(formattedDate);
 	        jobForm.setOpenings(selectedJob.getOpenings());
 	        jobForm.setStipend(selectedJob.getStipend());
 	        jobForm.setDuration(selectedJob.getDuration());
 	        jobForm.setSalaryMax(selectedJob.getSalaryMax());
-	     // Debug logging
+	        jobForm.setSkillIds(selectedSkillIds);
+	        jobForm.setLocationIds(selectedLocationIds);  // Make sure this field exists in EditJobFormDTO
+	        jobForm.setSalaryMin(selectedJob.getSalaryMin());
+	        jobForm.setYearsOfExperience(selectedJob.getYearsOfExperience());
+	        jobForm.setRequirements(selectedJob.getRoles());
+	        jobForm.setResponsibilities(selectedJob.getResponsibilities());
+	        System.out.println(selectedJob.getLocations());
+	        
+	        
+	        // Debug logging
 	        System.out.println("Current Locale: " + Locale.getDefault());
 	        System.out.println("Selected Job Deadline: " + selectedJob.getDeadline());
 	        System.out.println("Rendering jobForm.deadline: " + jobForm.getDeadline());
@@ -454,6 +501,5 @@ public class PageRenderController {
 	@GetMapping("/admin/index")
 	public String loadAdminIndex() {
 		return "admin/index";
-
 	}
 }

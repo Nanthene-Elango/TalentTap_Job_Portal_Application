@@ -89,7 +89,7 @@ public class JobsService {
 		HttpEntity<EditJobFormDTO> request = new HttpEntity<>(jobFormDTO, headers);
 
 		// Send POST request and return response
-		return restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+		return restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
 	}
 	
 	
