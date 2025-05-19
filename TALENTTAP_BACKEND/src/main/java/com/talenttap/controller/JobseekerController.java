@@ -183,4 +183,9 @@ public class JobseekerController {
 		return jobseekerService.deleteEducation(id );
 	}
 	
+	@PostMapping("jobseeker/skill/add/{id}")
+	public ResponseEntity<String> addSkills(@PathVariable int id,
+	                                        @RequestParam("skillIds") List<Integer> skillIds) {
+	    return jobseekerService.addSkill(id, skillIds);
+	}
 }
