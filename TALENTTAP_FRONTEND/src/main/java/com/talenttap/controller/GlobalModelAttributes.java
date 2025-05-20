@@ -31,8 +31,8 @@ public class GlobalModelAttributes {
             if (jwt != null && !jwt.trim().isEmpty()) {
                 JwtToken token = new JwtToken(jwt.trim());
                 String fullName = jobseekerService.getFullName(token);
-                EmployerProfileDTO profile = employerService.profile(token);
-                model.addAttribute("companyName",profile.getCompanyName());
+//                EmployerProfileDTO profile = employerService.profile(token);
+//                model.addAttribute("companyName",profile.getCompanyName());
                 model.addAttribute("fullname", fullName);
                 model.addAttribute("loggedIn", true);
             } else {

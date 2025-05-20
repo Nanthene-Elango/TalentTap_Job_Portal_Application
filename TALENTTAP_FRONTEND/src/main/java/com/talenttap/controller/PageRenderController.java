@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
@@ -333,8 +335,20 @@ public class PageRenderController {
     }
 	
 	@GetMapping("/admin/adminDashboard")
-	public String loadAdminIndex() {
-		return "admin/adminDashboard";
-
-	}
+    public String loadAdminIndex(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            List<AdminJobDTO> jobs = jobService.getAllAdminJobs(jwt);
+            if (jobs == null || jobs.isEmpty()) {
+                model.addAttribute("error", "No jobs found or failed to fetch jobs.");
+            } else {
+                model.addAttribute("jobs", jobs);
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
+        }
+        return "admin/adminDashboard";
+    }
 }
