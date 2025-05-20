@@ -1,7 +1,14 @@
 package com.talenttap.controller;
 
+import java.util.ArrayList;
+
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -12,13 +19,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import com.talenttap.DTO.AdminJobDTO;
+import com.talenttap.DTO.EducationDTO;
+import com.talenttap.DTO.CandidatesDTO;
+import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerRegister;
+import com.talenttap.model.EmploymentType;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
@@ -103,12 +115,21 @@ public class PageRenderController {
 			List<Location> locations = jobseekerService.getAllLocations();
 			model.addAttribute("locations", locations);
 
+			EducationDTO education = new EducationDTO();
+			model.addAttribute("educationDTO", education);
+			
+			List<EducationLevel> qualifications = jobseekerService.getEducationLevel();
+			model.addAttribute("qualifications", qualifications);
+			
 			List<Education> educations = jobseekerService.getAllEducation(jobseeker.getId());
 			model.addAttribute("educationList", educations);
 
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);
 
+			List<Skills> allSkills = jobseekerService.getAllSkills();
+			System.out.println(allSkills.get(0).getSkillId() + " " + allSkills.get(0).getSkill());
+			model.addAttribute("allSkills", allSkills);
 		}
 
 		return "jobseeker/profile";
@@ -200,24 +221,43 @@ public class PageRenderController {
 	}
 
 	@GetMapping("/employer/employerDashboard")
-	public String loadEmployerDashboard(Model model) {
+	public String loadEmployerDashboard(Model model, @CookieValue(value = "jwt", required = false) JwtToken jwt) throws Exception {
 		model.addAttribute("currentPage", "dashboard");
+		List<CandidatesDTO> candidates= jobService.getAllAppliedCandidates(jwt);
+		List<JobDisplayDTO> getTop2ActiveJobs = jobService.getAllDashBoardJobs(jwt);
+		model.addAttribute("applicants", candidates);
+		model.addAttribute("jobs",getTop2ActiveJobs);
 		return "employer/employerDashboard";
 	}
 
 	@GetMapping("/employer/jobs")
-
     public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+		System.out.println("reaching the controller hii");
 		model.addAttribute("currentPage", "jobs");
         try {
             if (jwt == null || jwt.trim().isEmpty()) {
                 model.addAttribute("error", "Please log in to view jobs.");
-                return "error"; // Or redirect to login
+                return "employer/jobs"; // Or redirect to login
             }
             JwtToken token = new JwtToken(jwt.trim());
             List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
-            System.out.println(jobs.get(0).getJobType());
-            model.addAttribute("jobs", jobs);
+           System.out.println("hi");
+           System.out.println(jobs.get(0).getJobId());
+            System.out.println(jobs.get(0).getJobDescription());
+            if (jobs == null || jobs.isEmpty()) {
+                model.addAttribute("jobs", new ArrayList<>()); // ensures not null
+            } else {
+                model.addAttribute("jobs", jobs);
+            }
+            
+         // 🔥 Add a blank form DTO for editing
+            EditJobFormDTO job = new EditJobFormDTO();
+            model.addAttribute("jobForm", job);
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
+	       
             return "employer/jobs";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", "Invalid JWT token: " + e.getMessage());
@@ -227,10 +267,148 @@ public class PageRenderController {
             return "error";
         }
     }
+	
+	@GetMapping("/employer/jobs/update/{id}")
+	public String editJobs(@PathVariable("id") Long id,
+	                       Model model,
+	                       @CookieValue(value = "jwt", required = false) String jwt) {
+	    System.out.println(id);
+	    try {
+	        if (jwt == null || jwt.trim().isEmpty()) {
+	            model.addAttribute("error", "Please log in to view jobs.");
+	            return "employer/jobs";
+	        }
+
+	        JwtToken token = new JwtToken(jwt.trim());
+
+	        
+	        // ✅ Get the job with the specific ID
+	        JobDisplayDTO selectedJob = jobService.getAllJobs(token)
+	            .stream()
+	            .filter(j -> j.getJobId() ==  id)
+	            .findFirst()
+	            .orElse(null);
+
+	        if (selectedJob == null) {
+	            model.addAttribute("error", "Job not found.");
+	            return "error";
+	        }
+	        List<EmploymentType> employmentTypes = jobService.getEmploymentType();
+	        String jobTypeName = selectedJob.getJobType(); // e.g., "Part Time"
+	        Integer jobTypeId = employmentTypes.stream()
+	                .filter(et -> et.getEmploymentType().equalsIgnoreCase(jobTypeName))
+	                .map(EmploymentType::getEmploymentTypeId)
+	                .findFirst()
+	                .orElse(null);
+	        // ✅ Populate EditJobFormDTO from selected job
+	        
+	        List<JobCategory> jobCategory = jobService.getJobCategories();
+
+	        String jobTypeCategory = selectedJob.getJobCategory();
+	        System.out.println("jobtypecategory"+jobTypeCategory);// e.g., "Part Time"
+	        Integer jobCategoryId = jobCategory.stream()
+	                .filter(et -> et.getJobCategory().equalsIgnoreCase(jobTypeCategory))
+	                .map(JobCategory::getJobCategoryId)
+	                .findFirst()
+	                .orElse(null);
+	        
+	        // get all skills
+	        List<Skills> allSkills = jobseekerService.getAllSkills(); 
+	     // From selected job
+	        Set<String> selectedSkillNames = selectedJob.getRequiredSkills(); // e.g., ["Java", "SQL"]
+
+	   
+
+	        // Map names to IDs
+	        List<Integer> selectedSkillIds = allSkills.stream()
+	            .filter(skill -> selectedSkillNames.contains(skill.getSkill()))
+	            .map(Skills::getSkillId)
+	            .collect(Collectors.toList());
+	        System.out.println(selectedSkillIds);
+
+	        // Set in form
+	        
+// Each Skill has id and name
+	        
+	        // locations
+	        List<Location> allLocations = jobseekerService.getAllLocations(); 
+	     // Each Location has locationId and locationName
+	        Set<String> selectedLocationNames = selectedJob.getLocations(); 
+	     // e.g., ["Chennai", "Bangalore"]
+
+	        List<Integer> selectedLocationIds = allLocations.stream()
+	        	    .filter(loc -> selectedLocationNames.contains(loc.getLocation()))
+	        	    .map(Location::getLocationId)
+	        	    .collect(Collectors.toList());
+	        
+
+	        
+	        
+
+	        System.out.println(id);
+	       
+	        
+	        EditJobFormDTO jobForm = new EditJobFormDTO();
+	        jobForm.setJobId(id);
+	        jobForm.setJobRole(selectedJob.getJobRole());
+	        jobForm.setJobDescription(selectedJob.getJobDescription());
+	        System.out.println(selectedJob.getDeadline().toLocalDate());
+	        jobForm.setJobTypeId(jobTypeId); // assuming this field exists
+	        jobForm.setJobCategoryId(jobCategoryId);
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	        String formattedDate = selectedJob.getDeadline().format(formatter);
+	        jobForm.setWorkType(selectedJob.getWorkType());
+	        jobForm.setBenefits(selectedJob.getBenefits());
+	        jobForm.setDeadline(formattedDate);
+	        jobForm.setOpenings(selectedJob.getOpenings());
+	        jobForm.setStipend(selectedJob.getStipend());
+	        jobForm.setDuration(selectedJob.getDuration());
+	        jobForm.setSalaryMax(selectedJob.getSalaryMax());
+	        jobForm.setSkillIds(selectedSkillIds);
+	        jobForm.setLocationIds(selectedLocationIds);  // Make sure this field exists in EditJobFormDTO
+	        jobForm.setSalaryMin(selectedJob.getSalaryMin());
+	        jobForm.setYearsOfExperience(selectedJob.getYearsOfExperience());
+	        jobForm.setRequirements(selectedJob.getRoles());
+	        jobForm.setResponsibilities(selectedJob.getResponsibilities());
+	        System.out.println(selectedJob.getLocations());
+	        
+	        
+	        // Debug logging
+	        System.out.println("Current Locale: " + Locale.getDefault());
+	        System.out.println("Selected Job Deadline: " + selectedJob.getDeadline());
+	        System.out.println("Rendering jobForm.deadline: " + jobForm.getDeadline());
+	        System.out.println("Deadline String: " + jobForm.getDeadline().toString() + "|"); // Check for spaces
+	        System.out.println("selectedJob.duration: " + selectedJob.getDuration());
+	        System.out.println("jobForm.duration: " + jobForm.getDuration());
+	        System.out.println("selectedJob.jobType: " + selectedJob.getJobType());
+	        System.out.println("jobForm.jobTypeId: " + jobForm.getJobTypeId());
+	        System.out.println("employmentTypes: " + employmentTypes);
+	        
+	        // ... Set other fields as needed
+
+	        // ✅ Add required attributes
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
+	        model.addAttribute("jobForm", jobForm);
+
+	        return "employer/editjob";
+
+	    } catch (Exception e) {
+	        model.addAttribute("error", "Failed to fetch job data: " + e.getMessage());
+	        return "error";
+	    }
+	}
+
+	
+	
+	
 	@GetMapping("/employer/candidates")
-	public String loadCandidates(Model model) {
+	public String loadCandidates(Model model,  @CookieValue(value = "jwt", required = false) JwtToken jwt) throws Exception {
 		model.addAttribute("currentPage","candidates");
-		
+		List<CandidatesDTO> candidates= jobService.getAllAppliedCandidates(jwt);
+		model.addAttribute("applicants", candidates);
 		return "employer/candidates";
 	}
 
@@ -282,13 +460,11 @@ public class PageRenderController {
 
 	@GetMapping("/employer/postjob")
 	public String loadPostJob(Model model) {
-		    JobFormDTO  j = new JobFormDTO();
 		    model.addAttribute("jobForm", new JobFormDTO());
 	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
 	        model.addAttribute("jobCategories", jobService.getJobCategories());
 	        model.addAttribute("skills", jobseekerService.getAllSkills());
 	        model.addAttribute("locations", jobseekerService.getAllLocations());
-		;
 		return "employer/postjob";
 	}
 	
@@ -351,4 +527,9 @@ public class PageRenderController {
         }
         return "admin/adminDashboard";
     }
+
+	public String loadAdminIndex() {
+		return "admin/adminDashboard";
+	}
+
 }

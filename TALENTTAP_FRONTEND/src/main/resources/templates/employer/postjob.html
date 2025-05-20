@@ -59,11 +59,12 @@
                 </div>
                 <div class="mb-3">
                     <label for="skills" class="form-label">Required Skills <span class="text-danger">*</span></label>
-                    <select class="form-control" id="skills" th:field="*{skillIds}" multiple required>
+                    <select class="form-control choices-multiple" id="skills" th:field="*{skillIds}" multiple required>
                         <option th:each="skill : ${skills}" th:value="${skill.skillId}" th:text="${skill.skill}"></option>
                     </select>
                     <div class="invalid-feedback">Please select at least one skill.</div>
                     <div class="valid-feedback">Looks good!</div>
+                   
                 </div>
                 
                 <div class="mb-3">
@@ -115,7 +116,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="locations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
-                    <select class="form-control" id="locations" th:field="*{locationIds}" multiple required>
+                    <select class="form-control" id="locations" th:field="*{locationIds}" multiple  >      	
                         <option th:each="location : ${locations}" th:value="${location.locationId}" th:text="${location.location}"></option>
                     </select>
                     <div class="invalid-feedback">Please select at least one location.</div>
@@ -268,6 +269,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script th:src="@{/employer/js/jobs.js}"></script>
+<script th:src="@{/employer/js/postjob.js}"></script>
 </body>
 </html>

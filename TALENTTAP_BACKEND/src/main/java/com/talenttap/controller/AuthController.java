@@ -40,7 +40,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/login/jobseeker")
-	public ResponseEntity<?> loginJobSeeker(@RequestBody LoginDTO request , HttpServletResponse response){
+	public ResponseEntity<?> loginJobSeeker(@Valid @RequestBody LoginDTO request , HttpServletResponse response){
 		return jobseekerRegisterService.login(request.getUsername() , request.getPassword() , response);
 	}
 	

@@ -33,7 +33,6 @@ public class JobDTO {
 	private Double stipend;
 	
 	
-	
 	public JobDTO(Jobs job) {
 		this.jobId = job.getJobId();
 		this.company = job.getEmployer().getCompany().getCompanyName();

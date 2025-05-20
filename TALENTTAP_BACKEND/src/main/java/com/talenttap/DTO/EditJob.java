@@ -44,7 +44,7 @@ public class EditJob {
     private Integer duration;
     private Double stipend;
     private Integer openings;
-    private LocalDate deadline;
+    private String deadline;
 
 	// Getters and Setters
     public Integer getJobId() {
@@ -86,6 +86,6 @@ public class EditJob {
     public void setStipend(Double stipend) { this.stipend = stipend; }
     public Integer getOpenings() { return openings; }
     public void setOpenings(Integer openings) { this.openings = openings; }
-    public LocalDate getDeadline() { return deadline; }
-    public void setDeadline(LocalDate deadline) { this.deadline = deadline; }   
+    public String getDeadline() { return deadline; }
+    public void setDeadline(String deadline) { this.deadline = deadline; }   
 }

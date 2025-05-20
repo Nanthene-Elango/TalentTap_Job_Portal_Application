@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.DTO.JobUpdateFormDTO;
+import com.talenttap.model.Jobs;
 import com.talenttap.model.JwtToken;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
@@ -95,6 +98,130 @@ public class JobsController {
             return "employer/postjob";
         }
     }
+    
+    
+    // edit job
+    @PostMapping("/editjob")
+    public String editJob(@Valid @ModelAttribute("jobForm") EditJobFormDTO jobFormDTO, BindingResult result, Model model,
+            @CookieValue(value = "jwt", required = false) String jwt, HttpServletRequest request) {
+        // Print all JobFormDTO fields for debugging
+        System.out.println("--- JobFormDTO Values ---");
+        System.out.println("job id"+ jobFormDTO.getJobId());
+        System.out.println("Job Role: " + jobFormDTO.getJobRole());
+        System.out.println("Job Type ID: " + jobFormDTO.getJobTypeId());
+        System.out.println("Job Category ID: " + jobFormDTO.getJobCategoryId());
+        System.out.println("Job Description: " + jobFormDTO.getJobDescription());
+        System.out.println("Skill IDs: " + jobFormDTO.getSkillIds());
+        System.out.println("Responsibilities: " + jobFormDTO.getResponsibilities());
+        System.out.println("Requirements: " + jobFormDTO.getRequirements());
+        System.out.println("Benefits: " + jobFormDTO.getBenefits());
+        System.out.println("Work Type: " + jobFormDTO.getWorkType());
+        System.out.println("Location IDs: " + jobFormDTO.getLocationIds());
+        System.out.println("Years of Experience: " + jobFormDTO.getYearsOfExperience());
+        System.out.println("Salary Min: " + jobFormDTO.getSalaryMin());
+        System.out.println("Salary Max: " + jobFormDTO.getSalaryMax());
+        System.out.println("Duration: " + jobFormDTO.getDuration());
+        System.out.println("Stipend: " + jobFormDTO.getStipend());
+        System.out.println("Openings: " + jobFormDTO.getOpenings());
+        System.out.println("Deadline: " + jobFormDTO.getDeadline());
+        System.out.println("Cookies received: " + request.getHeader("Cookie"));
+
+        if (jwt != null && !jwt.trim().isEmpty()) {
+            if (result.hasErrors()) {
+                model.addAttribute("employmentTypes", jobService.getEmploymentType());
+                model.addAttribute("jobCategories", jobService.getJobCategories());
+                model.addAttribute("skills", jobseekerService.getAllSkills());
+                model.addAttribute("locations", jobseekerService.getAllLocations());
+                System.out.println("Validation errors: " + result.getAllErrors());
+                return "error";
+            }
+
+            try {
+                ResponseEntity<String> response = jobService.updateJob(jobFormDTO, jwt);
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    System.out.println("Job posted successfully: " + response.getBody());
+                    return "redirect:/employer/jobs";
+                } else {
+                    System.out.println("Failed to post job: " + response.getStatusCode() + " - " + response.getBody());
+                    model.addAttribute("error", "Failed to post job. Please try again.");
+                    return "error";
+                }
+            } catch (Exception e) {
+                System.out.println("Error posting job: " + e.getMessage());
+                model.addAttribute("error", "An error occurred while posting the job.");
+                return "error";
+            }
+        } else {
+            System.out.println("No valid JWT token found");
+            model.addAttribute("error", "Authentication required. Please log in.");
+            return "error";
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    @PostMapping("/job/{id}/toggle")
+    public String toggleJobStatus(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        try {
+        	System.out.println("Reaching the controller");
+            String updatedStatus = jobService.toggleJobStatus(id);  // returns "Open" or "Closed"
+            redirectAttributes.addFlashAttribute("message", "Status changed successfully!");
+            redirectAttributes.addFlashAttribute("updatedJobStatus", updatedStatus);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to change status: " + e.getMessage());
+        }
+        return "redirect:/employer/jobs";  // make sure this loads job list with correct model
+    }
+    
+    @PostMapping("/job/{id}/delete")
+    public String deleteJob(@PathVariable String id,
+                            RedirectAttributes redirectAttributes) {
+        // You can use deleteReason and deleteOtherReason for logging or validation
+        int ids = Integer.parseInt(id);
+        boolean deleted = jobService.deleteJob(ids);
+        if (deleted) {
+            redirectAttributes.addFlashAttribute("message", "Job deleted successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Job not found or deletion failed");
+        }
+        return "redirect:/employer/jobs";
+    }
+
+
     
 //    @PutMapping("/jobs/update/{jobId}")
 //    public String updateJob(@PathVariable int jobId,

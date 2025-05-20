@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.talenttap.DTO.EducationDTO;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.JobFilter;
@@ -342,15 +343,15 @@ public class JobseekerService {
 	    if (jwt != null && !jwt.trim().isEmpty()) {
 	        try {
 	            HttpHeaders headers = new HttpHeaders();
-	            headers.add("Cookie", "jwt=" + jwt.trim()); // Pass JWT as cookie
+	            headers.add("Cookie", "jwt=" + jwt.trim()); 
 
 	            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-	            String url = "http://localhost:8083/jobseeker/job/apply/" + id; // Backend API
+	            String url = "http://localhost:8083/jobseeker/job/apply/" + id; 
 
 	            restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
 	        } catch (Exception e) {
-	            e.printStackTrace(); // Ideally use a logger
+	            e.printStackTrace(); 
 	            throw new RuntimeException("Failed to apply for job");
 	        }
 	    } else {
@@ -382,6 +383,94 @@ public class JobseekerService {
 	        }
 	    }
 	    return false;
+	}
+
+	public String addEducation(int id, EducationDTO education ,  RedirectAttributes redirectAttributes) {
+		
+		String url = "http://localhost:8083/jobseeker/education/add/" + id;
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<EducationDTO> requestEntity = new HttpEntity<>(education, headers);
+		
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST , requestEntity , String.class);
+		
+		if (response.getStatusCode().is2xxSuccessful()) {
+			 redirectAttributes.addFlashAttribute("success" , "education added successfully!");
+		}
+		else {
+			redirectAttributes.addFlashAttribute("error" , "error adding education!");
+		}
+		return "redirect:/profile";
+	}
+
+	public String editEducation(Education education, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/education/update/" + education.getEducationId();
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+
+	    HttpEntity<Education> requestEntity = new HttpEntity<>(education, headers);
+
+	    try {
+	        ResponseEntity<String> response = restTemplate.exchange(
+	                url,
+	                HttpMethod.PUT,
+	                requestEntity,
+	                String.class
+	        );
+
+	        if (response.getStatusCode().is2xxSuccessful()) {
+	            redirectAttributes.addFlashAttribute("success", "Education updated successfully!");
+	        } else {
+	            redirectAttributes.addFlashAttribute("error", "Failed to update education.");
+	        }
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Error while updating education" + e.getMessage());
+	    }
+	    return "redirect:/profile";
+	}
+
+	public String deleteEducation(int id, RedirectAttributes redirectAttributes) {
+		
+		String url = "http://localhost:8083/jobseeker/education/delete/" + id;
+		
+		try {
+			restTemplate.delete(url);
+			redirectAttributes.addFlashAttribute("success", "education deleted successfully!");
+		}
+		catch(Exception e) {
+			redirectAttributes.addFlashAttribute("error" , "Error occured while deleting education!");
+		}
+		
+		return "redirect:/profile";
+	}
+
+	public String addSkills(Long jobSeekerId, List<Long> skillIds, RedirectAttributes redirectAttributes) {
+		
+		String url = "http://localhost:8083/jobseeker/skill/add/" + jobSeekerId;
+		
+		try {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+	        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+	        for (Long skillId : skillIds) {
+	            body.add("skillIds", skillId.toString());
+	        }
+
+	        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+	        restTemplate.postForEntity(url, request, String.class);
+
+	        redirectAttributes.addFlashAttribute("success", "Skills added successfully.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Failed to add skills: " + e.getMessage());
+	    }
+
+		
+		return "redirect:/profile";
 	}
 
 }

@@ -1,0 +1,214 @@
+package com.talenttap.DTO;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public class EditJobFormDTO {
+	private Long jobId;
+
+	@NotBlank
+	@Size(min = 3, max = 100)
+	private String jobRole;
+
+	@NotNull
+	private Integer jobTypeId;
+
+	@NotNull
+	private int jobCategoryId;
+
+	@NotBlank
+	@Size(min = 100, max = 3000)
+	private String jobDescription;
+
+	@NotEmpty
+	private List<Integer> skillIds;
+
+	@NotBlank
+	private String responsibilities;
+
+	@NotBlank
+	private String requirements;
+
+	private String benefits;
+
+	@NotBlank
+	private String workType;
+
+	@NotEmpty
+	private List<Integer> locationIds;
+
+	private String yearsOfExperience;
+
+	@Min(0)
+	private Double salaryMin;
+
+	@Min(0)
+	private Double salaryMax;
+
+	@Min(1)
+	@Max(24)
+	private Integer duration;
+
+	@Min(0)
+	private Double stipend;
+
+	@Min(1)
+	private Integer openings;
+
+	@NotNull
+	private String deadline;
+
+	// Getters and setters
+	public String getJobRole() {
+		return jobRole;
+	}
+
+	public void setJobRole(String jobRole) {
+		this.jobRole = jobRole;
+	}
+
+	public @NotNull Integer getJobTypeId() {
+		return jobTypeId;
+	}
+
+	public void setJobTypeId(Integer jobTypeId2) {
+		this.jobTypeId = jobTypeId2;
+	}
+
+	public Integer getJobCategoryId() {
+		return jobCategoryId;
+	}
+
+	public void setJobCategoryId(Integer jobCategoryId) {
+		this.jobCategoryId = jobCategoryId;
+	}
+
+	public String getJobDescription() {
+		return jobDescription;
+	}
+
+	public void setJobDescription(String jobDescription) {
+		this.jobDescription = jobDescription;
+	}
+
+	public List<Integer> getSkillIds() {
+		return skillIds;
+	}
+
+	public void setSkillIds(List<Integer> skillIds) {
+		this.skillIds = skillIds;
+	}
+
+	public String getResponsibilities() {
+		return responsibilities;
+	}
+
+	public void setResponsibilities(String responsibilities) {
+		this.responsibilities = responsibilities;
+	}
+
+	public String getRequirements() {
+		return requirements;
+	}
+
+	public void setRequirements(String requirements) {
+		this.requirements = requirements;
+	}
+
+	public String getBenefits() {
+		return benefits;
+	}
+
+	public void setBenefits(String benefits) {
+		this.benefits = benefits;
+	}
+
+	public String getWorkType() {
+		return workType;
+	}
+
+	public void setWorkType(String workType) {
+		this.workType = workType;
+	}
+
+	public List<Integer> getLocationIds() {
+		return locationIds;
+	}
+
+	public void setLocationIds(List<Integer> selectedLocationIds) {
+		this.locationIds = selectedLocationIds;
+	}
+
+	public String getYearsOfExperience() {
+		return yearsOfExperience;
+	}
+
+	public void setYearsOfExperience(String yearsOfExperience) {
+		this.yearsOfExperience = yearsOfExperience;
+	}
+
+	public Double getSalaryMin() {
+		return salaryMin;
+	}
+
+	public void setSalaryMin(Double salaryMin) {
+		this.salaryMin = salaryMin;
+	}
+
+	public Double getSalaryMax() {
+		return salaryMax;
+	}
+
+	public void setSalaryMax(Double salaryMax) {
+		this.salaryMax = salaryMax;
+	}
+
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+
+	public Double getStipend() {
+		return stipend;
+	}
+
+	public void setStipend(Double stipend) {
+		this.stipend = stipend;
+	}
+
+	public Integer getOpenings() {
+		return openings;
+	}
+
+	public void setOpenings(Integer openings) {
+		this.openings = openings;
+	}
+
+	public String getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(String deadline) {
+		this.deadline = deadline;
+	}
+	
+	public Long getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(Long id) {
+		this.jobId = id;
+	}
+
+}
