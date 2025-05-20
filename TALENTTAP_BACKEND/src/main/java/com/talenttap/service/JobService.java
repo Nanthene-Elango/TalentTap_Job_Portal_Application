@@ -364,8 +364,8 @@ public class JobService {
                  .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
          // Fetch employer
-         Employer employer = employerRepo.findByUser(user)
-                 .orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
+//         Employer employer = employerRepo.findByUser(user)
+//                 .orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
 
          // Fetch top 2 active jobs (not expired, ordered by posted date)
          List<Jobs> jobs = jobsRepo.findAll();
@@ -419,6 +419,99 @@ public class JobService {
 
              return dto;
          }).collect(Collectors.toList());
+ 	}
+ 	
+ 	 public AdminJobDTO getJobById(int jobId, String jwt) {
+         if (jwt == null || jwt.isBlank()) {
+             throw new IllegalArgumentException("JWT token is empty or null");
+         }
+
+         String username = jwtutil.extractIdentifier(jwt);
+         Users user = userRepo.findByUsername(username)
+                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+         Optional<Jobs> jobOpt = jobsRepo.findById(jobId);
+         if (jobOpt.isEmpty()) {
+             return null;
+         }
+
+         Jobs job = jobOpt.get();
+         AdminJobDTO dto = new AdminJobDTO();
+
+         dto.setJobId(job.getJobId());
+         dto.setJobRole(job.getJobRole());
+         dto.setJobType(job.getJobType().getEmploymentType());
+         dto.setJobCategory(job.getJobCategory().getJobCategory());
+         dto.setJobDescription(job.getJobDescription());
+         dto.setRoles(job.getRoles());
+         dto.setResponsibilities(job.getResponsibilities());
+         dto.setBenefits(job.getBenefits());
+         dto.setDuration(job.getDuration() != 0 ? job.getDuration() : null);
+         dto.setStipend(job.getStipend() != 0 ? job.getStipend() : null);
+
+         if (job.getSalary_range() != null) {
+             dto.setSalaryMin(job.getSalary_range().getMin_range());
+             dto.setSalaryMax(job.getSalary_range().getMax_range());
+         }
+
+         dto.setYearsOfExperience(job.getYearsOfExperience());
+         dto.setWorkType(job.getWorkType().name());
+         dto.setOpenings(job.getOpenings());
+         dto.setPostedDate(job.getPostedDate());
+         dto.setDeadline(job.getDeadline());
+         dto.setJobStatus(job.getJobStatus().name());
+         dto.setApprovalStatus(job.getApprovalStatus().name());
+         dto.setExpired(job.getDeadline().isBefore(LocalDateTime.now()));
+
+         dto.setRequiredSkills(job.getRequiredSkills()
+                 .stream()
+                 .map(Skills::getSkill)
+                 .collect(Collectors.toSet()));
+
+         dto.setLocations(job.getJobLocation()
+                 .stream()
+                 .map(Location::getLocation)
+                 .collect(Collectors.toSet()));
+
+         dto.setCompanyName(job.getEmployer().getCompany().getCompanyName());
+
+         dto.setApplicants(0);
+
+         return dto;
+     }
+
+ 	 public void approveJobs(List<Integer> jobIds, String jwt) {
+ 		 if (jwt == null || jwt.isBlank()) {
+ 			 throw new IllegalArgumentException("JWT token is empty or null");
+ 		 }
+ 		 
+ 		 String username = jwtutil.extractIdentifier(jwt);
+ 		 Users user = userRepo.findByUsername(username)
+ 				 .orElseThrow(() -> new RuntimeException("User not found: " + username));
+ 		 
+ 		 for (Integer jobId : jobIds) {
+ 			 Jobs job = jobsRepo.findById(jobId)
+ 					 .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
+ 			 job.setApprovalStatus(ApplicationStatus.approved);
+ 			 jobsRepo.save(job);
+ 		 }
+ 	 }
+ 	 
+ 	public void rejectJobs(List<Integer> jobIds, String jwt) {
+ 	    if (jwt == null || jwt.isBlank()) {
+ 	        throw new IllegalArgumentException("JWT token is empty or null");
+ 	    }
+
+ 	    String username = jwtutil.extractIdentifier(jwt);
+ 	    Users user = userRepo.findByUsername(username)
+ 	            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+ 	    for (Integer jobId : jobIds) {
+ 	        Jobs job = jobsRepo.findById(jobId)
+ 	                .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
+ 	        job.setApprovalStatus(ApplicationStatus.rejected);
+ 	        jobsRepo.save(job);
+ 	    }
  	}
     
 }

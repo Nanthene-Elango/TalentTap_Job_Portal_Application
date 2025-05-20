@@ -361,7 +361,7 @@
                                             <td><span class="badge bg-success">Approved</span></td>
                                             <td>
                                                 <a href="job-details.html?id=1" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                                <button href="#" class="delete-btn btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                             </td>
                                         </tr>
                                         <tr>
@@ -377,7 +377,7 @@
                                             <td><span class="badge bg-warning">Pending</span></td>
                                             <td>
                                                 <a href="job-details.html?id=2" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                                <button href="#" class="delete-btn btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                             </td>
                                         </tr>
                                         <tr>
@@ -393,7 +393,7 @@
                                             <td><span class="badge bg-success">Approved</span></td>
                                             <td>
                                                 <a href="job-details.html?id=3" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                                <button href="#" class="delete-btn btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -427,7 +427,7 @@
                                         <option value="">All Approval Status</option>
                                         <option value="approved">Approved</option>
                                         <option value="pending">Pending</option>
-                                        <option value="rejected">Rejected</option>
+                                        <option value="rejected">Suspended</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
@@ -514,7 +514,7 @@
                                             <td>Healthcare</td>
                                             <td>2</td>
                                             <td>15</td>
-                                            <td><span class="badge bg-danger">Rejected</span></td>
+                                            <td><span class="badge bg-danger">Suspended</span></td>
                                             <td>2025-02-20</td>
                                             <td>
                                                 <a href="employer-details.html?id=3" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
@@ -529,7 +529,7 @@
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <div>
                                     <button class="btn btn-sm btn-success me-1" id="bulkApproveEmployers" disabled>Approve Selected</button>
-                                    <button class="btn btn-sm btn-warning" id="bulkRejectEmployers" disabled>Reject Selected</button>
+                                    <button class="btn btn-sm btn-warning" id="bulkRejectEmployers" disabled>Suspend Selected</button>
                                 </div>
                                 <nav>
                                     <ul class="pagination pagination-sm mb-0">
@@ -665,20 +665,35 @@
                     </div>
                 </div>
 
-                <!-- Applications Section -->
-                <div class="section applications-section" id="applicationsSection">
-                    <h2 class="text-center mb-4">Applications Overview</h2>
-                    <div class="text-center py-5">
-                        <p class="text-muted">Content for Applications coming soon!</p>
+                <!-- Modal for job removal confirmation -->
+                <div class="modal fade" id="jobRemovalModal" tabindex="-1" aria-labelledby="jobRemovalModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="jobRemovalModalLabel">Confirm Job Removal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to permanently remove this job listing? This action cannot be undone.</p>
+                        <p>The job may have been flagged for violating our <a href="terms.html" class="text-violet">Terms and Conditions</a>.</p>
+                         <div class="mb-3">
+                            <label for="removalReason" class="form-label">Reason for Removal:</label>
+                            <select id="removalReason" class="form-select" required>
+                                <option value="" disabled selected>Select a reason</option>
+                                <option value="Illegal Content">Illegal Content</option>
+                                <option value="Discriminatory Content">Discriminatory Content</option>
+                                <option value="Misleading Information">Misleading Information</option>
+                                <option value="Spam or Irrelevant Content">Spam or Irrelevant Content</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-violet" id="confirmRemoveJob">Remove Job</button>
+                    </div>
                     </div>
                 </div>
-
-                <!-- Settings Section -->
-                <div class="section settings-section" id="settingsSection">
-                    <h2 class="text-center mb-4">Settings</h2>
-                    <div class="text-center py-5">
-                        <p class="text-muted">Content for Settings coming soon!</p>
-                    </div>
                 </div>
             </div>
         </div>
