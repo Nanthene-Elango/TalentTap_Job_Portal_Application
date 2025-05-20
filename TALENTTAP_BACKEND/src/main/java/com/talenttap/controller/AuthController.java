@@ -58,8 +58,8 @@ public class AuthController {
         return adminService.registerAdmin(request);
     }
 	
-	@PostMapping("/login/admin")
-    public ResponseEntity<?> loginAdmin(@RequestBody LoginDTO request, HttpServletResponse response) {
-        return adminService.loginAdmin(request, response);
+	 @PostMapping("/login/admin")
+	 public ResponseEntity<?> loginAdmin(@Valid @RequestBody LoginDTO request, HttpServletResponse response) {
+	     return adminService.loginAdmin(request, response);
     }
 }
