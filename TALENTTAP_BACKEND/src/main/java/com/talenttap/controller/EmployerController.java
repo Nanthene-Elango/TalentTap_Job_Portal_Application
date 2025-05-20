@@ -102,7 +102,7 @@ public class EmployerController {
 		return ResponseEntity.ok(jobService.getAllAppliedCandidates(token));
 	}
 	
-	@PatchMapping("api/candidate/{id}/approve")
+	@PostMapping("api/candidate/{id}/approve")
 	public ResponseEntity<Void> approveCandidate(@RequestHeader("Authorization") String authHeader, @RequestBody EmailDTO email,@PathVariable int id) {
 		String token = authHeader.replace("Bearer ", "");
 		JobApplication updatedJob = employerService.approveApplication(id, token);
@@ -113,7 +113,7 @@ public class EmployerController {
 	    return ResponseEntity.ok().build();
 	}
 
-	@PatchMapping("api/candidate/{id}/reject")
+	@PostMapping("api/candidate/{id}/reject")
 	public ResponseEntity<Void> rejectCandidate(@RequestHeader("Authorization") String authHeader, @RequestBody EmailDTO email,@PathVariable int id) {
 		String token = authHeader.replace("Bearer ", "");
 		JobApplication updatedJob = employerService.rejectApplication(id, token);

@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.EducationDTO;
+import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
@@ -256,7 +257,7 @@ public class PageRenderController {
     	    model.addAttribute("locations", jobseekerService.getAllLocations());
     		model.addAttribute("currentPage", "jobs");
     		model.addAttribute("jobFilter", new EmployerJobFilter());
-            
+            model.addAttribute("email",new EmailDTO());
           
 	       
             return "employer/jobs";
