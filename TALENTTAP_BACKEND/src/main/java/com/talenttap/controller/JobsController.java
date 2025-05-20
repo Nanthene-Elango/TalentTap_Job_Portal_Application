@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.talenttap.DTO.EditJob;
+import com.talenttap.DTO.EmployerJobFilterDTO;
 import com.talenttap.DTO.EmploymentTypeDTO;
 import com.talenttap.DTO.IndustryTypeDTO;
 import com.talenttap.DTO.JobCategoryDTO;
@@ -100,11 +101,6 @@ public class JobsController {
 	public ResponseEntity<Jobs> getJobById(@PathVariable int id) {
 		return ResponseEntity.ok(jobService.getJobById(id));
 	}
-
-//	@PatchMapping("api/job/{id}/toggleStatus")
-//	public ResponseEntity<Jobs> toggleJobStatus(@PathVariable int id) {
-//		return ResponseEntity.ok(jobService.changeJobStatus(id));
-//	}
 	
 	@PutMapping("api/job/{id}/toggleStatus")
 	public ResponseEntity<String> toggleJobStatus(@PathVariable int id) {
@@ -133,18 +129,12 @@ public class JobsController {
 		return ResponseEntity.ok(jobService.editJob(job));
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<Page<Jobs>> searchJobs(@RequestParam String keyword,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "postedDate") String sortBy,
-			@RequestParam(defaultValue = "desc") String direction) {
-
-		PageRequest pageable = PageRequest.of(page, size,
-				direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
-
-		Page<Jobs> result = jobService.searchJobs(keyword, pageable);
-		return ResponseEntity.ok(result);
+	@PostMapping("/searchAndFilter")  // Changed to POST because you have a @RequestBody
+	public ResponseEntity<List<JobDisplayDTO>> searchJobs(@RequestBody EmployerJobFilterDTO dto) {
+	    List<JobDisplayDTO> result = jobService.searchJobs(dto);
+	    return ResponseEntity.ok(result);
 	}
+
 
 	@GetMapping("/getAllJobs")
 	public ResponseEntity<List<JobDisplayDTO>> getEmployerJobs(@RequestHeader("Authorization") String authHeader) {

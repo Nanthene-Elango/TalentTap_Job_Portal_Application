@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.talenttap.DTO.EditJob;
+import com.talenttap.DTO.EmployerJobFilterDTO;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EmploymentTypeDTO;
@@ -376,6 +377,66 @@ public class JobService {
 	}
 
 
+	public List<JobDisplayDTO> searchJobs(EmployerJobFilterDTO jobFilter) {
+		    List<Jobs> jobs = jobsRepo.searchByKeywordNoPagination(jobFilter.getKeyword().toLowerCase());
+
+	    if (jobs != null) {
+
+	    	if (jobFilter.getEmploymentType() != null && jobFilter.getEmploymentType() != 0) {
+	    	    jobs = jobs.stream()
+	    	        .filter(job -> job.getJobType() != null &&
+	    	                       Integer.valueOf(job.getJobType().getEmploymentTypeId()).equals(jobFilter.getEmploymentType()))
+	    	        .toList();
+	    	   
+	    	    System.out.println("hi im emp type" +jobs.get(0).getJobType().getEmploymentType());
+	    	}
+
+
+
+	        // Filter by location if not 0
+	        if (jobFilter.getLocation() != 0) {
+	            jobs = jobs.stream()
+	                .filter(j -> j.getJobLocation() != null 
+	                          && j.getJobLocation().stream()
+	                              .anyMatch(loc -> loc.getLocationId() == jobFilter.getLocation()))
+	                .toList();
+	        }
+
+	        // Filter by workType (assuming it's an integer field in Jobs)
+	        if (jobFilter.getWorkType() != null && !jobFilter.getWorkType().isBlank() && !jobFilter.getWorkType().isEmpty()) {
+	            jobs = jobs.stream()
+	                .filter(j -> j.getWorkType() != null
+	                          && j.getWorkType().name().equals(jobFilter.getWorkType()))
+	                .toList();
+	        }
+
+	        if (jobFilter.getJobStatus() != null && !jobFilter.getJobStatus().isBlank()) {
+	            JobStatus filterStatus = null;
+	            try {
+	                filterStatus = JobStatus.valueOf(jobFilter.getJobStatus().toLowerCase());
+	                System.out.println("--- Filter Status (parsed enum): " + filterStatus.name() + " ---");
+	            } catch (IllegalArgumentException e) {
+	                System.out.println("--- Invalid job status filter value: " + jobFilter.getJobStatus() + " ---");
+	                filterStatus = null;
+	            }
+
+	            if (filterStatus != null) {
+	                final JobStatus finalFilterStatus = filterStatus;
+	                jobs = jobs.stream()
+	                    .filter(j -> {
+	                        System.out.println("--- Checking job status: " + (j.getJobStatus() != null ? j.getJobStatus().name() : "null") + " against filter: " + finalFilterStatus.name() + " ---");
+	                        return j.getJobStatus() != null && j.getJobStatus().name().equals(finalFilterStatus.name().toLowerCase());
+	                    })
+	                    .toList();
+	                
+	            }
+	        }
+
+	    }
+	    // Map filtered Jobs entities to JobDisplayDTO (assuming you have a mapper)
+	    return jobs.stream().map(JobDisplayDTO::new).toList();
+
+
 	
 	 public Page<Jobs> searchJobs(String keyword, Pageable pageable) {
 	        return jobsRepo.searchByKeyword(keyword, pageable);
@@ -393,12 +454,6 @@ public class JobService {
          String username = jwtutil.extractIdentifier(jwt);
          Users user = userRepo.findByUsername(username)
                  .orElseThrow(() -> new RuntimeException("User not found: " + username));
-
-         // Fetch employer
-//         Employer employer = employerRepo.findByUser(user)
-//                 .orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
-
-         // Fetch top 2 active jobs (not expired, ordered by posted date)
          List<Jobs> jobs = jobsRepo.findAll();
 
          // Map to JobDisplayDTO
@@ -544,10 +599,7 @@ public class JobService {
  	        jobsRepo.save(job);
  	    }
  	}
-    
-	public Page<Jobs> searchJobs(String keyword, Pageable pageable) {
-		return jobsRepo.searchByKeyword(keyword, pageable);
-	}
+   
 
 	// Admin section
 	// Jobs to display in admins page
