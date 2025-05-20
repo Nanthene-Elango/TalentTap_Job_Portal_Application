@@ -73,6 +73,8 @@ const bulkReject = document.getElementById('bulkReject');
 const postedStartDate = document.getElementById('postedStartDate');
 const postedEndDate = document.getElementById('postedEndDate');
 
+let rowToDelete = null;
+
 function filterJobs() {
     const status = statusFilter.value.toLowerCase();
     const approval = approvalFilter.value.toLowerCase();
@@ -96,7 +98,45 @@ function filterJobs() {
         row.style.display = matchesSearch && matchesStatus && matchesApproval && matchesDate ? '' : 'none';
     });
 }
+// Handle trash icon click to show modal
+jobTable.addEventListener('click', function(e) {
+    const deleteBtn = e.target.closest('.delete-btn');
+    if (deleteBtn) {
+        e.preventDefault();
+        rowToDelete = deleteBtn.closest('tr');
+        const jobTitle = rowToDelete.cells[1].textContent.trim();
+        // Update modal title with job title
+        document.getElementById('jobRemovalModalLabel').textContent = `Confirm Removal: ${jobTitle}`;
+        // Reset dropdown and button state
+        const removalReason = document.getElementById('removalReason');
+        removalReason.value = '';
+        document.getElementById('confirmRemoveJob').disabled = true;
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('jobRemovalModal'));
+        modal.show();
+    }
+});
 
+// Enable/disable Remove Job button based on reason selection
+document.getElementById('removalReason').addEventListener('change', function() {
+    document.getElementById('confirmRemoveJob').disabled = !this.value;
+});
+
+// Handle confirm removal button in modal
+document.getElementById('confirmRemoveJob').addEventListener('click', function() {
+    if (rowToDelete) {
+        const reason = document.getElementById('removalReason').value;
+        rowToDelete.remove();
+        rowToDelete = null;
+        updateBulkActions();
+        filterJobs();
+        // Hide the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('jobRemovalModal'));
+        modal.hide();
+        // TODO: Call API to delete job with reason, e.g., fetch(`/api/jobs/${jobId}`, { method: 'DELETE', body: JSON.stringify({ reason }) })
+        console.log(`Job removed for reason: ${reason}`);
+    }
+});
 if (statusFilter) statusFilter.addEventListener('change', filterJobs);
 if (approvalFilter) approvalFilter.addEventListener('change', filterJobs);
 if (jobSearch) jobSearch.addEventListener('input', filterJobs);
