@@ -26,6 +26,7 @@ import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.EmployerJobFilter;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.IndustryType;
@@ -230,7 +231,7 @@ public class PageRenderController {
 	@GetMapping("/employer/jobs")
     public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
 		System.out.println("reaching the controller hii");
-		model.addAttribute("currentPage", "jobs");
+		
         try {
             if (jwt == null || jwt.trim().isEmpty()) {
                 model.addAttribute("error", "Please log in to view jobs.");
@@ -246,14 +247,14 @@ public class PageRenderController {
             } else {
                 model.addAttribute("jobs", jobs);
             }
+            model.addAttribute("employmentTypes", jobService.getEmploymentType());
+    	    model.addAttribute("jobCategories", jobService.getJobCategories());
+    	    model.addAttribute("skills", jobseekerService.getAllSkills());
+    	    model.addAttribute("locations", jobseekerService.getAllLocations());
+    		model.addAttribute("currentPage", "jobs");
+    		model.addAttribute("jobFilter", new EmployerJobFilter());
             
-         // 🔥 Add a blank form DTO for editing
-            EditJobFormDTO job = new EditJobFormDTO();
-            model.addAttribute("jobForm", job);
-	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
-	        model.addAttribute("jobCategories", jobService.getJobCategories());
-	        model.addAttribute("skills", jobseekerService.getAllSkills());
-	        model.addAttribute("locations", jobseekerService.getAllLocations());
+          
 	       
             return "employer/jobs";
         } catch (IllegalArgumentException e) {
