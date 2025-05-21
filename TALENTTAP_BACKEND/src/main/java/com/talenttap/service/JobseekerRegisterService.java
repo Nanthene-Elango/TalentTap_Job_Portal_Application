@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.AddEducationDTO;
+import com.talenttap.DTO.Certifications;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobFilterDTO;
@@ -28,6 +29,7 @@ import com.talenttap.DTO.JobseekerRegisterDTO;
 import com.talenttap.DTO.SkillsDTO;
 import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.AuthProvider;
+import com.talenttap.entity.Certification;
 import com.talenttap.entity.Education;
 import com.talenttap.entity.Gender;
 import com.talenttap.entity.JobApplication;
@@ -36,6 +38,7 @@ import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
 import com.talenttap.entity.Jobs;
 import com.talenttap.entity.Skills;
+import com.talenttap.repository.CertificationRepository;
 import com.talenttap.repository.EducationLevelRepository;
 import com.talenttap.repository.EducationRepository;
 import com.talenttap.repository.JobApplicationRepository;
@@ -60,6 +63,7 @@ public class JobseekerRegisterService {
 	private UsersRepository userRepo;
 	private JobseekerRepository jobseekerRepo;
 	private EducationRepository educationRepo;
+	private CertificationRepository certificationRepo;
 	private SkillsRepository skillsRepo;
 	private RoleRepository roleRepo;
 	private LocationRepository locationRepo;
@@ -71,7 +75,8 @@ public class JobseekerRegisterService {
 	public JobseekerRegisterService(UsersRepository userRepo, JobseekerRepository jobseekerRepo,
 			EducationRepository educationRepo, SkillsRepository skillsRepo, RoleRepository roleRepo,
 			LocationRepository locationRepo, EducationLevelRepository educationLevelRepo,
-			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo) {
+			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo,
+			CertificationRepository certificationRepo) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.skillsRepo = skillsRepo;
@@ -82,6 +87,7 @@ public class JobseekerRegisterService {
 		this.passwordEncoder = passwordEncoder;
 		this.jobRepo = jobRepo;
 		this.jobApplicationRepo = jobApplicationRepo;
+		this.certificationRepo = certificationRepo;
 	}
 
 	public ResponseEntity<?> register(@Valid JobseekerRegisterDTO request) {
@@ -613,5 +619,84 @@ public class JobseekerRegisterService {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("Error adding skills: " + e.getMessage());
 	    }
+	}
+	
+	public ResponseEntity<List<Certifications>> getAllCertifications(Integer id) {
+		List<Certifications> certifications = certificationRepo.findByJobSeeker_JobSeekerId(id).stream().map(Certifications::new)
+				.toList();
+		return ResponseEntity.ok().body(certifications);
+	}
+
+	public ResponseEntity<String> addCertification(int id, Certifications request) {
+		
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+			
+			Certification certification = new Certification();
+			certification.setJobSeeker(jobseeker);
+			
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) certification.setCertificateURL(null);
+			else certification.setCertificateURL(request.getUrl());
+						
+			if (request.getNumber().isBlank() || request.getNumber().isEmpty()) certification.setCertificationNumber(null);
+			else certification.setCertificationNumber(request.getNumber());
+			
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) certification.setCertificationName(null);
+			else certification.setCertificationName(request.getTitle());
+			
+			if (request.getIssuedBy().isBlank() || request.getIssuedBy().isEmpty()) certification.setIssuedBy(null);
+			else certification.setIssuedBy(request.getIssuedBy());
+			
+			certification.setExpiryDate(request.getExpiry_date());
+			certification.setIssueDate(request.getIssued_date());
+			
+			certificationRepo.save(certification);
+			
+			return ResponseEntity.ok().body("Certification added Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+	}
+
+	public ResponseEntity<String> updateCertification(int id, Certifications request) {
+		
+		 try {
+		 
+			Certification certification = certificationRepo.findById(id).get();
+			
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) certification.setCertificateURL(null);
+			else certification.setCertificateURL(request.getUrl());
+						
+			if (request.getNumber().isBlank() || request.getNumber().isEmpty()) certification.setCertificationNumber(null);
+			else certification.setCertificationNumber(request.getNumber());
+			
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) certification.setCertificationName(null);
+			else certification.setCertificationName(request.getTitle());
+			
+			if (request.getIssuedBy().isBlank() || request.getIssuedBy().isEmpty()) certification.setIssuedBy(null);
+			else certification.setIssuedBy(request.getIssuedBy());
+			
+			certification.setExpiryDate(request.getExpiry_date());
+			certification.setIssueDate(request.getIssued_date());
+			
+			certificationRepo.save(certification);
+			return ResponseEntity.ok("Certification updated successfully!");
+		 }
+		 catch(Exception e) {
+			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                .body("Error updating certifications: " + e.getMessage()); 
+		 }
+	}
+
+	public ResponseEntity<String> deleteCertification(int id) {
+		try {
+			certificationRepo.deleteById(id);
+			return ResponseEntity.ok().body("certification deleted Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 }

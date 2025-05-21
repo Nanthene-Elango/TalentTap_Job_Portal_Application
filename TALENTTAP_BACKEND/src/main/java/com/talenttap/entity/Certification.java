@@ -25,6 +25,9 @@ public class Certification {
 	@JoinColumn(name = "jobseeker_id", nullable = false)
 	private JobSeeker jobSeeker;
 	
+	@Column(name="issued_by")
+	private String issuedBy;
+	
 	@Column(name = "certification_number")
 	private String certificationNumber;
 	
@@ -95,5 +98,10 @@ public class Certification {
 	public void setExpiryDate(LocalDate expiryDate) {
 		this.expiryDate = expiryDate;
 	}
-	
+	public String getIssuedBy() {
+		return issuedBy;
+	}
+	public void setIssuedBy(String issuedBy) {
+		this.issuedBy = issuedBy;
+	}
 }

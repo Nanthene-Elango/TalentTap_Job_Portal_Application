@@ -28,6 +28,7 @@ import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerJobFilter;
@@ -59,9 +60,6 @@ public class PageRenderController {
 	
 
 	public PageRenderController(JobseekerService jobseekerService, EmployerAuthService employerService,JobsService jobService){
-		this.jobseekerService = jobseekerService;
-
-
 
 		this.jobseekerService = jobseekerService;
 		this.employerService = employerService;
@@ -110,6 +108,7 @@ public class PageRenderController {
 	public String LoadProfile(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
 
 		if (jwt != null && !jwt.trim().isEmpty()) {
+			
 			JwtToken token = new JwtToken(jwt.trim());
 			Jobseeker jobseeker = jobseekerService.getJobseeker(token);
 			model.addAttribute("jobSeeker", jobseeker);
@@ -126,6 +125,12 @@ public class PageRenderController {
 			List<Education> educations = jobseekerService.getAllEducation(jobseeker.getId());
 			model.addAttribute("educationList", educations);
 
+			List<Certifications> certifications = jobseekerService.getAllCertifications(jobseeker.getId());
+			model.addAttribute("certificationList", certifications);
+			
+			Certifications certification = new Certifications();
+			model.addAttribute("certificationDTO", certification);
+			
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);
 
