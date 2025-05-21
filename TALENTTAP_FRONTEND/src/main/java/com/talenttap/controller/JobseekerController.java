@@ -2,11 +2,14 @@ package com.talenttap.controller;
 
 import java.util.List;
 
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EducationDTO;
+import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
@@ -153,5 +157,20 @@ public class JobseekerController {
 	@PostMapping("/jobseeker/education/delete/{id}")
 	public String deleteEducationById(@PathVariable int id , RedirectAttributes redirectAttributes) {
 		return jobseekerService.deleteEducation(id , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/certification/add/{id}")
+	public String addCertification(@PathVariable int id , @ModelAttribute Certifications certification , RedirectAttributes redirectAttributes) {
+		return jobseekerService.addCertification(id , certification , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/certification/edit")
+	public String updateEducation(@ModelAttribute Certifications certification, RedirectAttributes redirectAttributes) {
+		return jobseekerService.editCertification(certification , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/certification/delete/{id}")
+	public String deleteCertificationById(@PathVariable int id , RedirectAttributes redirectAttributes) {
+		return jobseekerService.deleteCertification(id , redirectAttributes);
 	}
 }

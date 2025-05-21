@@ -362,37 +362,41 @@
 							<i class="fas fa-plus me-1"></i> Add Certification
 						</button>
 					</div>
-
-					<div class="section-item">
-						<div class="item-actions">
-							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editCertificationModal">
-								<i class="fas fa-edit"></i>
-							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
-						</div>
-						<br>
-						<h6 class="card-title">AWS Certified Solutions Architect</h6>
-						<p class="card-subtitle mb-1">Amazon Web Services</p>
-						<p class="card-text">Issued: Jan 2023 | Expires: Jan 2026</p>
+					
+					<div class="empty-state"
+						th:if="${certificationList == null or #lists.isEmpty(certificationList)}">
+						<i class="fa-solid fa-certificate fa-3x mb-3 text-muted"></i>
+						<p>No Certification Details to display</p>
 					</div>
-
-					<div class="section-item">
+					
+					<div th:each="certificate : ${certificationList}" class="section-item">
 						<div class="item-actions">
 							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editCertificationModal">
+								th:attr="data-id=${certificate.id},
+										data-title=${certificate.title},
+										data-number=${certificate.number},
+             							data-issue=${certificate.issued_date},
+             							data-expiry=${certificate.expiry_date},
+             							data-url=${certificate.url},
+             							data-issuedBy=${certificate.issuedBy}"
+								onclick="openEditCertificationModal(this)">
 								<i class="fas fa-edit"></i>
 							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
+							<form
+								th:action="@{/jobseeker/certification/delete/{id}(id=${certificate.id})}"
+								method="post" style="display: inline;" class="delete-form">
+								<button type="button"
+									class="btn btn-sm btn-link text-danger btn-delete">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</form>
 						</div>
 						<br>
-						<h6 class="card-title">Google Cloud Professional Developer</h6>
-						<p class="card-subtitle mb-1">Google</p>
-						<p class="card-text">Issued: Mar 2022 | Expires: Mar 2025</p>
+						<h6 class="card-title" th:if="${certificate.title!= null}" th:text="${certificate.title}">AWS Certified Solutions Architect</h6>
+						<p class="card-subtitle mb-1" th:if="${certificate.issuedBy != null}" th:text="${certificate.issuedBy}">Amazon Web Services</p>
+						<p class="card-text" th:if="${certificate.issued_date != null}" >Issued: <span th:text="${certificate.issued_date}"></span> | Expires: <span th:if="${certificate.expiry_date != null}" th:text="${certificate.expiry_date}"></span><span th:if="${certificate.expiry_date == null}">No Expiry</span></p>
+						<p class="card-text" th:if="${certificate.number != null}" >Certificate Number: <span th:text="${certificate.number}"></span></p>
+						<p class="card-text" th:if="${certificate.url != null}">Certificate URL: <span th:text="${certificate.url}"></span></p>
 					</div>
 				</div>
 
@@ -977,36 +981,47 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
+				<form th:action="@{'jobseeker/certification/add/' + ${jobSeeker.id}}"
+					method="post" th:object="${certificationDTO}">
 				<div class="modal-body">
-					<form>
 						<div class="mb-3">
 							<label for="certificationName" class="form-label">Certification
 								Name</label> <input type="text" class="form-control"
-								id="certificationName"
+								id="certificationName" th:field="*{title}"
 								placeholder="e.g., AWS Certified Developer">
 						</div>
 						<div class="mb-3">
+							<label for="certificationNumber" class="form-label">Certification
+								Number</label> <input type="text" class="form-control"
+								id="certificationNumber" th:field="*{number}">
+						</div>
+						<div class="mb-3">
 							<label for="certificationIssuer" class="form-label">Issuing
-								Organization</label> <input type="text" class="form-control"
+								Organization</label> <input type="text" th:field="*{issuedBy}" class="form-control"
 								id="certificationIssuer" placeholder="e.g., Amazon Web Services">
 						</div>
 						<div class="row mb-3">
 							<div class="col">
 								<label for="issueDate" class="form-label">Issue Date</label> <input
-									type="month" class="form-control" id="issueDate">
+									type="date" th:field="*{issued_date}" class="form-control" id="issueDate">
 							</div>
 							<div class="col">
 								<label for="expiryDate" class="form-label">Expiry Date</label> <input
-									type="month" class="form-control" id="expiryDate">
+									type="date" class="form-control" th:field="*{expiry_date}" id="expiryDate">
 							</div>
 						</div>
-					</form>
+						<div class="mb-3">
+							<label for="certificationUrl" class="form-label">Certification
+								Url</label> <input type="text" class="form-control"
+								id="certificationUrl" th:field="*{url}">
+						</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-violet">Add</button>
+					<button type="submit" class="btn btn-violet">Add</button>
 				</div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -1021,38 +1036,45 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
+				<form th:action="@{/jobseeker/certification/edit}" method="post">
 				<div class="modal-body">
-					<form>
+						<input type="hidden" id="editCertificationId" name="id">
 						<div class="mb-3">
 							<label for="editCertificationName" class="form-label">Certification
 								Name</label> <input type="text" class="form-control"
-								id="editCertificationName"
-								value="AWS Certified Solutions Architect">
+								id="editCertificationName" name="title">
 						</div>
 						<div class="mb-3">
-							<label for="editCertificationIssuer" class="form-label">Issuing
-								Organization</label> <input type="text" class="form-control"
-								id="editCertificationIssuer" value="Amazon Web Services">
+							<label for="editCertificationNumber" class="form-label">Certification
+								Number</label> <input type="text" class="form-control"
+								id="editCertificationNumber" name="number">
+						</div>
+						<div class="mb-3">
+							<label for="editCertificationIssuer" class="form-label">Issuing Organization</label>
+							<input type="text" class="form-control" id="editCertificationIssuer" name="issuedBy">
 						</div>
 						<div class="row mb-3">
 							<div class="col">
 								<label for="editIssueDate" class="form-label">Issue Date</label>
-								<input type="month" class="form-control" id="editIssueDate"
-									value="2023-01">
+								<input type="date" class="form-control" id="editIssueDate" name="issued_date">
 							</div>
 							<div class="col">
 								<label for="editExpiryDate" class="form-label">Expiry
-									Date</label> <input type="month" class="form-control"
-									id="editExpiryDate" value="2026-01">
+									Date</label> <input type="date" class="form-control"
+									id="editExpiryDate" name="expiry_date">
 							</div>
 						</div>
-					</form>
+						<div class="mb-3">
+							<label for="editCertificationUrl" class="form-label">Certification Url</label> 
+							<input type="text" class="form-control" id="editCertificationUrl" name="url">
+						</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-violet">Save Changes</button>
+					<button type="submit" class="btn btn-violet">Save Changes</button>
 				</div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -1404,6 +1426,27 @@
 		    }
 		}
 	  
+	  function openEditCertificationModal(button) {
+		    const id = button.getAttribute('data-id');
+		    const title = button.getAttribute('data-title');
+		    const number = button.getAttribute('data-number');
+		    const issue = button.getAttribute('data-issue');
+		    const expiry = button.getAttribute('data-expiry');
+		    const url = button.getAttribute('data-url');
+		    const issuedBy = button.getAttribute('data-issuedBy');
+		    
+		    document.getElementById('editCertificationId').value = id;
+		    document.getElementById('editCertificationName').value = title;
+		    document.getElementById('editCertificationNumber').value = number;
+		    document.getElementById('editIssueDate').value = issue;
+		    document.getElementById('editExpiryDate').value = expiry;
+		    document.getElementById('editCertificationIssuer').value = issuedBy;
+		    document.getElementById('editCertificationUrl').value = url;
+		    
+		    const modal = new bootstrap.Modal(document.getElementById('editCertificationModal'));
+		    modal.show();
+	  }
+	  
 	  function openEditEducationModal(button) {
 		    const id = button.getAttribute('data-id');
 		    const educationLevel = button.getAttribute('data-educationlevel');
@@ -1485,11 +1528,11 @@
 			      }
 			    });
 		}
-	  // Initialize fields hidden if needed
+	  
 	  document.addEventListener("DOMContentLoaded", () => {
 		  	populateYearDropdowns();
 		  	toggleFields(document.getElementById("highestQualification").value);
-		    // When Start Year changes, update End Year options
+		    
 		    document.getElementById('startYear').addEventListener('change', function () {
 		      populateEndYears(this.value);
 		    });

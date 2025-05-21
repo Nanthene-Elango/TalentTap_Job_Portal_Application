@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.AddEducationDTO;
+import com.talenttap.DTO.Certifications;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.EducationLevelDTO;
 import com.talenttap.DTO.JobseekerDTO;
@@ -187,5 +188,25 @@ public class JobseekerController {
 	public ResponseEntity<String> addSkills(@PathVariable int id,
 	                                        @RequestParam("skillIds") List<Integer> skillIds) {
 	    return jobseekerService.addSkill(id, skillIds);
+	}
+	
+	@GetMapping("jobseeker/certifications/{id}")
+	public ResponseEntity<List<Certifications>> getAllCertifications(@PathVariable Integer id) {
+		return jobseekerService.getAllCertifications(id);
+	}
+	
+	@PostMapping("jobseeker/certification/add/{id}")
+	public ResponseEntity<String> addCertification(@PathVariable int id , @RequestBody Certifications certification){
+		return jobseekerService.addCertification(id , certification);
+	}
+	
+	@PutMapping("jobseeker/certification/update/{id}")
+	public ResponseEntity<String> updateCertification(@PathVariable int id, @RequestBody Certifications certification) {
+	    return jobseekerService.updateCertification(id, certification);
+	}
+	
+	@DeleteMapping("/jobseeker/certification/delete/{id}")
+	public ResponseEntity<String> deleteCertification(@PathVariable int id){
+		return jobseekerService.deleteCertification(id );
 	}
 }

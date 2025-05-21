@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EducationDTO;
+import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.JobFilter;
@@ -318,7 +319,7 @@ public class JobseekerService {
 		return ResponseEntity.notFound().build();
 	}
 
-	public String deleteResume(String jwt , RedirectAttributes redirectAttributes) {
+	public String deleteResume(String jwt, RedirectAttributes redirectAttributes) {
 		if (jwt != null && !jwt.trim().isEmpty()) {
 			try {
 				HttpHeaders headers = new HttpHeaders();
@@ -340,67 +341,62 @@ public class JobseekerService {
 	}
 
 	public void applyJob(String jwt, int id) {
-	    if (jwt != null && !jwt.trim().isEmpty()) {
-	        try {
-	            HttpHeaders headers = new HttpHeaders();
-	            headers.add("Cookie", "jwt=" + jwt.trim()); 
+		if (jwt != null && !jwt.trim().isEmpty()) {
+			try {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("Cookie", "jwt=" + jwt.trim());
 
-	            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+				HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-	            String url = "http://localhost:8083/jobseeker/job/apply/" + id; 
+				String url = "http://localhost:8083/jobseeker/job/apply/" + id;
 
-	            restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
-	        } catch (Exception e) {
-	            e.printStackTrace(); 
-	            throw new RuntimeException("Failed to apply for job");
-	        }
-	    } else {
-	        throw new RuntimeException("JWT token not found");
-	    }
+				restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException("Failed to apply for job");
+			}
+		} else {
+			throw new RuntimeException("JWT token not found");
+		}
 	}
 
 	public boolean hasApplied(String jwt, int id) {
 		if (jwt != null && !jwt.trim().isEmpty()) {
-	        try {
-	            HttpHeaders headers = new HttpHeaders();
-	            headers.add("Cookie", "jwt=" + jwt.trim());
+			try {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("Cookie", "jwt=" + jwt.trim());
 
-	            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+				HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-	            String url = "http://localhost:8083/jobseeker/job/is-applied/" + id;
+				String url = "http://localhost:8083/jobseeker/job/is-applied/" + id;
 
-	            ResponseEntity<Boolean> response = restTemplate.exchange(
-	                url,
-	                HttpMethod.GET,
-	                requestEntity,
-	                Boolean.class
-	            );
+				ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity,
+						Boolean.class);
 
-	            return Boolean.TRUE.equals(response.getBody());
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            return false;
-	        }
-	    }
-	    return false;
+				return Boolean.TRUE.equals(response.getBody());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return false;
 	}
 
-	public String addEducation(int id, EducationDTO education ,  RedirectAttributes redirectAttributes) {
-		
+	public String addEducation(int id, EducationDTO education, RedirectAttributes redirectAttributes) {
+
 		String url = "http://localhost:8083/jobseeker/education/add/" + id;
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		HttpEntity<EducationDTO> requestEntity = new HttpEntity<>(education, headers);
-		
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST , requestEntity , String.class);
-		
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
 		if (response.getStatusCode().is2xxSuccessful()) {
-			 redirectAttributes.addFlashAttribute("success" , "education added successfully!");
-		}
-		else {
-			redirectAttributes.addFlashAttribute("error" , "error adding education!");
+			redirectAttributes.addFlashAttribute("success", "education added successfully!");
+		} else {
+			redirectAttributes.addFlashAttribute("error", "error adding education!");
 		}
 		return "redirect:/profile";
 	}
@@ -408,68 +404,124 @@ public class JobseekerService {
 	public String editEducation(Education education, RedirectAttributes redirectAttributes) {
 		String url = "http://localhost:8083/jobseeker/education/update/" + education.getEducationId();
 
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-	    HttpEntity<Education> requestEntity = new HttpEntity<>(education, headers);
+		HttpEntity<Education> requestEntity = new HttpEntity<>(education, headers);
 
-	    try {
-	        ResponseEntity<String> response = restTemplate.exchange(
-	                url,
-	                HttpMethod.PUT,
-	                requestEntity,
-	                String.class
-	        );
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
-	        if (response.getStatusCode().is2xxSuccessful()) {
-	            redirectAttributes.addFlashAttribute("success", "Education updated successfully!");
-	        } else {
-	            redirectAttributes.addFlashAttribute("error", "Failed to update education.");
-	        }
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("error", "Error while updating education" + e.getMessage());
-	    }
-	    return "redirect:/profile";
+			if (response.getStatusCode().is2xxSuccessful()) {
+				redirectAttributes.addFlashAttribute("success", "Education updated successfully!");
+			} else {
+				redirectAttributes.addFlashAttribute("error", "Failed to update education.");
+			}
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error while updating education" + e.getMessage());
+		}
+		return "redirect:/profile";
 	}
 
 	public String deleteEducation(int id, RedirectAttributes redirectAttributes) {
-		
+
 		String url = "http://localhost:8083/jobseeker/education/delete/" + id;
-		
+
 		try {
 			restTemplate.delete(url);
 			redirectAttributes.addFlashAttribute("success", "education deleted successfully!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error occured while deleting education!");
 		}
-		catch(Exception e) {
-			redirectAttributes.addFlashAttribute("error" , "Error occured while deleting education!");
-		}
-		
+
 		return "redirect:/profile";
 	}
 
 	public String addSkills(Long jobSeekerId, List<Long> skillIds, RedirectAttributes redirectAttributes) {
-		
+
 		String url = "http://localhost:8083/jobseeker/skill/add/" + jobSeekerId;
-		
+
 		try {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-	        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-	        for (Long skillId : skillIds) {
-	            body.add("skillIds", skillId.toString());
-	        }
+			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+			for (Long skillId : skillIds) {
+				body.add("skillIds", skillId.toString());
+			}
 
-	        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
-	        restTemplate.postForEntity(url, request, String.class);
+			restTemplate.postForEntity(url, request, String.class);
 
-	        redirectAttributes.addFlashAttribute("success", "Skills added successfully.");
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("error", "Failed to add skills: " + e.getMessage());
-	    }
+			redirectAttributes.addFlashAttribute("success", "Skills added successfully.");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Failed to add skills: " + e.getMessage());
+		}
 
-		
+		return "redirect:/profile";
+	}
+
+	public List<Certifications> getAllCertifications(int id) {
+
+		String url = "http://localhost:8083/jobseeker/certifications/" + id;
+
+		ResponseEntity<Certifications[]> response = restTemplate.getForEntity(url, Certifications[].class);
+
+		return Arrays.asList(response.getBody());
+	}
+
+	public String addCertification(int id, Certifications certification, RedirectAttributes redirectAttributes) {
+
+		String url = "http://localhost:8083/jobseeker/certification/add/" + id;
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Certifications> requestEntity = new HttpEntity<>(certification, headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			redirectAttributes.addFlashAttribute("success", "certification added successfully!");
+		} else {
+			redirectAttributes.addFlashAttribute("error", "error adding certification!");
+		}
+		return "redirect:/profile";
+	}
+
+	public String editCertification(Certifications certification, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/certification/update/" + certification.getId();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Certifications> requestEntity = new HttpEntity<>(certification, headers);
+
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				redirectAttributes.addFlashAttribute("success", "Certificate updated successfully!");
+			} else {
+				redirectAttributes.addFlashAttribute("error", "Failed to update Certificate.");
+			}
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error while updating certificate" + e.getMessage());
+		}
+		return "redirect:/profile";
+	}
+
+	public String deleteCertification(int id, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/certification/delete/" + id;
+
+		try {
+			restTemplate.delete(url);
+			redirectAttributes.addFlashAttribute("success", "certification deleted successfully!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error occured while deleting certification!");
+		}
+
 		return "redirect:/profile";
 	}
 
