@@ -20,8 +20,12 @@ import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.DTO.JobUpdateFormDTO;
+import com.talenttap.model.EmployerJobFilter;
+import com.talenttap.model.JobCategory;
+import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Location;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
 import com.talenttap.service.JobseekerService;
@@ -220,54 +224,70 @@ public class JobsController {
         }
         return "redirect:/employer/jobs";
     }
+    
+    @PostMapping("/filterEmployerJobs")
+	public String filterJobs(@ModelAttribute EmployerJobFilter jobFilter, Model model) {
+		System.out.println("Employment type: " + jobFilter.getEmploymentType());
+		System.out.println("Job status: " + jobFilter.getJobStatus());
+		System.out.println("Search keyword: " + jobFilter.getKeyword());
+		System.out.println("location id: " + jobFilter.getLocation());
+		System.out.println("worktype: " + jobFilter.getWorkType());
+ 
+		// Set location to 0 if null or empty
+        if (jobFilter.getLocation() == null || jobFilter.getLocation().toString().isEmpty()) {
+            jobFilter.setLocation(0);
+        }	
+        if (jobFilter.getEmploymentType() == null || jobFilter.getEmploymentType().toString().isEmpty()) {
+            jobFilter.setEmploymentType(0);
+        }
+        
+        if (jobFilter.getKeyword() == null || jobFilter.getKeyword().toString().isEmpty()) {
+            jobFilter.setKeyword("");
+        }
+        if (jobFilter.getJobStatus() == null || jobFilter.getJobStatus().toString().isEmpty()) {
+            jobFilter.setJobStatus("");
+        }
+        if (jobFilter.getWorkType() == null || jobFilter.getWorkType().toString().isEmpty()) {
+            jobFilter.setWorkType("");
+        }
+        
+        System.out.println("Employment type: " + jobFilter.getEmploymentType());
+		System.out.println("Job status: " + jobFilter.getJobStatus());
+		System.out.println("Search keyword: " + jobFilter.getKeyword());
+		System.out.println("location id: " + jobFilter.getLocation());
+		System.out.println("worktype: " + jobFilter.getWorkType());
+        System.out.println("location id: " + jobFilter.getLocation());
+        System.out.println("Employment type: " + jobFilter.getLocation());
+    	model.addAttribute("currentPage", "jobs");
+        List<JobDisplayDTO> jobs = jobService.filterJobs(jobFilter);
+     
+
+		if (jobs != null) {
+			System.out.println("Hoo");
+			if (jobs != null && !jobs.isEmpty()) {
+			    System.out.println("First Job: " + jobs.get(0));
+			}
+
+			model.addAttribute("jobs", jobs);
+			model.addAttribute("jobFilter", jobFilter); //
+			List<Location> location = jobseekerService.getAllLocations();
+			if (location != null) {
+				model.addAttribute("locations", location);
+			}
+			List<JobCategory> categories = jobService.getJobCategories();
+			if (categories != null) {
+				model.addAttribute("categories", categories);
+			}
+			model.addAttribute("employmentTypes", jobService.getEmploymentType());	
+			return "employer/jobs";
+		} else {
+			return "error";
+		}
+	}
 
 
     
-//    @PutMapping("/jobs/update/{jobId}")
-//    public String updateJob(@PathVariable int jobId,
-//                           @Valid @ModelAttribute("jobForm") JobUpdateFormDTO jobFormDTO, 
-//                           BindingResult result, 
-//                           Model model,
-//                           @CookieValue(value = "jwt", required = false) String jwt) {
-//        System.out.println("--- Updating JobFormDTO ---");
-//        System.out.println("Job ID: " + jobId);
-//        System.out.println("Job Role: " + jobFormDTO.getJobRole());
-//        System.out.println("Job Type ID: " + jobFormDTO.getJobTypeId());
-//        System.out.println("Job Category ID: " + jobFormDTO.getJobCategoryId());
-//        // Add more logging as needed
-//
-//        if (jwt == null || jwt.trim().isEmpty()) {
-//            model.addAttribute("error", "Authentication required. Please log in.");
-//            return "employer/editjob";
-//        }
-//
-//        if (result.hasErrors()) {
-//            model.addAttribute("employmentTypes", jobService.getEmploymentType());
-//            model.addAttribute("jobCategories", jobService.getJobCategories());
-//            model.addAttribute("skills", jobseekerService.getAllSkills());
-//            model.addAttribute("locations", jobseekerService.getAllLocations());
-//            System.out.println("Validation errors: " + result.getAllErrors());
-//            return "employer/editjob";
-//        }
-//
-//        try {
-//            jobFormDTO.setJobId(jobId); // Ensure jobId is set
-//            ResponseEntity<String> response = jobService.updateJob(jobFormDTO, jwt);
-//            if (response.getStatusCode().is2xxSuccessful()) {
-//                System.out.println("Job updated successfully: " + response.getBody());
-//                return "redirect:/employer/jobs";
-//            } else {
-//                System.out.println("Failed to update job: " + response.getStatusCode() + " - " + response.getBody());
-//                model.addAttribute("error", "Failed to update job. Please try again.");
-//                return "employer/editjob";
-//            }
-//        } catch (Exception e) {
-//            System.out.println("Error updating job: " + e.getMessage());
-//            model.addAttribute("error", "An error occurred while updating the job.");
-//            return "employer/editjob";
-//        }
-//    }
-//    
+
  
     
 }

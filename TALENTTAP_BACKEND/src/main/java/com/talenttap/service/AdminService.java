@@ -15,9 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AdminService {
+
 
     @Autowired
     private UsersRepository usersRepository;
@@ -31,25 +34,47 @@ public class AdminService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public ResponseEntity<?> loginAdmin(LoginDTO request, HttpServletResponse response) {
-        Users user = usersRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<Map<String, Object>> loginAdmin(LoginDTO request, HttpServletResponse response) {
+
+        // Find user by username
+    	  Users user = usersRepository.findByUsername(request.getUsername())
+                  .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.badRequest().body("Invalid credentials");
+            return ResponseEntity.badRequest().body(createErrorResponse("Invalid credentials"));
         }
+
+        // Check if user has ADMIN role
         if (!user.getRole().getRole().equals("ADMIN")) {
-            return ResponseEntity.badRequest().body("Not an admin");
+            return ResponseEntity.badRequest().body(createErrorResponse("Not an admin"));
         }
+
+        // Generate JWT token
         String jwt = jwtUtil.generateToken(user.getUsername(), user.getRole().getRole());
-        System.out.print(jwt);
+        System.out.print(jwt);        // Set JWT in a secure cookie
         Cookie jwtCookie = new Cookie("jwt", jwt);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(24 * 60 * 60);
+        jwtCookie.setSecure(false);
+        jwtCookie.setMaxAge(24 * 60 * 60);// Prevent CSRF
         response.addCookie(jwtCookie);
-        return ResponseEntity.ok("Admin login successful");
+
+        // Return success response
+        Map<String, Object> successResponse = new HashMap<>();
+        successResponse.put("message", "Admin login successful");
+        successResponse.put("username", user.getUsername());
+        successResponse.put("jwt",jwt);
+        return ResponseEntity.ok(successResponse);
     }
 
+    // Helper method to create error response
+    private Map<String, Object> createErrorResponse(String message) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        return errorResponse;
+    }
+    
     public ResponseEntity<?> registerAdmin(AdminRegisterDTO request) {
         if (usersRepository.existsByUsername(request.getUsername()) || 
             usersRepository.existsByEmail(request.getEmail())) {
@@ -75,4 +100,5 @@ public class AdminService {
         usersRepository.save(admin);
         return ResponseEntity.ok("Admin registered successfully");
     }
+
 }

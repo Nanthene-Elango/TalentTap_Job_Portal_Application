@@ -1,9 +1,12 @@
 package com.talenttap.controller;
 
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.talenttap.model.JwtToken;
@@ -26,6 +29,10 @@ public class GlobalModelAttributes {
             if (jwt != null && !jwt.trim().isEmpty()) {
                 JwtToken token = new JwtToken(jwt.trim());
                 String fullName = jobseekerService.getFullName(token);
+
+//                EmployerProfileDTO profile = employerService.profile(token);
+//                model.addAttribute("companyName",profile.getCompanyName());
+
                 model.addAttribute("fullname", fullName);
                 model.addAttribute("loggedIn", true);
             } else {
