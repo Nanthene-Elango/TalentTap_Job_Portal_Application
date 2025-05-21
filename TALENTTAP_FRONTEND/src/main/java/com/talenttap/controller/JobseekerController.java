@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +26,7 @@ import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
+import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.service.JobsService;
 import com.talenttap.service.JobseekerService;
@@ -172,5 +174,15 @@ public class JobseekerController {
 	@PostMapping("/jobseeker/certification/delete/{id}")
 	public String deleteCertificationById(@PathVariable int id , RedirectAttributes redirectAttributes) {
 		return jobseekerService.deleteCertification(id , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/language/add/{id}")
+	public String addLanguage(@PathVariable int id , @RequestParam("languageIds") List<Integer> languageIds, RedirectAttributes redirectAttributes) {
+		return jobseekerService.addLanguages(id , languageIds , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/language/delete/{id}/{jobseekerId}")
+	public String deleteLanguage(@PathVariable int id , @PathVariable int jobseekerId , RedirectAttributes redirectAttributes){
+		return jobseekerService.deleteSeekerLanguage(id , jobseekerId , redirectAttributes);
 	}
 }

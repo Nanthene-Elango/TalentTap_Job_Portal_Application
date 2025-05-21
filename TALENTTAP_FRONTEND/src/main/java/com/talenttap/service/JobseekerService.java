@@ -29,6 +29,7 @@ import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
@@ -520,6 +521,66 @@ public class JobseekerService {
 			redirectAttributes.addFlashAttribute("success", "certification deleted successfully!");
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("error", "Error occured while deleting certification!");
+		}
+
+		return "redirect:/profile";
+	}
+
+	public List<Languages> getAllLanguages() {
+		
+		String url = "http://localhost:8083/api/languages";
+		
+		ResponseEntity<Languages[]> response = restTemplate.getForEntity(url, Languages[].class);
+		Languages[] languages = response.getBody();
+
+		return Arrays.asList(languages);
+	}
+
+	public List<Languages> getAllSeekerLanguage(int id) {
+		
+		String url = "http://localhost:8083/jobseeker/languages/" + id;
+		
+		ResponseEntity<Languages[]> response = restTemplate.getForEntity(url, Languages[].class);
+		Languages[] languages = response.getBody();
+
+		return Arrays.asList(languages);
+		
+	}
+
+	public String addLanguages(int id, List<Integer> languageIds, RedirectAttributes redirectAttributes) {
+		
+		String url = "http://localhost:8083/jobseeker/language/add/" + id;
+
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+			for (Integer languageId : languageIds) {
+				body.add("languageIds", languageId.toString());
+			}
+
+			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+			restTemplate.postForEntity(url, request, String.class);
+
+			redirectAttributes.addFlashAttribute("success", "Languages added successfully.");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Failed to add language: " + e.getMessage());
+		}
+
+		return "redirect:/profile";
+	}
+
+	public String deleteSeekerLanguage(int id, int jobseekerId , RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/language/delete/" + id + "/" +  jobseekerId;
+
+		try {
+			restTemplate.delete(url);
+			redirectAttributes.addFlashAttribute("success", "language deleted successfully!");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			redirectAttributes.addFlashAttribute("error", "Error occured while deleting language!");
 		}
 
 		return "redirect:/profile";
