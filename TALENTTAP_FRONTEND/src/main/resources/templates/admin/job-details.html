@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Job Details</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="@{/admin/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="${job.jobRole + ' - ' + job.companyName}"></h2>
+
+        <div class="section">
+            <h3>Description</h3>
+            <p th:text="${job.jobDescription}"></p>
+        </div>
+
+        <div class="section">
+            <h3>Roles</h3>
+            <div th:utext="${job.roles != null ? job.roles.replace('\n', '<br/>') : ''}"></div>
+        </div>
+
+        <div class="section">
+            <h3>Responsibilities</h3>
+            <div th:utext="${job.responsibilities != null ? job.responsibilities.replace('\n', '<br/>') : ''}"></div>
+        </div>
+
+        <div class="section">
+            <h3>Benefits</h3>
+            <div th:utext="${job.benefits != null ? job.benefits.replace('\n', '<br/>') : ''}"></div>
+        </div>
+
+        <div class="section">
+            <h3>Years of Experience</h3>
+            <p th:text="${job.yearsOfExperience}"></p>
+        </div>
+
+        <div class="section">
+            <h3>Salary / Stipend</h3>
+            <p th:if="${job.salaryMin != null and job.salaryMax != null}"
+               th:text="${'₹' + job.salaryMin + ' - ₹' + job.salaryMax + ' per annum'}"></p>
+            <p th:if="${job.stipend != null and job.stipend != 0}"
+               th:text="${'₹' + job.stipend + ' stipend'}"></p>
+        </div>
+
+        <div class="section">
+            <h3>Required Skills</h3>
+            <ul>
+                <li th:each="skill : ${job.requiredSkills}" th:text="${skill}"></li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Locations</h3>
+            <ul>
+                <li th:each="location : ${job.locations}" th:text="${location}"></li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Applications</h3>
+            <p th:text="${job.applicants + ' applications received'}"></p>
+        </div>
+
+        <a th:href="@{/admin/adminDashboard}" class="btn">Back to Jobs</a>
+    </div>
+</body>
+</html>
