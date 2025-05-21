@@ -41,6 +41,7 @@ import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Skills;
@@ -110,6 +111,7 @@ public class PageRenderController {
 		if (jwt != null && !jwt.trim().isEmpty()) {
 			
 			JwtToken token = new JwtToken(jwt.trim());
+			
 			Jobseeker jobseeker = jobseekerService.getJobseeker(token);
 			model.addAttribute("jobSeeker", jobseeker);
 
@@ -130,6 +132,12 @@ public class PageRenderController {
 			
 			Certifications certification = new Certifications();
 			model.addAttribute("certificationDTO", certification);
+			
+			List<Languages> allLanguages = jobseekerService.getAllLanguages();
+			model.addAttribute("allLanguages", allLanguages);
+			
+			List<Languages> allSeekerLanguage = jobseekerService.getAllSeekerLanguage(jobseeker.getId());
+			model.addAttribute("languageList", allSeekerLanguage);
 			
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);

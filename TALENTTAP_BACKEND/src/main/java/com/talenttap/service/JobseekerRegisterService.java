@@ -26,6 +26,7 @@ import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobFilterDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.JobseekerRegisterDTO;
+import com.talenttap.DTO.Languages;
 import com.talenttap.DTO.SkillsDTO;
 import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.AuthProvider;
@@ -37,6 +38,7 @@ import com.talenttap.entity.Users;
 import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
 import com.talenttap.entity.Jobs;
+import com.talenttap.entity.Language;
 import com.talenttap.entity.Skills;
 import com.talenttap.repository.CertificationRepository;
 import com.talenttap.repository.EducationLevelRepository;
@@ -44,6 +46,7 @@ import com.talenttap.repository.EducationRepository;
 import com.talenttap.repository.JobApplicationRepository;
 import com.talenttap.repository.JobsRepository;
 import com.talenttap.repository.JobseekerRepository;
+import com.talenttap.repository.LanguageRepository;
 import com.talenttap.repository.LocationRepository;
 import com.talenttap.repository.RoleRepository;
 import com.talenttap.repository.SkillsRepository;
@@ -71,12 +74,13 @@ public class JobseekerRegisterService {
 	private PasswordEncoder passwordEncoder;
 	private JobsRepository jobRepo;
 	private JobApplicationRepository jobApplicationRepo;
+	private LanguageRepository languageRepo;
 
 	public JobseekerRegisterService(UsersRepository userRepo, JobseekerRepository jobseekerRepo,
 			EducationRepository educationRepo, SkillsRepository skillsRepo, RoleRepository roleRepo,
 			LocationRepository locationRepo, EducationLevelRepository educationLevelRepo,
 			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo,
-			CertificationRepository certificationRepo) {
+			CertificationRepository certificationRepo , LanguageRepository languageRepo) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.skillsRepo = skillsRepo;
@@ -88,6 +92,7 @@ public class JobseekerRegisterService {
 		this.jobRepo = jobRepo;
 		this.jobApplicationRepo = jobApplicationRepo;
 		this.certificationRepo = certificationRepo;
+		this.languageRepo = languageRepo;
 	}
 
 	public ResponseEntity<?> register(@Valid JobseekerRegisterDTO request) {
@@ -697,6 +702,87 @@ public class JobseekerRegisterService {
 		}
 		catch(Exception e) {
 			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<List<Languages>> getAllLanguages() {
+		try {
+			List<Languages> languages = languageRepo.findAll().stream().map(Languages::new).toList();
+			return ResponseEntity.ok(languages);	
+		}
+		catch(Exception e){
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<List<Languages>> getAllSeekerLanguage(int id) {
+		
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+			List<Languages> languages = jobseeker.getSeekerLanguages().stream().map(Languages::new).toList();
+			return ResponseEntity.ok(languages);
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<String> addLanguages(int id, List<Integer> languageIds) {
+	
+		try {
+	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
+	        if (optionalJobSeeker.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body("JobSeeker not found with ID: " + id);
+	        }
+
+	        JobSeeker jobseeker = optionalJobSeeker.get();
+
+	        for (Integer languageId : languageIds) {
+	            Optional<Language> optionalLanguage = languageRepo.findById(languageId);
+	            if (optionalLanguage.isPresent()) {
+	                Language language = optionalLanguage.get();
+
+	                if (!jobseeker.getSeekerLanguages().contains(language)) {
+	                    jobseeker.getSeekerLanguages().add(language);
+	                }
+	            } else {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                        .body("Invalid Language ID: " + languageId);
+	            }
+	        }
+
+	        jobseekerRepo.save(jobseeker);
+	        return ResponseEntity.ok("Langauge added successfully!");
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error adding Language: " + e.getMessage());
+	    }
+	}
+
+	public ResponseEntity<String> deleteSeekerLanguage(int id, int jobseekerId) {
+		
+		try {
+	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(jobseekerId);
+	        if (optionalJobSeeker.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body("JobSeeker not found with ID: " + id);
+	        }
+
+	        JobSeeker jobseeker = optionalJobSeeker.get();
+	        
+	        Language language = languageRepo.findById(id).get();
+	        
+	        if (jobseeker.getSeekerLanguages().contains(language)){
+	        	jobseeker.getSeekerLanguages().remove(language);
+	        }
+	        jobseekerRepo.save(jobseeker);
+	        return ResponseEntity.ok("language deleted successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error deleting Language: " + e.getMessage());
 		}
 	}
 }
