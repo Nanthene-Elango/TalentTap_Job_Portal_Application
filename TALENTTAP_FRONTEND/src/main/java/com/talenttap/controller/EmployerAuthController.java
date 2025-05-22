@@ -3,11 +3,6 @@ package com.talenttap.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.model.EmployerRegister;
@@ -136,52 +129,6 @@ public class EmployerAuthController {
 	    response.addCookie(cookie);
 	    return "redirect:/";     
 	}
-	
-	
-	@PostMapping("/employer/candidate/approve")
-	public String handleApproveCandidate(@ModelAttribute EmailDTO email,
-	                                     @RequestParam("applicantId") int applicantId,
-	                                     @CookieValue(value = "jwt", required = false) String jwt,
-	                                     RedirectAttributes redirectAttributes) {
-		System.out.println("i reached the controlller");
-	    if (jwt == null || jwt.isEmpty()) {
-	        redirectAttributes.addFlashAttribute("error", "Unauthorized. Please log in.");
-	        return "redirect:/employer/candidates";
-	    }
-
-	    try {
-	        employerService.callApproveAPI(applicantId, email, jwt.trim());
-	        redirectAttributes.addFlashAttribute("success", "Candidate approved successfully.");
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("error", "Error during approval: " + e.getMessage());
-	    }
-
-	    return "redirect:/employer/candidates";
-	}
-	
-	@PostMapping("/employer/candidate/reject")
-	public String handleRejectCandidate(@ModelAttribute EmailDTO email,
-	                                     @RequestParam("applicantId") int applicantId,
-	                                     @CookieValue(value = "jwt", required = false) String jwt,
-	                                     RedirectAttributes redirectAttributes) {
-		System.out.println("i reached the controlller");
-	    if (jwt == null || jwt.isEmpty()) {
-	        redirectAttributes.addFlashAttribute("error", "Unauthorized. Please log in.");
-	        return "redirect:/employer/candidates";
-	    }
-
-	    try {
-	        employerService.callRejectAPI(applicantId, email, jwt.trim());
-	        redirectAttributes.addFlashAttribute("success", "Candidate rejected successfully.");
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("error", "Error during approval: " + e.getMessage());
-	    }
-
-	    return "redirect:/employer/candidates";
-	}
-
-
-
 	
 
 	

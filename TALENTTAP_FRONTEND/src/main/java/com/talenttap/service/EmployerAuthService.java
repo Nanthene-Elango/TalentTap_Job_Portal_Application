@@ -17,8 +17,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.model.IndustryType;
@@ -149,50 +147,4 @@ public class EmployerAuthService {
 	        return false;
 	    }
 	}
-	
-	
-	// approve candidate
-	
-	public void callApproveAPI(int candidateId, EmailDTO emailDTO, String token) {
-	    String url = "http://localhost:8083/api/api/candidate/" + candidateId + "/approve";
-
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.setBearerAuth(token); // automatically adds Bearer prefix
-
-	    HttpEntity<EmailDTO> request = new HttpEntity<>(emailDTO, headers);
-
-	    try {
-	        ResponseEntity<Void> response = restTemplate.postForEntity(url, request, Void.class);
-
-	        if (!response.getStatusCode().is2xxSuccessful()) {
-	            throw new RuntimeException("Approval failed with status: " + response.getStatusCode());
-	        }
-
-	    } catch (Exception e) {
-	        throw new RuntimeException("Error occurred while calling approval API: " + e.getMessage());
-	    }
-	}
-	
-	public void callRejectAPI(int candidateId, EmailDTO emailDTO, String token) {
-	    String url = "http://localhost:8083/api/api/candidate/" + candidateId + "/reject";
-
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.setBearerAuth(token); // automatically adds Bearer prefix
-
-	    HttpEntity<EmailDTO> request = new HttpEntity<>(emailDTO, headers);
-
-	    try {
-	        ResponseEntity<Void> response = restTemplate.postForEntity(url, request, Void.class);
-
-	        if (!response.getStatusCode().is2xxSuccessful()) {
-	            throw new RuntimeException("rejection failed with status: " + response.getStatusCode());
-	        }
-
-	    } catch (Exception e) {
-	        throw new RuntimeException("Error occurred while calling approval API: " + e.getMessage());
-	    }
-	}
-
 }

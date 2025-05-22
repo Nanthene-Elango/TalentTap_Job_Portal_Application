@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.talenttap.DTO.EditJob;
-import com.talenttap.DTO.EmployerJobFilterDTO;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EmploymentTypeDTO;
@@ -376,167 +375,12 @@ public class JobService {
 		return job;
 	}
 
-
-	public List<JobDisplayDTO> searchJobs(EmployerJobFilterDTO jobFilter) {
-		    List<Jobs> jobs = jobsRepo.searchByKeywordNoPagination(jobFilter.getKeyword().toLowerCase());
-
-	    if (jobs != null) {
-
-	    	if (jobFilter.getEmploymentType() != null && jobFilter.getEmploymentType() != 0) {
-	    	    jobs = jobs.stream()
-	    	        .filter(job -> job.getJobType() != null &&
-	    	                       Integer.valueOf(job.getJobType().getEmploymentTypeId()).equals(jobFilter.getEmploymentType()))
-	    	        .toList();
-	    	   
-	    	    System.out.println("hi im emp type" +jobs.get(0).getJobType().getEmploymentType());
-	    	}
-
-
-
-	        // Filter by location if not 0
-	        if (jobFilter.getLocation() != 0) {
-	            jobs = jobs.stream()
-	                .filter(j -> j.getJobLocation() != null 
-	                          && j.getJobLocation().stream()
-	                              .anyMatch(loc -> loc.getLocationId() == jobFilter.getLocation()))
-	                .toList();
-	        }
-
-	        // Filter by workType (assuming it's an integer field in Jobs)
-	        if (jobFilter.getWorkType() != null && !jobFilter.getWorkType().isBlank() && !jobFilter.getWorkType().isEmpty()) {
-	            jobs = jobs.stream()
-	                .filter(j -> j.getWorkType() != null
-	                          && j.getWorkType().name().equals(jobFilter.getWorkType()))
-	                .toList();
-	        }
-
-	        if (jobFilter.getJobStatus() != null && !jobFilter.getJobStatus().isBlank()) {
-	            JobStatus filterStatus = null;
-	            try {
-	                filterStatus = JobStatus.valueOf(jobFilter.getJobStatus().toLowerCase());
-	                System.out.println("--- Filter Status (parsed enum): " + filterStatus.name() + " ---");
-	            } catch (IllegalArgumentException e) {
-	                System.out.println("--- Invalid job status filter value: " + jobFilter.getJobStatus() + " ---");
-	                filterStatus = null;
-	            }
-
-	            if (filterStatus != null) {
-	                final JobStatus finalFilterStatus = filterStatus;
-	                jobs = jobs.stream()
-	                    .filter(j -> {
-	                        System.out.println("--- Checking job status: " + (j.getJobStatus() != null ? j.getJobStatus().name() : "null") + " against filter: " + finalFilterStatus.name() + " ---");
-	                        return j.getJobStatus() != null && j.getJobStatus().name().equals(finalFilterStatus.name().toLowerCase());
-	                    })
-	                    .toList();
-	                
-	            }
-	        }
-
-	    }
-	    // Map filtered Jobs entities to JobDisplayDTO (assuming you have a mapper)
-	    return jobs.stream().map(JobDisplayDTO::new).toList();
-
-
+	public Page<Jobs> searchJobs(String keyword, Pageable pageable) {
+		return jobsRepo.searchByKeyword(keyword, pageable);
 	}
-	
- 
- 	
- 	 public AdminJobDTO getJobById(int jobId, String jwt) {
-         if (jwt == null || jwt.isBlank()) {
-             throw new IllegalArgumentException("JWT token is empty or null");
-         }
-
-         String username = jwtutil.extractIdentifier(jwt);
-         Users user = userRepo.findByUsername(username)
-                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-
-         Optional<Jobs> jobOpt = jobsRepo.findById(jobId);
-         if (jobOpt.isEmpty()) {
-             return null;
-         }
-
-         Jobs job = jobOpt.get();
-         AdminJobDTO dto = new AdminJobDTO();
-
-         dto.setJobId(job.getJobId());
-         dto.setJobRole(job.getJobRole());
-         dto.setJobType(job.getJobType().getEmploymentType());
-         dto.setJobCategory(job.getJobCategory().getJobCategory());
-         dto.setJobDescription(job.getJobDescription());
-         dto.setRoles(job.getRoles());
-         dto.setResponsibilities(job.getResponsibilities());
-         dto.setBenefits(job.getBenefits());
-         dto.setDuration(job.getDuration() != 0 ? job.getDuration() : null);
-         dto.setStipend(job.getStipend() != 0 ? job.getStipend() : null);
-
-         if (job.getSalary_range() != null) {
-             dto.setSalaryMin(job.getSalary_range().getMin_range());
-             dto.setSalaryMax(job.getSalary_range().getMax_range());
-         }
-
-         dto.setYearsOfExperience(job.getYearsOfExperience());
-         dto.setWorkType(job.getWorkType().name());
-         dto.setOpenings(job.getOpenings());
-         dto.setPostedDate(job.getPostedDate());
-         dto.setDeadline(job.getDeadline());
-         dto.setJobStatus(job.getJobStatus().name());
-         dto.setApprovalStatus(job.getApprovalStatus().name());
-         dto.setExpired(job.getDeadline().isBefore(LocalDateTime.now()));
-
-         dto.setRequiredSkills(job.getRequiredSkills()
-                 .stream()
-                 .map(Skills::getSkill)
-                 .collect(Collectors.toSet()));
-
-         dto.setLocations(job.getJobLocation()
-                 .stream()
-                 .map(Location::getLocation)
-                 .collect(Collectors.toSet()));
-
-         dto.setCompanyName(job.getEmployer().getCompany().getCompanyName());
-
-         dto.setApplicants(0);
-
-         return dto;
-     }
-
- 	 public void approveJobs(List<Integer> jobIds, String jwt) {
- 		 if (jwt == null || jwt.isBlank()) {
- 			 throw new IllegalArgumentException("JWT token is empty or null");
- 		 }
- 		 
- 		 String username = jwtutil.extractIdentifier(jwt);
- 		 Users user = userRepo.findByUsername(username)
- 				 .orElseThrow(() -> new RuntimeException("User not found: " + username));
- 		 
- 		 for (Integer jobId : jobIds) {
- 			 Jobs job = jobsRepo.findById(jobId)
- 					 .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
- 			 job.setApprovalStatus(ApplicationStatus.approved);
- 			 jobsRepo.save(job);
- 		 }
- 	 }
- 	 
- 	public void rejectJobs(List<Integer> jobIds, String jwt) {
- 	    if (jwt == null || jwt.isBlank()) {
- 	        throw new IllegalArgumentException("JWT token is empty or null");
- 	    }
-
- 	    String username = jwtutil.extractIdentifier(jwt);
- 	    Users user = userRepo.findByUsername(username)
- 	            .orElseThrow(() -> new RuntimeException("User not found: " + username));
-
- 	    for (Integer jobId : jobIds) {
- 	        Jobs job = jobsRepo.findById(jobId)
- 	                .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
- 	        job.setApprovalStatus(ApplicationStatus.rejected);
- 	        jobsRepo.save(job);
- 	    }
- 	}
-   
 
 	// Admin section
-	// Jobs to display in admins page method 1
+	// Jobs to display in admins page
 	public List<AdminJobDTO> getAllJobsAdmin(String jwt) {
 		// Validate JWT
 		if (jwt == null || jwt.isBlank()) {

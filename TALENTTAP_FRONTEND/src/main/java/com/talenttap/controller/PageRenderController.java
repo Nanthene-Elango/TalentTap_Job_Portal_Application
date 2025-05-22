@@ -18,11 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.EducationDTO;
-import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
@@ -31,7 +27,6 @@ import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
-import com.talenttap.model.EmployerJobFilter;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.IndustryType;
@@ -248,7 +243,7 @@ public class PageRenderController {
 	@GetMapping("/employer/jobs")
     public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
 		System.out.println("reaching the controller hii");
-		
+		model.addAttribute("currentPage", "jobs");
         try {
             if (jwt == null || jwt.trim().isEmpty()) {
                 model.addAttribute("error", "Please log in to view jobs.");
@@ -264,14 +259,14 @@ public class PageRenderController {
             } else {
                 model.addAttribute("jobs", jobs);
             }
-            model.addAttribute("employmentTypes", jobService.getEmploymentType());
-    	    model.addAttribute("jobCategories", jobService.getJobCategories());
-    	    model.addAttribute("skills", jobseekerService.getAllSkills());
-    	    model.addAttribute("locations", jobseekerService.getAllLocations());
-    		model.addAttribute("currentPage", "jobs");
-    		model.addAttribute("jobFilter", new EmployerJobFilter());
-            model.addAttribute("email",new EmailDTO());
-          
+            
+         // 🔥 Add a blank form DTO for editing
+            EditJobFormDTO job = new EditJobFormDTO();
+            model.addAttribute("jobForm", job);
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
 	       
             return "employer/jobs";
         } catch (IllegalArgumentException e) {
@@ -526,25 +521,7 @@ public class PageRenderController {
     }
 	
 	@GetMapping("/admin/adminDashboard")
-    public String loadAdminIndex(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
-        if (jwt == null || jwt.trim().isEmpty()) {
-            return "redirect:/admin/login";
-        }
-        try {
-            List<AdminJobDTO> jobs = jobService.getAllAdminJobs(jwt);
-            if (jobs == null || jobs.isEmpty()) {
-                model.addAttribute("error", "No jobs found or failed to fetch jobs.");
-            } else {
-                model.addAttribute("jobs", jobs);
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
-        }
-        return "admin/adminDashboard";
-    }
-
 	public String loadAdminIndex() {
 		return "admin/adminDashboard";
 	}
-
 }
