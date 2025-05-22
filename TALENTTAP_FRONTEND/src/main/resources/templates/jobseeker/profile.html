@@ -410,46 +410,36 @@
 						</button>
 					</div>
 
-					<div class="section-item">
-						<div class="item-actions">
-							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editProjectModal">
-								<i class="fas fa-edit"></i>
-							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
-						</div>
-						<br>
-						<h6 class="card-title">E-commerce Platform</h6>
-						<p class="card-subtitle mb-1">Lead Developer</p>
-						<p class="card-text">Developed a full-scale e-commerce
-							platform using React, Node.js, and MongoDB. Implemented payment
-							processing, inventory management, and user authentication
-							systems.</p>
-						<p class="card-text">
-							<small class="text-muted">2022 - 2023</small>
-						</p>
+					<div class="empty-state"
+						th:if="${projectList == null or #lists.isEmpty(projectList)}">
+						<i class="fa-solid fa-laptop fa-3x mb-3 text-muted"></i>
+						<p>No Project Details to display</p>
 					</div>
-
-					<div class="section-item">
+					
+					<div th:each="project : ${projectList}" class="section-item">
 						<div class="item-actions">
 							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editProjectModal">
+								th:attr="data-id=${project.id},
+										data-title=${project.title},
+										data-description=${project.description},
+             							data-url=${project.url}"
+								onclick="openEditProjectModal(this)">
 								<i class="fas fa-edit"></i>
 							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
+							<form
+								th:action="@{/jobseeker/project/delete/{id}(id=${project.id})}"
+								method="post" style="display: inline;" class="delete-form">
+								<button type="button"
+									class="btn btn-sm btn-link text-danger btn-delete">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</form>
 						</div>
 						<br>
-						<h6 class="card-title">AI-Based Recommendation System</h6>
-						<p class="card-subtitle mb-1">Backend Developer</p>
-						<p class="card-text">Created an AI-based recommendation system
-							for a streaming service using Python and TensorFlow. Improved
-							user engagement by 25% through personalized content suggestions.</p>
-						<p class="card-text">
-							<small class="text-muted">2021 - 2022</small>
+						<h6 class="card-title" th:text="${project.title}"></h6>
+						<p class="card-text" th:if="${project.description!=null}" th:text="${project.description}"></p>
+						<p class="card-text" th:if="${project.url != null}">
+							Project URL: <span class="text-muted" th:text="${project.url}"></span>
 						</p>
 					</div>
 				</div>
@@ -1068,41 +1058,33 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
+				<form th:action="@{'jobseeker/project/add/' + ${jobSeeker.id}}"
+						method="post" th:object="${projectDTO}">
 				<div class="modal-body">
-					<form>
 						<div class="mb-3">
-							<label for="projectName" class="form-label">Project Name</label>
-							<input type="text" class="form-control" id="projectName"
+							<label for="projectTitle" class="form-label">Project Title</label>
+							<input type="text" class="form-control" id="projectTitle" th:field="*{title}"
 								placeholder="e.g., CRM System">
 						</div>
-						<div class="mb-3">
-							<label for="projectRole" class="form-label">Your Role</label> <input
-								type="text" class="form-control" id="projectRole"
-								placeholder="e.g., Frontend Developer">
-						</div>
+						
 						<div class="mb-3">
 							<label for="projectDescription" class="form-label">Description</label>
-							<textarea class="form-control" id="projectDescription" rows="4"
+							<textarea class="form-control" id="projectDescription" rows="4" th:field="*{description}"
 								placeholder="Describe your project and your contributions"></textarea>
 						</div>
-						<div class="row mb-3">
-							<div class="col">
-								<label for="projectStartDate" class="form-label">Start
-									Date</label> <input type="month" class="form-control"
-									id="projectStartDate">
-							</div>
-							<div class="col">
-								<label for="projectEndDate" class="form-label">End Date</label>
-								<input type="month" class="form-control" id="projectEndDate">
-							</div>
+						
+						<div class="mb-3">
+							<label for="projectUrl" class="form-label">Project URL</label>
+							<input type="text" class="form-control" id="projectUrl" th:field="*{url}"
+								placeholder="mention your project github link or any other related link">
 						</div>
-					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-violet">Add</button>
+					<button type="submit" class="btn btn-violet">Add</button>
 				</div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -1118,38 +1100,29 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form>
+					<form th:action="@{/jobseeker/project/edit}" method="post">
+						<input type="hidden" id="editProjectId" name="id">
 						<div class="mb-3">
-							<label for="editProjectName" class="form-label">Project
-								Name</label> <input type="text" class="form-control"
-								id="editProjectName" value="E-commerce Platform">
+							<label for="editProjectTitle" class="form-label">Project
+								Title</label> <input type="text" class="form-control"
+								id="editProjectTitle" name="title">
 						</div>
-						<div class="mb-3">
-							<label for="editProjectRole" class="form-label">Your Role</label>
-							<input type="text" class="form-control" id="editProjectRole"
-								value="Lead Developer">
-						</div>
+						
 						<div class="mb-3">
 							<label for="editProjectDescription" class="form-label">Description</label>
 							<textarea class="form-control" id="editProjectDescription"
-								rows="4">Developed a full-scale e-commerce platform using React, Node.js, and MongoDB. Implemented payment processing, inventory management, and user authentication systems.</textarea>
+								rows="4" name="description">
+							</textarea>
 						</div>
-						<div class="row mb-3">
-							<div class="col">
-								<label for="editProjectStartDate" class="form-label">Start
-									Date</label> <input type="month" class="form-control"
-									id="editProjectStartDate" value="2022-01">
-							</div>
-							<div class="col">
-								<label for="editProjectEndDate" class="form-label">End
-									Date</label> <input type="month" class="form-control"
-									id="editProjectEndDate" value="2023-12">
-							</div>
+						<div class="mb-3">
+							<label for="editProjectUrl" class="form-label">URL</label>
+							<input type="text" class="form-control"
+								id="editProjectUrl" name="url">
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary"
 								data-bs-dismiss="modal">Cancel</button>
-							<button type="button" class="btn btn-violet">Save
+							<button type="submit" class="btn btn-violet">Save
 								Changes</button>
 						</div>
 					</form>
@@ -1387,6 +1360,21 @@
 		    
 		    const modal = new bootstrap.Modal(document.getElementById('editCertificationModal'));
 		    modal.show();
+	  }
+	  
+	  function openEditProjectModal(button){
+		const id = button.getAttribute('data-id');
+		const title = button.getAttribute('date-title');
+		const description = button.getAttribute('dat-description');
+		const url = button.getAttribute('data-url');
+		
+		document.getElementById('editProjectId').value = id;
+		document.getElementById('editProjectTitle').value = title;
+		document.getElementById('editProjectDescription').value = description;
+		document.getElementById('editProjectUrl').value = url;
+		
+		const modal = new bootstrap.Modal(document.getElementById('editProjectModal'));
+	    modal.show();
 	  }
 	  
 	  function openEditEducationModal(button) {

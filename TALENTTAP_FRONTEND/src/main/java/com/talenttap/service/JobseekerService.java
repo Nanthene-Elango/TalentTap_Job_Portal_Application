@@ -32,6 +32,7 @@ import com.talenttap.model.JwtToken;
 import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
+import com.talenttap.model.Projects;
 import com.talenttap.model.Skills;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -581,6 +582,68 @@ public class JobseekerService {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			redirectAttributes.addFlashAttribute("error", "Error occured while deleting language!");
+		}
+
+		return "redirect:/profile";
+	}
+
+	public List<Projects> getAllProjects(int id) {
+
+		String url = "http://localhost:8083/jobseeker/projects/" + id;
+
+		ResponseEntity<Projects[]> response = restTemplate.getForEntity(url, Projects[].class);
+
+		return Arrays.asList(response.getBody());
+	}
+
+	public String addProject(int id, Projects project, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/project/add/" + id;
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Projects> requestEntity = new HttpEntity<>(project, headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			redirectAttributes.addFlashAttribute("success", "project added successfully!");
+		} else {
+			redirectAttributes.addFlashAttribute("error", "error adding project!");
+		}
+		return "redirect:/profile";
+	}
+
+	public String editProject(Projects project, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/project/update/" + project.getId();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Projects> requestEntity = new HttpEntity<>(project, headers);
+
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				redirectAttributes.addFlashAttribute("success", "Project updated successfully!");
+			} else {
+				redirectAttributes.addFlashAttribute("error", "Failed to update Project.");
+			}
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error while updating project" + e.getMessage());
+		}
+		return "redirect:/profile";
+	}
+
+	public String deleteProject(int id, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/project/delete/" + id;
+
+		try {
+			restTemplate.delete(url);
+			redirectAttributes.addFlashAttribute("success", "project deleted successfully!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error occured while deleting project!");
 		}
 
 		return "redirect:/profile";

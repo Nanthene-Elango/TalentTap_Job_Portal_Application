@@ -39,6 +39,7 @@ import com.talenttap.model.JwtToken;
 import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
+import com.talenttap.model.Projects;
 import com.talenttap.model.Skills;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
@@ -133,6 +134,12 @@ public class PageRenderController {
 			
 			List<Languages> allSeekerLanguage = jobseekerService.getAllSeekerLanguage(jobseeker.getId());
 			model.addAttribute("languageList", allSeekerLanguage);
+			
+			List<Projects> allProjects = jobseekerService.getAllProjects(jobseeker.getId());
+			model.addAttribute("projectList", allProjects);
+			
+			Projects project = new Projects();
+			model.addAttribute("projectDTO", project);
 			
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);

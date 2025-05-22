@@ -23,6 +23,7 @@ import com.talenttap.DTO.EducationLevelDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.Languages;
 import com.talenttap.DTO.LocationDTO;
+import com.talenttap.DTO.ProjectDTO;
 import com.talenttap.DTO.SkillsDTO;
 import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobFilterDTO;
@@ -229,5 +230,25 @@ public class JobseekerController {
 	@DeleteMapping("/jobseeker/language/delete/{id}/{jobseekerId}")
 	public ResponseEntity<String> deleteLanguage(@PathVariable int id , @PathVariable int jobseekerId){
 		return jobseekerService.deleteSeekerLanguage(id , jobseekerId);
+	}
+	
+	@GetMapping("/jobseeker/projects/{id}")
+	public ResponseEntity<List<ProjectDTO>> getAllProjects(@PathVariable Integer id) {
+		return jobseekerService.getAllProjects(id);
+	}
+	
+	@PostMapping("/jobseeker/project/add/{id}")
+	public ResponseEntity<String> addProject(@PathVariable int id , @RequestBody ProjectDTO project){
+		return jobseekerService.addProject(id , project);
+	}
+	
+	@PutMapping("/jobseeker/project/update/{id}")
+	public ResponseEntity<String> updateProject(@PathVariable int id, @RequestBody ProjectDTO project) {
+	    return jobseekerService.updateProject(id, project);
+	}
+	
+	@DeleteMapping("/jobseeker/project/delete/{id}")
+	public ResponseEntity<String> deleteProject(@PathVariable int id){
+		return jobseekerService.deleteProject(id );
 	}
 }

@@ -27,6 +27,7 @@ import com.talenttap.DTO.JobFilterDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.JobseekerRegisterDTO;
 import com.talenttap.DTO.Languages;
+import com.talenttap.DTO.ProjectDTO;
 import com.talenttap.DTO.SkillsDTO;
 import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.AuthProvider;
@@ -39,6 +40,7 @@ import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.entity.JobSeeker;
 import com.talenttap.entity.Jobs;
 import com.talenttap.entity.Language;
+import com.talenttap.entity.Project;
 import com.talenttap.entity.Skills;
 import com.talenttap.repository.CertificationRepository;
 import com.talenttap.repository.EducationLevelRepository;
@@ -48,6 +50,7 @@ import com.talenttap.repository.JobsRepository;
 import com.talenttap.repository.JobseekerRepository;
 import com.talenttap.repository.LanguageRepository;
 import com.talenttap.repository.LocationRepository;
+import com.talenttap.repository.ProjectRepository;
 import com.talenttap.repository.RoleRepository;
 import com.talenttap.repository.SkillsRepository;
 import com.talenttap.repository.UsersRepository;
@@ -75,12 +78,13 @@ public class JobseekerRegisterService {
 	private JobsRepository jobRepo;
 	private JobApplicationRepository jobApplicationRepo;
 	private LanguageRepository languageRepo;
+	private ProjectRepository projectRepo;
 
 	public JobseekerRegisterService(UsersRepository userRepo, JobseekerRepository jobseekerRepo,
 			EducationRepository educationRepo, SkillsRepository skillsRepo, RoleRepository roleRepo,
 			LocationRepository locationRepo, EducationLevelRepository educationLevelRepo,
 			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo,
-			CertificationRepository certificationRepo , LanguageRepository languageRepo) {
+			CertificationRepository certificationRepo , LanguageRepository languageRepo , ProjectRepository projectRepo) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.skillsRepo = skillsRepo;
@@ -93,6 +97,7 @@ public class JobseekerRegisterService {
 		this.jobApplicationRepo = jobApplicationRepo;
 		this.certificationRepo = certificationRepo;
 		this.languageRepo = languageRepo;
+		this.projectRepo = projectRepo;
 	}
 
 	public ResponseEntity<?> register(@Valid JobseekerRegisterDTO request) {
@@ -783,6 +788,73 @@ public class JobseekerRegisterService {
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("Error deleting Language: " + e.getMessage());
+		}
+	}
+
+	public ResponseEntity<List<ProjectDTO>> getAllProjects(Integer id) {
+		List<ProjectDTO> projects = projectRepo.findByJobSeeker_JobSeekerId(id).stream().map(ProjectDTO::new)
+				.toList();
+		return ResponseEntity.ok().body(projects);
+	}
+
+	public ResponseEntity<String> addProject(int id, ProjectDTO request) {
+
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+			
+			Project project = new Project();
+			project.setJobSeeker(jobseeker);
+			
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) project.setProjectURL(null);
+			else project.setProjectURL(request.getUrl());
+			
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) project.setProjectTitle(null);
+			else project.setProjectTitle(request.getTitle());
+			
+			if (request.getDescription().isBlank() || request.getDescription().isEmpty()) project.setDescription(null);
+			else project.setDescription(request.getDescription());
+			
+			projectRepo.save(project);
+			
+			return ResponseEntity.ok().body("Project added Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<String> updateProject(int id, ProjectDTO request) {
+		
+		try {
+			
+			Project project = projectRepo.findById(id).get();
+			
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) project.setProjectURL(null);
+			else project.setProjectURL(request.getUrl());
+			
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) project.setProjectTitle(null);
+			else project.setProjectTitle(request.getTitle());
+			
+			if (request.getDescription().isBlank() || request.getDescription().isEmpty()) project.setDescription(null);
+			else project.setDescription(request.getDescription());
+			
+			projectRepo.save(project);
+			
+			return ResponseEntity.ok().body("Project updated Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+	}
+
+	public ResponseEntity<String> deleteProject(int id) {
+		try {
+			projectRepo.deleteById(id);
+			return ResponseEntity.ok().body("project deleted Successfully!");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().build();
 		}
 	}
 }
