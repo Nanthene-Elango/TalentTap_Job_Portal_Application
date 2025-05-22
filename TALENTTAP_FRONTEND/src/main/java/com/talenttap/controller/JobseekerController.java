@@ -28,6 +28,7 @@ import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
+import com.talenttap.model.Projects;
 import com.talenttap.service.JobsService;
 import com.talenttap.service.JobseekerService;
 
@@ -185,4 +186,20 @@ public class JobseekerController {
 	public String deleteLanguage(@PathVariable int id , @PathVariable int jobseekerId , RedirectAttributes redirectAttributes){
 		return jobseekerService.deleteSeekerLanguage(id , jobseekerId , redirectAttributes);
 	}
+	
+	@PostMapping("/jobseeker/project/add/{id}")
+	public String addCertification(@PathVariable int id , @ModelAttribute Projects project , RedirectAttributes redirectAttributes) {
+		return jobseekerService.addProject(id , project , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/project/edit")
+	public String updateEducation(@ModelAttribute Projects project, RedirectAttributes redirectAttributes) {
+		return jobseekerService.editProject(project , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/project/delete/{id}")
+	public String deleteProjectById(@PathVariable int id , RedirectAttributes redirectAttributes) {
+		return jobseekerService.deleteProject(id , redirectAttributes);
+	}
+	
 }
