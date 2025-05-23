@@ -18,15 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerRegister;
@@ -38,8 +36,10 @@ import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
+import com.talenttap.model.Projects;
 import com.talenttap.model.Skills;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
@@ -57,9 +57,6 @@ public class PageRenderController {
 	
 
 	public PageRenderController(JobseekerService jobseekerService, EmployerAuthService employerService,JobsService jobService){
-		this.jobseekerService = jobseekerService;
-
-
 
 		this.jobseekerService = jobseekerService;
 		this.employerService = employerService;
@@ -108,7 +105,9 @@ public class PageRenderController {
 	public String LoadProfile(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
 
 		if (jwt != null && !jwt.trim().isEmpty()) {
+			
 			JwtToken token = new JwtToken(jwt.trim());
+			
 			Jobseeker jobseeker = jobseekerService.getJobseeker(token);
 			model.addAttribute("jobSeeker", jobseeker);
 
@@ -124,6 +123,24 @@ public class PageRenderController {
 			List<Education> educations = jobseekerService.getAllEducation(jobseeker.getId());
 			model.addAttribute("educationList", educations);
 
+			List<Certifications> certifications = jobseekerService.getAllCertifications(jobseeker.getId());
+			model.addAttribute("certificationList", certifications);
+			
+			Certifications certification = new Certifications();
+			model.addAttribute("certificationDTO", certification);
+			
+			List<Languages> allLanguages = jobseekerService.getAllLanguages();
+			model.addAttribute("allLanguages", allLanguages);
+			
+			List<Languages> allSeekerLanguage = jobseekerService.getAllSeekerLanguage(jobseeker.getId());
+			model.addAttribute("languageList", allSeekerLanguage);
+			
+			List<Projects> allProjects = jobseekerService.getAllProjects(jobseeker.getId());
+			model.addAttribute("projectList", allProjects);
+			
+			Projects project = new Projects();
+			model.addAttribute("projectDTO", project);
+			
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);
 
@@ -511,25 +528,7 @@ public class PageRenderController {
     }
 	
 	@GetMapping("/admin/adminDashboard")
-    public String loadAdminIndex(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
-        if (jwt == null || jwt.trim().isEmpty()) {
-            return "redirect:/admin/login";
-        }
-        try {
-            List<AdminJobDTO> jobs = jobService.getAllAdminJobs(jwt);
-            if (jobs == null || jobs.isEmpty()) {
-                model.addAttribute("error", "No jobs found or failed to fetch jobs.");
-            } else {
-                model.addAttribute("jobs", jobs);
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
-        }
-        return "admin/adminDashboard";
-    }
-
 	public String loadAdminIndex() {
 		return "admin/adminDashboard";
 	}
-
 }

@@ -52,14 +52,6 @@
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h5>Years of Experience</h5>
-                        <p class="text-muted" id="experience">1-4 years</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Salary / Stipend</h5>
-                        <p class="text-muted" id="salary">₹5,00,000 - ₹9,00,000 per annum</p>
-                    </div>
-                    <div class="col-md-6">
                         <h5>Required Skills</h5>
                         <div class="d-flex flex-wrap" id="skills">
                             <span class="badge bg-violet-light text-violet me-2 mb-2">JavaScript</span>
@@ -96,8 +88,6 @@
                 roles: ["Develop backend services using Node.js", "Integrate APIs with front-end", "Ensure code quality through testing"],
                 responsibilities: ["Write clean, maintainable code", "Participate in code reviews", "Meet project deadlines"],
                 benefits: ["Health insurance", "Flexible work hours", "Annual performance bonus"],
-                experience: "2-4 years",
-                salary: "₹6,00,000 - ₹9,00,000 per annum",
                 skills: ["JavaScript", "Node.js", "SQL"],
                 locations: ["New York", "San Francisco"],
                 applications: 25
@@ -131,8 +121,6 @@
 
             document.getElementById('job-title').textContent = data.title;
             document.getElementById('description').textContent = data.description;
-            document.getElementById('experience').textContent = data.experience;
-            document.getElementById('salary').textContent = data.salary;
             
             const rolesList = document.getElementById('roles');
             rolesList.innerHTML = '';
