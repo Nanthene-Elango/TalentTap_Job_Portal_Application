@@ -528,7 +528,69 @@ public class PageRenderController {
     }
 	
 	@GetMapping("/admin/adminDashboard")
-	public String loadAdminIndex() {
-		return "admin/adminDashboard";
-	}
+    public String loadAdminIndex(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            List<AdminJobDTO> jobs = jobService.getAllAdminJobs(jwt);
+            if (jobs == null || jobs.isEmpty()) {
+                model.addAttribute("error", "No jobs found or failed to fetch jobs.");
+            } else {
+                model.addAttribute("jobs", jobs);
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
+        }
+        return "admin/adminDashboard";
+    }
+	
+	@PostMapping("/admin/jobs/approve")
+    public String approveJobs(@RequestParam("jobIds") List<Integer> jobIds,
+                              @CookieValue(value = "jwt", required = false) String jwt,
+                              Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = jobService.approveJobs(jobIds, jwt);
+            System.out.println(jobIds);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to approve jobs: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#jobs";
+    }
+
+    // New endpoint for rejecting jobs
+    @PostMapping("/admin/jobs/reject")
+    public String rejectJobs(@RequestParam("jobIds") List<Integer> jobIds,
+                             @CookieValue(value = "jwt", required = false) String jwt,
+                             Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = jobService.rejectJobs(jobIds, jwt);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to reject jobs: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#jobs";
+    }
+    
+    @GetMapping("/admin/jobs/details/{id}")
+    public String jobDetails(@PathVariable("id") Integer jobId,
+                             @CookieValue(value = "jwt", required = false) String jwt,
+                             Model model) {
+        try {
+        	System.out.println(jobId);
+            AdminJobDTO job = jobService.getAdminJobById(jobId, jwt);
+            model.addAttribute("job", job);
+        } catch (Exception e) {
+            model.addAttribute("job", null); // Job not found
+        }
+    	
+        return "admin/job-details"; // Template name without .html
+    }
 }
