@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentTap | Job Details</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSB7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/admin/css/job-details.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 th:text="${job.jobRole != null and job.companyName != null} ? ${job.jobRole + ' - ' + job.companyName} : 'Job Not Found'"></h2>
+
+        <div th:if="${job != null}">
+            <div class="section mt-3">
+                <h3>Description</h3>
+                <p th:text="${job.jobDescription != null} ? ${job.jobDescription} : 'N/A'"></p>
+            </div>
+
+            <div class="section">
+                <h3>Roles</h3>
+                <div th:utext="${job.roles != null ? job.roles.replace('\n', '<br/>') : 'N/A'}"></div>
+            </div>
+
+            <div class="section">
+                <h3>Responsibilities</h3>
+                <div th:utext="${job.responsibilities != null ? job.responsibilities.replace('\n', '<br/>') : 'N/A'}"></div>
+            </div>
+
+            <div class="section">
+                <h3>Benefits</h3>
+                <div th:utext="${job.benefits != null ? job.benefits.replace('\n', '<br/>') : 'N/A'}"></div>
+            </div>
+
+            <div class="section">
+                <h3>Years of Experience</h3>
+                <p th:text="${job.yearsOfExperience != null} ? ${job.yearsOfExperience} : 'N/A'"></p>
+                <p th:if="${job.yearsOfExperience == null or job.yearsOfExperience.isEmpty()}">Nil</p>
+            </div>
+
+            <div class="section">
+                <h3>Salary / Stipend</h3>
+                <p th:if="${job.salaryMin != null and job.salaryMax != null}"
+                   th:text="${ job.salaryMin +'LPA'+ ' - ' + job.salaryMax +'LPA' +' /-per annum'}"></p>
+                <p th:if="${job.stipend != null and job.stipend != 0}"
+                   th:text="${'₹' +job.stipend +' /-per month'}"></p>
+                <p th:if="${job.salaryMin == null and job.salaryMax == null and (job.stipend == null or job.stipend == 0)}">N/A</p>
+            </div>
+
+            <div class="section">
+                <h3>Required Skills</h3>
+                <div class="skills-container">
+                    <span th:each="skill : ${job.requiredSkills}" 
+                          th:if="${skill != null}" 
+                          th:text="${skill}" 
+                          class="skill-badge"></span>
+                    <span th:if="${job.requiredSkills == null or job.requiredSkills.isEmpty()}" 
+                          class="skill-badge skill-badge-na">N/A</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Locations</h3>
+                <div class="skills-container">
+                    <span th:each="location : ${job.locations}" 
+                          th:if="${location != null}" 
+                          th:text="${location}" 
+                          class="skill-badge"></span>
+                    <span th:if="${job.locations == null or job.locations.isEmpty()}" 
+                          class="skill-badge skill-badge-na">N/A</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Applications</h3>
+                <p th:text="${job.applicants != null} ? ${job.applicants + ' applications received'} : 'N/A'"></p>
+            </div>
+        </div>
+
+        <div th:if="${job == null}" class="alert alert-danger">
+            Job not found for the given ID.
+        </div>
+
+        <a th:href="@{/admin/adminDashboard#jobs}" class="btn btn-violet mt-3">Back to Jobs</a>
+    </div>
+</body>
+</html>
