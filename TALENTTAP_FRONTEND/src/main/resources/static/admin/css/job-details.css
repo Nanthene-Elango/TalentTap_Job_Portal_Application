@@ -1,0 +1,114 @@
+/* General styling for the body to ensure consistency */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fafc; /* Light gray background */
+    color: #333; /* Dark gray text */
+}
+
+/* Container styling (using Bootstrap's .container) */
+.container {
+    max-width: 900px; /* Limit the width for better readability */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff; /* White background for the content */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+/* Main job title styling */
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2a0a5a; /* Dark purple */
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+/* Section styling */
+.section {
+    margin-bottom: 30px;
+}
+
+/* Section heading styling */
+.section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2a0a5a; /* Dark purple */
+    margin-bottom: 12px;
+    border-bottom: 2px solid #e0e7ff; /* Light indigo border */
+    padding-bottom: 5px;
+}
+
+/* Paragraph styling for descriptions, years of experience, etc. */
+.section p {
+    font-size: 1rem;
+    color: #4b5563; /* Medium gray */
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Container for badges (used in Required Skills and Locations) */
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Space between badges */
+}
+
+/* Badge styling for skills and locations */
+.skill-badge {
+    display: inline-block;
+    background-color: #e0e7ff; /* Light indigo background */
+    color: #4f46e5; /* Indigo text */
+    padding: 6px 12px;
+    border-radius: 16px; /* Rounded corners */
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1;
+    text-transform: capitalize; /* Capitalize skills/locations */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for badges */
+.skill-badge:hover {
+    background-color: #c7d2fe; /* Slightly darker indigo on hover */
+}
+
+/* Styling for 'N/A' badge */
+.skill-badge-na {
+    background-color: #f3f4f6; /* Light gray background */
+    color: #6b7280; /* Gray text */
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* Button styling for 'Back to Jobs' */
+.btn-violet {
+    display: inline-block;
+    background-color: #5e17eb; /* Violet background */
+    color: #ffffff; /* White text */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-violet:hover {
+    background-color: #4a12b7; /* Darker violet on hover */
+}
+
+/* Error alert styling */
+.alert-danger {
+    background-color: #f8d7da; /* Light red background */
+    color: #dc3545; /* Red text */
+    border: 1px solid #dc3545; /* Red border */
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
