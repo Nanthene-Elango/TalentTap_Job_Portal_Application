@@ -1,19 +1,11 @@
-
-
-// Logout function
-function logout() {
-    sessionStorage.removeItem('isLoggedIn');
-    window.location.href = 'Login.html';
-}
-
 // Sidebar Toggle
 document.getElementById('sidebarToggle').addEventListener('click', function() {
     document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('mainContent').classList.toggle('expanded');
 });
 
-// Section Toggle
+// Section Navigation
 function showSection(sectionId) {
-    // Update sidebar active link
     document.querySelectorAll('.sidebar .nav-link').forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('data-section') === sectionId) {
@@ -21,10 +13,8 @@ function showSection(sectionId) {
         }
     });
 
-    // Update section title
     document.getElementById('section-title').textContent = sectionId.charAt(0).toUpperCase() + sectionId.slice(1) + ' Overview';
 
-    // Show only the selected section
     document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
         section.style.display = 'none';
@@ -36,7 +26,6 @@ function showSection(sectionId) {
     }
 }
 
-// Sidebar navigation
 document.querySelectorAll('.sidebar .nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
@@ -45,134 +34,301 @@ document.querySelectorAll('.sidebar .nav-link').forEach(link => {
     });
 });
 
-// Handle Hash on Page Load
-document.addEventListener('DOMContentLoaded', function() {
-    checkLoginStatus(); // Check login status before loading
-    const hash = window.location.hash.replace('#', '');
-    const validSections = ['dashboard', 'jobs', 'employers', 'jobseekers', 'applications', 'settings'];
-    if (hash && validSections.includes(hash)) {
-        showSection(hash);
-    } else {
-        showSection('dashboard'); // Default to dashboard
+// Function to get JWT token from cookies
+function getJwtToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'jwt') {
+            return value;
+        }
     }
-});
+    return null;
+}
 
-// Jobs Section Functionality
-const jobTable = document.getElementById('jobTable');
-const statusFilter = document.getElementById('statusFilter');
-const approvalFilter = document.getElementById('approvalFilter');
-const jobSearch = document.getElementById('employerSearch');
-const selectAllJobs = document.getElementById('selectAllJobs');
-const bulkApprove = document.getElementById('bulkApprove');
-const bulkReject = document.getElementById('bulkReject');
-const postedStartDate = document.getElementById('postedStartDate');
-const postedEndDate = document.getElementById('postedEndDate');
+// Jobs Section Pagination and Functionality
+const jobsPerPage = 4;
+let currentJobPage = 1;
+let allJobRows = [];
+let filteredJobRows = [];
+
+function initJobPagination() {
+    // Get all job rows
+    const initialRows = Array.from(document.querySelectorAll('#jobTable tbody .job-row'));
+    
+    // Remove duplicates based on jobId
+    const seenJobIds = new Set();
+    allJobRows = initialRows.filter(row => {
+        const jobId = row.querySelector('.job-select')?.value;
+        if (!jobId) return false; // Skip rows without a jobId
+        if (seenJobIds.has(jobId)) {
+            row.remove(); // Remove duplicate row from DOM
+            return false; // Exclude from allJobRows
+        }
+        seenJobIds.add(jobId);
+        return true; // Keep unique row
+    });
+
+    filteredJobRows = [...allJobRows];
+    showJobPage(currentJobPage);
+    setupJobPagination();
+}
+
+function showJobPage(page) {
+    currentJobPage = page;
+    const startIndex = (page - 1) * jobsPerPage;
+    const endIndex = startIndex + jobsPerPage;
+
+    filteredJobRows.forEach(row => row.style.display = 'none');
+    const rowsToShow = filteredJobRows.slice(startIndex, endIndex);
+    console.log(`Showing page ${page}: ${rowsToShow.length} rows`);
+    rowsToShow.forEach(row => row.style.display = '');
+
+    setupJobPagination();
+    updateSelectAllJobsState();
+}
+
+function setupJobPagination() {
+    const paginationUl = document.getElementById('jobPagination');
+    if (!paginationUl) {
+        console.error("jobPagination element not found. Ensure the ul has id='jobPagination'.");
+        return;
+    }
+    const totalJobs = filteredJobRows.length;
+    const totalPages = Math.ceil(totalJobs / jobsPerPage);
+    paginationUl.innerHTML = '';
+
+    const prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (currentJobPage === 1 ? ' disabled' : '');
+    const prevLink = document.createElement('a');
+    prevLink.className = 'page-link';
+    prevLink.href = '#';
+    prevLink.textContent = 'Previous';
+    prevLink.onclick = (e) => {
+        e.preventDefault();
+        if (currentJobPage > 1) showJobPage(currentJobPage - 1);
+    };
+    prevLi.appendChild(prevLink);
+    paginationUl.appendChild(prevLi);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = 'page-item' + (i === currentJobPage ? ' active' : '');
+        const pageLink = document.createElement('a');
+        pageLink.className = 'page-link';
+        pageLink.href = '#';
+        pageLink.textContent = i;
+        pageLink.onclick = (e) => {
+            e.preventDefault();
+            showJobPage(i);
+        };
+        pageLi.appendChild(pageLink);
+        paginationUl.appendChild(pageLi);
+    }
+
+    const nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (currentJobPage === totalPages ? ' disabled' : '');
+    const nextLink = document.createElement('a');
+    nextLink.className = 'page-link';
+    nextLink.href = '#';
+    nextLink.textContent = 'Next';
+    nextLink.onclick = (e) => {
+        e.preventDefault();
+        if (currentJobPage < totalPages) showJobPage(currentJobPage + 1);
+    };
+    nextLi.appendChild(nextLink);
+    paginationUl.appendChild(nextLi);
+}
 
 function filterJobs() {
-    const status = statusFilter.value.toLowerCase();
-    const approval = approvalFilter.value.toLowerCase();
-    const search = jobSearch.value.toLowerCase();
-    const startDate = postedStartDate.value ? new Date(postedStartDate.value) : null;
-    const endDate = postedEndDate.value ? new Date(postedEndDate.value) : null;
+    const statusFilter = document.getElementById('statusFilter')?.value.toLowerCase() || '';
+    const approvalFilter = document.getElementById('approvalFilter')?.value.toLowerCase() || '';
+    const employerSearch = document.getElementById('employerSearch')?.value.toLowerCase() || '';
+    const startDate = document.getElementById('postedStartDate')?.value || '';
+    const endDate = document.getElementById('postedEndDate')?.value || '';
 
-    const rows = jobTable.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const title = row.cells[1].textContent.toLowerCase();
-        const company = row.cells[2].textContent.toLowerCase();
-        const jobStatus = row.cells[8].textContent.toLowerCase();
-        const approvalStatus = row.cells[9].textContent.toLowerCase();
-        const postedDate = new Date(row.cells[6].textContent);
+    filteredJobRows = allJobRows.filter(row => {
+        const status = row.getAttribute('data-status') || '';
+        const approval = row.getAttribute('data-approval') || '';
+        const company = row.getAttribute('data-company') || '';
+        const postedDate = row.getAttribute('data-posted') || '';
 
-        const matchesSearch = title.includes(search) || company.includes(search);
-        const matchesStatus = !status || jobStatus.includes(status);
-        const matchesApproval = !approval || approvalStatus.includes(approval);
-        const matchesDate = (!startDate || postedDate >= startDate) && (!endDate || postedDate <= endDate);
+        let matchesStatus = !statusFilter || status === statusFilter || (statusFilter === 'expired' && row.querySelector('.badge')?.textContent.toLowerCase() === 'expired');
+        let matchesApproval = !approvalFilter || approval === approvalFilter;
+        let matchesSearch = !employerSearch || company.includes(employerSearch);
+        let matchesDate = true;
 
-        row.style.display = matchesSearch && matchesStatus && matchesApproval && matchesDate ? '' : 'none';
+        if (startDate && postedDate < startDate) {
+            matchesDate = false;
+        }
+        if (endDate && postedDate > endDate) {
+            matchesDate = false;
+        }
+
+        return matchesStatus && matchesApproval && matchesSearch && matchesDate;
     });
+
+    console.log(`Filtered rows: ${filteredJobRows.length}`);
+    showJobPage(1);
 }
 
-if (statusFilter) statusFilter.addEventListener('change', filterJobs);
-if (approvalFilter) approvalFilter.addEventListener('change', filterJobs);
-if (jobSearch) jobSearch.addEventListener('input', filterJobs);
-if (postedStartDate) postedStartDate.addEventListener('change', filterJobs);
-if (postedEndDate) postedEndDate.addEventListener('change', filterJobs);
+function updateSelectAllJobsState() {
+    const visibleCheckboxes = filteredJobRows
+        .filter((row, index) => {
+            const startIndex = (currentJobPage - 1) * jobsPerPage;
+            const endIndex = startIndex + jobsPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.job-select'));
 
-function updateBulkActions() {
-    const selected = document.querySelectorAll('.job-select:checked').length;
-    bulkApprove.disabled = selected === 0;
-    bulkReject.disabled = selected === 0;
+    const selectAllCheckbox = document.getElementById('select-all-jobs');
+    if (selectAllCheckbox) {
+        const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every(checkbox => checkbox.checked);
+        selectAllCheckbox.checked = allChecked;
+    }
+
+    updateBulkButtons();
 }
 
-if (selectAllJobs) {
-    selectAllJobs.addEventListener('change', function() {
-        document.querySelectorAll('.job-select').forEach(checkbox => {
-            checkbox.checked = this.checked;
+function toggleSelectAllJobs() {
+    const selectAllCheckbox = document.getElementById('select-all-jobs');
+    const visibleCheckboxes = filteredJobRows
+        .filter((row, index) => {
+            const startIndex = (currentJobPage - 1) * jobsPerPage;
+            const endIndex = startIndex + jobsPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.job-select'));
+
+    visibleCheckboxes.forEach(checkbox => {
+        if (checkbox) checkbox.checked = selectAllCheckbox.checked;
+    });
+
+    updateBulkButtons();
+}
+
+function approveSelectedJobs() {
+    const selectedJobs = filteredJobRows
+        .filter((row, index) => {
+            const startIndex = (currentJobPage - 1) * jobsPerPage;
+            const endIndex = startIndex + jobsPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.job-select'))
+        .filter(checkbox => checkbox && checkbox.checked)
+        .map(checkbox => parseInt(checkbox.value));
+
+    if (selectedJobs.length === 0) {
+        alert('Please select at least one job to approve.');
+        return false;
+    }
+    if (!confirm('Are you sure you want to approve the selected jobs?')) {
+        return false;
+    }
+
+    const form = document.getElementById('approve-form');
+    if (form) {
+        form.innerHTML = '';
+        selectedJobs.forEach(jobId => {
+            const newInput = document.createElement('input');
+            newInput.type = 'hidden';
+            newInput.name = 'jobIds';
+            newInput.value = jobId;
+            form.appendChild(newInput);
         });
-        updateBulkActions();
-    });
+    }
+    return true;
 }
 
-if (jobTable) {
-    document.querySelectorAll('.job-select').forEach(checkbox => {
-        checkbox.addEventListener('change', updateBulkActions);
-    });
+function rejectSelectedJobs() {
+    const selectedJobs = filteredJobRows
+        .filter((row, index) => {
+            const startIndex = (currentJobPage - 1) * jobsPerPage;
+            const endIndex = startIndex + jobsPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.job-select'))
+        .filter(checkbox => checkbox && checkbox.checked)
+        .map(checkbox => parseInt(checkbox.value));
 
-    jobTable.querySelectorAll('thead th').forEach((th, index) => {
-        if (index === 0 || index === 10) return;
-        th.addEventListener('click', () => {
-            const rows = Array.from(jobTable.querySelectorAll('tbody tr'));
-            const isAscending = th.dataset.sort !== 'asc';
-            th.dataset.sort = isAscending ? 'asc' : 'desc';
+    if (selectedJobs.length === 0) {
+        alert('Please select at least one job to reject.');
+        return false;
+    }
+    if (!confirm('Are you sure you want to reject the selected jobs?')) {
+        return false;
+    }
 
-            rows.sort((a, b) => {
-                let aText = a.cells[index].textContent.trim();
-                let bText = b.cells[index].textContent.trim();
-
-                if (index === 6 || index === 7) {
-                    aText = new Date(aText);
-                    bText = new Date(bText);
-                } else if (index === 5) {
-                    aText = parseInt(aText) || 0;
-                    bText = parseInt(bText) || 0;
-                }
-
-                if (aText < bText) return isAscending ? -1 : 1;
-                if (aText > bText) return isAscending ? 1 : -1;
-                return 0;
-            });
-
-            jobTable.querySelector('tbody').innerHTML = '';
-            rows.forEach(row => jobTable.querySelector('tbody').appendChild(row));
+    const form = document.getElementById('reject-form');
+    if (form) {
+        form.innerHTML = '';
+        selectedJobs.forEach(jobId => {
+            const newInput = document.createElement('input');
+            newInput.type = 'hidden';
+            newInput.name = 'jobIds';
+            newInput.value = jobId;
+            form.appendChild(newInput);
         });
-    });
+    }
+    return true;
 }
 
-if (bulkApprove) {
-    bulkApprove.addEventListener('click', () => {
-        document.querySelectorAll('.job-select:checked').forEach(checkbox => {
-            const row = checkbox.closest('tr');
-            row.cells[9].innerHTML = '<span class="badge bg-success">Approved</span>';
-            checkbox.checked = false;
-        });
-        selectAllJobs.checked = false;
-        updateBulkActions();
-        filterJobs();
-    });
+function updateBulkButtons() {
+    const selectedCheckboxes = filteredJobRows
+        .filter((row, index) => {
+            const startIndex = (currentJobPage - 1) * jobsPerPage;
+            const endIndex = startIndex + jobsPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.job-select'))
+        .filter(checkbox => checkbox && checkbox.checked);
+
+    const bulkApproveBtn = document.getElementById('bulkApprove');
+    const bulkRejectBtn = document.getElementById('bulkReject');
+
+    if (bulkApproveBtn) bulkApproveBtn.disabled = selectedCheckboxes.length === 0;
+    if (bulkRejectBtn) bulkRejectBtn.disabled = selectedCheckboxes.length === 0;
 }
 
-if (bulkReject) {
-    bulkReject.addEventListener('click', () => {
-        document.querySelectorAll('.job-select:checked').forEach(checkbox => {
-            const row = checkbox.closest('tr');
-            row.cells[9].innerHTML = '<span class="badge bg-danger">Rejected</span>';
-            checkbox.checked = false;
+function deleteJob(jobId) {
+    if (confirm("Are you sure you want to delete this job?")) {
+        fetch(`/admin/jobs/delete/${jobId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + getJwtToken(),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Job deleted successfully");
+                location.reload();
+            } else {
+                alert("Failed to delete job");
+            }
+        })
+        .catch(error => {
+            console.error("Error deleting job:", error);
+            alert("Error deleting job");
         });
-        selectAllJobs.checked = false;
-        updateBulkActions();
-        filterJobs();
-    });
+    }
 }
+
+// Event Listeners for Jobs Section
+document.getElementById('statusFilter')?.addEventListener('change', filterJobs);
+document.getElementById('approvalFilter')?.addEventListener('change', filterJobs);
+document.getElementById('employerSearch')?.addEventListener('input', filterJobs);
+document.getElementById('postedStartDate')?.addEventListener('change', filterJobs);
+document.getElementById('postedEndDate')?.addEventListener('change', filterJobs);
+
+document.querySelectorAll('.job-select').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        updateSelectAllJobsState();
+        updateBulkButtons();
+    });
+});
+
+document.getElementById('selectAllJobs')?.addEventListener('change', toggleSelectAllJobs);
 
 // Employers Section Functionality
 const employerTable = document.getElementById('employerTable');
@@ -186,24 +342,24 @@ const registeredStartDate = document.getElementById('postedStartDate');
 const registeredEndDate = document.getElementById('postedEndDate');
 
 function filterEmployers() {
-    const status = employerStatusFilter.value.toLowerCase();
-    const industry = industryFilter.value.toLowerCase();
-    const search = employerSearch.value.toLowerCase();
-    const startDate = registeredStartDate.value ? new Date(registeredStartDate.value) : null;
-    const endDate = registeredEndDate.value ? new Date(registeredEndDate.value) : null;
+    const status = employerStatusFilter?.value.toLowerCase() || '';
+    const industry = industryFilter?.value.toLowerCase() || '';
+    const search = employerSearch?.value.toLowerCase() || '';
+    const startDate = registeredStartDate?.value ? new Date(registeredStartDate.value) : null;
+    const endDate = registeredEndDate?.value ? new Date(registeredEndDate.value) : null;
 
-    const rows = employerTable.querySelectorAll('tbody tr');
+    const rows = employerTable?.querySelectorAll('tbody tr') || [];
     rows.forEach(row => {
-        const company = row.cells[1].textContent.toLowerCase();
-        const email = row.cells[2].textContent.toLowerCase();
-        const rowIndustry = row.cells[3].textContent.toLowerCase();
-        const statusText = row.cells[6].textContent.toLowerCase();
-        const registeredDate = new Date(row.cells[7].textContent);
+        const company = row.cells[1]?.textContent.toLowerCase() || '';
+        const email = row.cells[2]?.textContent.toLowerCase() || '';
+        const rowIndustry = row.cells[3]?.textContent.toLowerCase() || '';
+        const statusText = row.cells[6]?.textContent.toLowerCase() || '';
+        const registeredDate = row.cells[7] ? new Date(row.cells[7].textContent) : null;
 
         const matchesSearch = company.includes(search) || email.includes(search);
         const matchesStatus = !status || statusText.includes(status);
         const matchesIndustry = !industry || rowIndustry.includes(industry);
-        const matchesDate = (!startDate || registeredDate >= startDate) && (!endDate || registeredDate <= endDate);
+        const matchesDate = (!startDate || (registeredDate && registeredDate >= startDate)) && (!endDate || (registeredDate && registeredDate <= endDate));
 
         row.style.display = matchesSearch && matchesStatus && matchesIndustry && matchesDate ? '' : 'none';
     });
@@ -216,9 +372,9 @@ if (registeredStartDate) registeredStartDate.addEventListener('change', filterEm
 if (registeredEndDate) registeredEndDate.addEventListener('change', filterEmployers);
 
 function updateEmployerBulkActions() {
-    const selected = document.querySelectorAll('.employer-select:checked').length;
-    bulkApproveEmployers.disabled = selected === 0;
-    bulkRejectEmployers.disabled = selected === 0;
+    const selected = document.querySelectorAll('.employer-select:checked')?.length || 0;
+    if (bulkApproveEmployers) bulkApproveEmployers.disabled = selected === 0;
+    if (bulkRejectEmployers) bulkRejectEmployers.disabled = selected === 0;
 }
 
 if (selectAllEmployers) {
@@ -243,8 +399,8 @@ if (employerTable) {
             th.dataset.sort = isAscending ? 'asc' : 'desc';
 
             rows.sort((a, b) => {
-                let aText = a.cells[index].textContent.trim();
-                let bText = b.cells[index].textContent.trim();
+                let aText = a.cells[index]?.textContent.trim() || '';
+                let bText = b.cells[index]?.textContent.trim() || '';
 
                 if (index === 4 || index === 5) {
                     aText = parseInt(aText) || 0;
@@ -286,10 +442,12 @@ if (bulkApproveEmployers) {
     bulkApproveEmployers.addEventListener('click', () => {
         document.querySelectorAll('.employer-select:checked').forEach(checkbox => {
             const row = checkbox.closest('tr');
-            row.cells[6].innerHTML = '<span class="badge bg-success">Approved</span>';
-            checkbox.checked = false;
+            if (row && row.cells[6]) {
+                row.cells[6].innerHTML = '<span class="badge bg-success">Approved</span>';
+                checkbox.checked = false;
+            }
         });
-        selectAllEmployers.checked = false;
+        if (selectAllEmployers) selectAllEmployers.checked = false;
         updateEmployerBulkActions();
         filterEmployers();
     });
@@ -299,10 +457,12 @@ if (bulkRejectEmployers) {
     bulkRejectEmployers.addEventListener('click', () => {
         document.querySelectorAll('.employer-select:checked').forEach(checkbox => {
             const row = checkbox.closest('tr');
-            row.cells[6].innerHTML = '<span class="badge bg-danger">Rejected</span>';
-            checkbox.checked = false;
+            if (row && row.cells[6]) {
+                row.cells[6].innerHTML = '<span class="badge bg-danger">Rejected</span>';
+                checkbox.checked = false;
+            }
         });
-        selectAllEmployers.checked = false;
+        if (selectAllEmployers) selectAllEmployers.checked = false;
         updateEmployerBulkActions();
         filterEmployers();
     });
@@ -320,24 +480,24 @@ const seekerRegisteredStartDate = document.getElementById('registeredStartDate')
 const seekerRegisteredEndDate = document.getElementById('registeredEndDate');
 
 function filterSeekers() {
-    const status = seekerStatusFilter.value.toLowerCase();
-    const location = locationFilter.value.toLowerCase();
-    const search = seekerSearch.value.toLowerCase();
-    const startDate = seekerRegisteredStartDate.value ? new Date(seekerRegisteredStartDate.value) : null;
-    const endDate = seekerRegisteredEndDate.value ? new Date(seekerRegisteredEndDate.value) : null;
+    const status = seekerStatusFilter?.value.toLowerCase() || '';
+    const location = locationFilter?.value.toLowerCase() || '';
+    const search = seekerSearch?.value.toLowerCase() || '';
+    const startDate = seekerRegisteredStartDate?.value ? new Date(seekerRegisteredStartDate.value) : null;
+    const endDate = seekerRegisteredEndDate?.value ? new Date(seekerRegisteredEndDate.value) : null;
 
-    const rows = seekerTable.querySelectorAll('tbody tr');
+    const rows = seekerTable?.querySelectorAll('tbody tr') || [];
     rows.forEach(row => {
-        const name = row.cells[1].textContent.toLowerCase();
-        const email = row.cells[2].textContent.toLowerCase();
-        const rowLocation = row.cells[3].textContent.toLowerCase();
-        const statusText = row.cells[7].textContent.toLowerCase();
-        const registeredDate = new Date(row.cells[6].textContent);
+        const name = row.cells[1]?.textContent.toLowerCase() || '';
+        const email = row.cells[2]?.textContent.toLowerCase() || '';
+        const rowLocation = row.cells[3]?.textContent.toLowerCase() || '';
+        const statusText = row.cells[7]?.textContent.toLowerCase() || '';
+        const registeredDate = row.cells[6] ? new Date(row.cells[6].textContent) : null;
 
         const matchesSearch = name.includes(search) || email.includes(search);
         const matchesStatus = !status || statusText.includes(status);
         const matchesLocation = !location || rowLocation.includes(location);
-        const matchesDate = (!startDate || registeredDate >= startDate) && (!endDate || registeredDate <= endDate);
+        const matchesDate = (!startDate || (registeredDate && registeredDate >= startDate)) && (!endDate || (registeredDate && registeredDate <= endDate));
 
         row.style.display = matchesSearch && matchesStatus && matchesLocation && matchesDate ? '' : 'none';
     });
@@ -350,9 +510,9 @@ if (seekerRegisteredStartDate) seekerRegisteredStartDate.addEventListener('chang
 if (seekerRegisteredEndDate) seekerRegisteredEndDate.addEventListener('change', filterSeekers);
 
 function updateSeekerBulkActions() {
-    const selected = document.querySelectorAll('.seeker-select:checked').length;
-    bulkActivateSeekers.disabled = selected === 0;
-    bulkSuspendSeekers.disabled = selected === 0;
+    const selected = document.querySelectorAll('.seeker-select:checked')?.length || 0;
+    if (bulkActivateSeekers) bulkActivateSeekers.disabled = selected === 0;
+    if (bulkSuspendSeekers) bulkSuspendSeekers.disabled = selected === 0;
 }
 
 if (selectAllSeekers) {
@@ -377,8 +537,8 @@ if (seekerTable) {
             th.dataset.sort = isAscending ? 'asc' : 'desc';
 
             rows.sort((a, b) => {
-                let aText = a.cells[index].textContent.trim();
-                let bText = b.cells[index].textContent.trim();
+                let aText = a.cells[index]?.textContent.trim() || '';
+                let bText = b.cells[index]?.textContent.trim() || '';
 
                 if (index === 4 || index === 5) {
                     aText = parseInt(aText) || 0;
@@ -404,11 +564,13 @@ if (seekerTable) {
         if (!row) return;
 
         if (e.target.closest('.suspend-btn')) {
-            const currentStatus = row.cells[7].textContent.trim();
-            row.cells[7].innerHTML = currentStatus === 'Suspended' ?
-                '<span class="badge bg-success">Active</span>' :
-                '<span class="badge bg-danger">Suspended</span>';
-            filterSeekers();
+            const currentStatus = row.cells[7]?.textContent.trim() || '';
+            if (row.cells[7]) {
+                row.cells[7].innerHTML = currentStatus === 'Suspended' ?
+                    '<span class="badge bg-success">Active</span>' :
+                    '<span class="badge bg-danger">Suspended</span>';
+                filterSeekers();
+            }
         }
     });
 }
@@ -417,10 +579,12 @@ if (bulkActivateSeekers) {
     bulkActivateSeekers.addEventListener('click', () => {
         document.querySelectorAll('.seeker-select:checked').forEach(checkbox => {
             const row = checkbox.closest('tr');
-            row.cells[7].innerHTML = '<span class="badge bg-success">Active</span>';
-            checkbox.checked = false;
+            if (row && row.cells[7]) {
+                row.cells[7].innerHTML = '<span class="badge bg-success">Active</span>';
+                checkbox.checked = false;
+            }
         });
-        selectAllSeekers.checked = false;
+        if (selectAllSeekers) selectAllSeekers.checked = false;
         updateSeekerBulkActions();
         filterSeekers();
     });
@@ -430,10 +594,12 @@ if (bulkSuspendSeekers) {
     bulkSuspendSeekers.addEventListener('click', () => {
         document.querySelectorAll('.seeker-select:checked').forEach(checkbox => {
             const row = checkbox.closest('tr');
-            row.cells[7].innerHTML = '<span class="badge bg-danger">Suspended</span>';
-            checkbox.checked = false;
+            if (row && row.cells[7]) {
+                row.cells[7].innerHTML = '<span class="badge bg-danger">Suspended</span>';
+                checkbox.checked = false;
+            }
         });
-        selectAllSeekers.checked = false;
+        if (selectAllSeekers) selectAllSeekers.checked = false;
         updateSeekerBulkActions();
         filterSeekers();
     });
@@ -441,118 +607,132 @@ if (bulkSuspendSeekers) {
 
 // Dashboard Charts
 document.addEventListener('DOMContentLoaded', function() {
-    new Chart(document.getElementById('userGrowthChart'), {
-        type: 'pie',
-        data: {
-            labels: ['Job Seekers', 'Employers'],
-            datasets: [{
-                data: [750, 250],
-                backgroundColor: ['#5e17eb', '#2a0a5a']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-            }
-        }
-    });
+    const hash = window.location.hash.replace('#', '');
+    const validSections = ['dashboard', 'jobs', 'employers', 'jobseekers', 'applications', 'settings'];
+    if (hash && validSections.includes(hash)) {
+        showSection(hash);
+    } else {
+        showSection('dashboard');
+    }
 
-    new Chart(document.getElementById('jobPostingsChart'), {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-            datasets: [{
-                label: 'IT',
-                data: [50, 60, 70, 65, 80],
-                borderColor: '#5e17eb',
-                fill: false
-            }, {
-                label: 'Marketing',
-                data: [30, 40, 35, 45, 50],
-                borderColor: '#c4a0ff',
-                fill: false
-            }, {
-                label: 'Healthcare',
-                data: [20, 25, 30, 35, 40],
-                borderColor: '#2a0a5a',
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-            },
-            scales: {
-                x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
-                y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-            }
-        }
-    });
+    initJobPagination();
 
-    new Chart(document.getElementById('jobApplicationsChart'), {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-            datasets: [{
-                label: 'IT',
-                data: [100, 120, 130, 125, 140],
-                borderColor: '#5e17eb',
-                fill: false
-            }, {
-                label: 'Marketing',
-                data: [60, 70, 65, 75, 80],
-                borderColor: '#c4a0ff',
-                fill: false
-            }, {
-                label: 'Healthcare',
-                data: [40, 45, 50, 55, 60],
-                borderColor: '#2a0a5a',
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+    if (typeof Chart !== 'undefined') {
+        new Chart(document.getElementById('userGrowthChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Job Seekers', 'Employers'],
+                datasets: [{
+                    data: [750, 250],
+                    backgroundColor: ['#5e17eb', '#2a0a5a']
+                }]
             },
-            scales: {
-                x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
-                y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                }
             }
-        }
-    });
+        });
 
-    new Chart(document.getElementById('recruiterAnalyticsChart'), {
-        type: 'bar',
-        data: {
-            labels: ['TechCorp', 'MarketPro', 'HealthInc'],
-            datasets: [{
-                label: 'Job Postings',
-                data: [50, 30, 20],
-                backgroundColor: '#5e17eb',
-                barThickness: 18
-            }, {
-                label: 'Applications',
-                data: [150, 90, 60],
-                backgroundColor: '#000000',
-                barThickness: 18
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
-                y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+        new Chart(document.getElementById('jobPostingsChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'IT',
+                    data: [50, 60, 70, 65, 80],
+                    borderColor: '#5e17eb',
+                    fill: false
+                }, {
+                    label: 'Marketing',
+                    data: [30, 40, 35, 45, 50],
+                    borderColor: '#c4a0ff',
+                    fill: false
+                }, {
+                    label: 'Healthcare',
+                    data: [20, 25, 30, 35, 40],
+                    borderColor: '#2a0a5a',
+                    fill: false
+                }]
             },
-            plugins: {
-                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
+                    y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                }
             }
-        }
-    });
+        });
+
+        new Chart(document.getElementById('jobApplicationsChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'IT',
+                    data: [100, 120, 130, 125, 140],
+                    borderColor: '#5e17eb',
+                    fill: false
+                }, {
+                    label: 'Marketing',
+                    data: [60, 70, 65, 75, 80],
+                    borderColor: '#c4a0ff',
+                    fill: false
+                }, {
+                    label: 'Healthcare',
+                    data: [40, 45, 50, 55, 60],
+                    borderColor: '#2a0a5a',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
+                    y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('recruiterAnalyticsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['TechCorp', 'MarketPro', 'HealthInc'],
+                datasets: [{
+                    label: 'Job Postings',
+                    data: [50, 30, 20],
+                    backgroundColor: '#5e17eb',
+                    barThickness: 18
+                }, {
+                    label: 'Applications',
+                    data: [150, 90, 60],
+                    backgroundColor: '#000000',
+                    barThickness: 18
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
+                    y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                },
+                plugins: {
+                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+                }
+            }
+        });
+    } else {
+        console.warn("Chart.js library not found. Charts will not be rendered.");
+    }
 });

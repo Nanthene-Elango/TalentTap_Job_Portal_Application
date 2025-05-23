@@ -348,8 +348,12 @@
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody  th:each="job : ${jobs}">
-                                        <tr>
+                                    <tbody  th:each="job : ${jobs}" class="job-row">
+                                        <tr th:each="job : ${jobs}" class="job-row" 
+                            				th:attr="data-status=${job.jobStatus != null ? job.jobStatus.toLowerCase() : 'n/a'}, 
+                                     		data-approval=${job.approvalStatus != null ? job.approvalStatus.toLowerCase() : 'n/a'}, 
+                                     		data-company=${job.companyName != null ? job.companyName.toLowerCase() : 'n/a'}, 
+                                     		data-posted=${#temporals.format(job.postedDate, 'yyyy-MM-dd')} ?: 'n/a'">
                                             <td><input type="checkbox" class="job-select" th:value="${job.jobId}"></td>
                                             <td th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'"></td>
                                             <td th:text="${job.companyName != null} ? ${job.companyName} : 'N/A'"></td>
@@ -387,12 +391,9 @@
                         				<button type="submit" id="bulkReject" class="btn btn-sm btn-danger" onclick="return rejectSelectedJobs()" disabled>Reject Selected</button>
                     				</form>
                 				</div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                <nav aria-label="Job table pagination">
+                                    <ul class="pagination pagination-sm mb-0" id="jobPagination">
+                        				<!-- JavaScript will populate this -->     
                                     </ul>
                                 </nav>
                             </div>
