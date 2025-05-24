@@ -20,6 +20,7 @@ import com.talenttap.DTO.AddEducationDTO;
 import com.talenttap.DTO.Certifications;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.EducationLevelDTO;
+import com.talenttap.DTO.ExperienceDTO;
 import com.talenttap.DTO.JobseekerDTO;
 import com.talenttap.DTO.Languages;
 import com.talenttap.DTO.LocationDTO;
@@ -250,5 +251,24 @@ public class JobseekerController {
 	@DeleteMapping("/jobseeker/project/delete/{id}")
 	public ResponseEntity<String> deleteProject(@PathVariable int id){
 		return jobseekerService.deleteProject(id );
+	}
+	
+	@GetMapping("/jobseeker/experience/{id}")
+	public ResponseEntity<List<ExperienceDTO>> getAllExperience(@PathVariable Integer id) {
+		return jobseekerService.getAllExperience(id);
+	}
+	@PostMapping("/jobseeker/experience/add/{id}")
+	public ResponseEntity<String> addExperience(@PathVariable int id , @RequestBody ExperienceDTO experience){
+		return jobseekerService.addExperience(id , experience);
+	}
+	
+	@PutMapping("/jobseeker/experience/update/{id}")
+	public ResponseEntity<String> updateExperience(@PathVariable int id, @RequestBody ExperienceDTO experience) {
+	    return jobseekerService.updateExperience(id, experience);
+	}
+	
+	@DeleteMapping("/jobseeker/experience/delete/{id}")
+	public ResponseEntity<String> deleteExperience(@PathVariable int id){
+		return jobseekerService.deleteExperience(id);
 	}
 }

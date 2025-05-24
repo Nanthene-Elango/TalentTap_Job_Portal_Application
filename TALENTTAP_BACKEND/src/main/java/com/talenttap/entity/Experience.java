@@ -28,6 +28,9 @@ public class Experience {
 	@JoinColumn(name = "jobseeker_id", nullable = false)
 	private JobSeeker jobSeeker;
 	
+	@Column(name="role" , nullable=false)
+	private String role;
+	
 	@Column(name = "description" , columnDefinition = "TEXT")
 	private String description;
 	
@@ -99,5 +102,14 @@ public class Experience {
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
 	
 }
