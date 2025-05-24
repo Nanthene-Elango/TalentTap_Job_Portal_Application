@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.talenttap.DTO.AddEducationDTO;
 import com.talenttap.DTO.Certifications;
 import com.talenttap.DTO.EducationDTO;
+import com.talenttap.DTO.ExperienceDTO;
 import com.talenttap.DTO.JobDTO;
 import com.talenttap.DTO.JobFilterDTO;
 import com.talenttap.DTO.JobseekerDTO;
@@ -33,6 +34,7 @@ import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.AuthProvider;
 import com.talenttap.entity.Certification;
 import com.talenttap.entity.Education;
+import com.talenttap.entity.Experience;
 import com.talenttap.entity.Gender;
 import com.talenttap.entity.JobApplication;
 import com.talenttap.entity.Users;
@@ -45,6 +47,8 @@ import com.talenttap.entity.Skills;
 import com.talenttap.repository.CertificationRepository;
 import com.talenttap.repository.EducationLevelRepository;
 import com.talenttap.repository.EducationRepository;
+import com.talenttap.repository.EmploymentTypeRepository;
+import com.talenttap.repository.ExperienceRepository;
 import com.talenttap.repository.JobApplicationRepository;
 import com.talenttap.repository.JobsRepository;
 import com.talenttap.repository.JobseekerRepository;
@@ -79,14 +83,18 @@ public class JobseekerRegisterService {
 	private JobApplicationRepository jobApplicationRepo;
 	private LanguageRepository languageRepo;
 	private ProjectRepository projectRepo;
+	private EmploymentTypeRepository employmentTypeRepo;
+	private ExperienceRepository experienceRepo;
 
 	public JobseekerRegisterService(UsersRepository userRepo, JobseekerRepository jobseekerRepo,
 			EducationRepository educationRepo, SkillsRepository skillsRepo, RoleRepository roleRepo,
 			LocationRepository locationRepo, EducationLevelRepository educationLevelRepo,
 			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo,
-			CertificationRepository certificationRepo , LanguageRepository languageRepo , ProjectRepository projectRepo) {
+			CertificationRepository certificationRepo, LanguageRepository languageRepo, ProjectRepository projectRepo,
+			EmploymentTypeRepository employmentTypeRepo ,ExperienceRepository experienceRepo) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
+		this.employmentTypeRepo = employmentTypeRepo;
 		this.skillsRepo = skillsRepo;
 		this.userRepo = userRepo;
 		this.locationRepo = locationRepo;
@@ -98,6 +106,7 @@ public class JobseekerRegisterService {
 		this.certificationRepo = certificationRepo;
 		this.languageRepo = languageRepo;
 		this.projectRepo = projectRepo;
+		this.experienceRepo = experienceRepo;
 	}
 
 	public ResponseEntity<?> register(@Valid JobseekerRegisterDTO request) {
@@ -142,7 +151,7 @@ public class JobseekerRegisterService {
 
 	public ResponseEntity<?> login(String username, String password, HttpServletResponse response) {
 
-		Users user = userRepo.findByUsernameOrEmail(username , username).get();
+		Users user = userRepo.findByUsernameOrEmail(username, username).get();
 
 		if (user != null && passwordEncoder.matches(password, user.getPassword())) {
 			String jwt = jwtUtil.generateToken(user.getUsername(), "JOBSEEKER");
@@ -469,7 +478,7 @@ public class JobseekerRegisterService {
 
 			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
 			Jobs job = jobRepo.findById(jobId).get();
-			
+
 			JobApplication application = new JobApplication();
 			application.setDateOfApplication(LocalDateTime.now());
 			application.setJob(job);
@@ -478,16 +487,15 @@ public class JobseekerRegisterService {
 			application.setStatus(ApplicationStatus.pending);
 
 			jobApplicationRepo.save(application);
-			
+
 			return ResponseEntity.ok().body("Job Applied Successfully!");
-		}
-		else {
+		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 
 	public ResponseEntity<Boolean> hasApplied(String jwt, int jobId) {
-		
+
 		boolean hasApplied = false;
 		if (jwt != null && !jwt.trim().isEmpty()) {
 
@@ -496,12 +504,12 @@ public class JobseekerRegisterService {
 
 			JobSeeker jobseeker = jobseekerRepo.findByUser(user).get();
 
-			if (jobApplicationRepo.existsByJobSeekerAndJob_JobId(jobseeker , jobId)) {
+			if (jobApplicationRepo.existsByJobSeekerAndJob_JobId(jobseeker, jobId)) {
 				hasApplied = true;
 			}
-			
+
 		}
-		
+
 		return ResponseEntity.ok(hasApplied);
 	}
 
@@ -510,7 +518,7 @@ public class JobseekerRegisterService {
 		if (userRepo.existsByUsername(username)) {
 			exists = true;
 		}
-		return ResponseEntity.ok().body(Map.of("exists" , exists));
+		return ResponseEntity.ok().body(Map.of("exists", exists));
 	}
 
 	public ResponseEntity<?> existByEmail(String email) {
@@ -518,39 +526,36 @@ public class JobseekerRegisterService {
 		if (userRepo.existsByEmail(email)) {
 			exists = true;
 		}
-		return ResponseEntity.ok().body(Map.of("exists" , exists));
+		return ResponseEntity.ok().body(Map.of("exists", exists));
 	}
 
 	public ResponseEntity<String> addEducation(int id, AddEducationDTO request) {
 		try {
 			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
-			
+
 			Education education = new Education();
 			education.setJobSeeker(jobseeker);
 			education.setEducationLevel(educationLevelRepo.findById(request.getHighestQualification()).get());
 			education.setInstitution(request.getInstitution());
 			if (request.getBoardOfStudy().isBlank() || request.getBoardOfStudy().isEmpty()) {
-	        	education.setBoardOfStudy(null);
-	        }
-	        else {
-	        	education.setBoardOfStudy(request.getBoardOfStudy());
-	        }
-	        
-	        if (request.getDegree().isBlank() || request.getDegree().isEmpty()) {
-	        	education.setDegree(null);
-	        }
-	        else {
-	        	education.setDegree(request.getDegree());
-	        }
+				education.setBoardOfStudy(null);
+			} else {
+				education.setBoardOfStudy(request.getBoardOfStudy());
+			}
+
+			if (request.getDegree().isBlank() || request.getDegree().isEmpty()) {
+				education.setDegree(null);
+			} else {
+				education.setDegree(request.getDegree());
+			}
 			education.setPercentage(request.getPercentage());
 			education.setEndYear(request.getEndYear());
 			education.setStartYear(request.getStartYear());
-			
+
 			educationRepo.save(education);
-			
+
 			return ResponseEntity.ok().body("Education added Successfully!");
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
@@ -559,153 +564,161 @@ public class JobseekerRegisterService {
 		try {
 			educationRepo.deleteById(id);
 			return ResponseEntity.ok().body("Education deleted Successfully!");
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
 
 	public ResponseEntity<String> updateEducation(int id, EducationDTO dto) {
-	    try {
-	        Education education = educationRepo.findById(id)
-	            .orElseThrow(() -> new RuntimeException("Education not found"));
+		try {
+			Education education = educationRepo.findById(id)
+					.orElseThrow(() -> new RuntimeException("Education not found"));
 
-	        education.setEducationLevel(educationLevelRepo.findByEducationLevel(dto.getEducationLevel()).orElse(null));
-	        education.setInstitution(dto.getInstitution());
-	        if (dto.getBoardOfStudy().isBlank() || dto.getBoardOfStudy().isEmpty()) {
-	        	education.setBoardOfStudy(null);
-	        }
-	        else {
-	        	education.setBoardOfStudy(dto.getBoardOfStudy());
-	        }
-	        
-	        if (dto.getDegree().isBlank() || dto.getDegree().isEmpty()) {
-	        	education.setDegree(null);
-	        }
-	        else {
-	        	education.setDegree(dto.getDegree());
-	        }
-	        education.setStartYear(dto.getStartYear());
-	        education.setEndYear(dto.getEndYear());
-	        education.setPercentage(dto.getPercentage());
+			education.setEducationLevel(educationLevelRepo.findByEducationLevel(dto.getEducationLevel()).orElse(null));
+			education.setInstitution(dto.getInstitution());
+			if (dto.getBoardOfStudy().isBlank() || dto.getBoardOfStudy().isEmpty()) {
+				education.setBoardOfStudy(null);
+			} else {
+				education.setBoardOfStudy(dto.getBoardOfStudy());
+			}
 
-	        educationRepo.save(education);
-	        return ResponseEntity.ok("Education updated successfully!");
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                             .body("Error updating education: " + e.getMessage());
-	    }
+			if (dto.getDegree().isBlank() || dto.getDegree().isEmpty()) {
+				education.setDegree(null);
+			} else {
+				education.setDegree(dto.getDegree());
+			}
+			education.setStartYear(dto.getStartYear());
+			education.setEndYear(dto.getEndYear());
+			education.setPercentage(dto.getPercentage());
+
+			educationRepo.save(education);
+			return ResponseEntity.ok("Education updated successfully!");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error updating education: " + e.getMessage());
+		}
 	}
 
 	public ResponseEntity<String> addSkill(int id, List<Integer> skillIds) {
-		
+
 		try {
-	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
-	        if (optionalJobSeeker.isEmpty()) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                    .body("JobSeeker not found with ID: " + id);
-	        }
+			Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
+			if (optionalJobSeeker.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("JobSeeker not found with ID: " + id);
+			}
 
-	        JobSeeker jobseeker = optionalJobSeeker.get();
+			JobSeeker jobseeker = optionalJobSeeker.get();
 
-	        for (Integer skillId : skillIds) {
-	            Optional<Skills> optionalSkill = skillsRepo.findById(skillId);
-	            if (optionalSkill.isPresent()) {
-	                Skills skill = optionalSkill.get();
+			for (Integer skillId : skillIds) {
+				Optional<Skills> optionalSkill = skillsRepo.findById(skillId);
+				if (optionalSkill.isPresent()) {
+					Skills skill = optionalSkill.get();
 
-	                if (!jobseeker.getSeekerSkills().contains(skill)) {
-	                    jobseeker.getSeekerSkills().add(skill);
-	                }
-	            } else {
-	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	                        .body("Invalid Skill ID: " + skillId);
-	            }
-	        }
+					if (!jobseeker.getSeekerSkills().contains(skill)) {
+						jobseeker.getSeekerSkills().add(skill);
+					}
+				} else {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Skill ID: " + skillId);
+				}
+			}
 
-	        jobseekerRepo.save(jobseeker);
-	        return ResponseEntity.ok("Skills added successfully!");
+			jobseekerRepo.save(jobseeker);
+			return ResponseEntity.ok("Skills added successfully!");
 
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("Error adding skills: " + e.getMessage());
-	    }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error adding skills: " + e.getMessage());
+		}
 	}
-	
+
 	public ResponseEntity<List<Certifications>> getAllCertifications(Integer id) {
-		List<Certifications> certifications = certificationRepo.findByJobSeeker_JobSeekerId(id).stream().map(Certifications::new)
-				.toList();
+		List<Certifications> certifications = certificationRepo.findByJobSeeker_JobSeekerId(id).stream()
+				.map(Certifications::new).toList();
 		return ResponseEntity.ok().body(certifications);
 	}
 
 	public ResponseEntity<String> addCertification(int id, Certifications request) {
-		
+
 		try {
 			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
-			
+
 			Certification certification = new Certification();
 			certification.setJobSeeker(jobseeker);
-			
-			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) certification.setCertificateURL(null);
-			else certification.setCertificateURL(request.getUrl());
-						
-			if (request.getNumber().isBlank() || request.getNumber().isEmpty()) certification.setCertificationNumber(null);
-			else certification.setCertificationNumber(request.getNumber());
-			
-			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) certification.setCertificationName(null);
-			else certification.setCertificationName(request.getTitle());
-			
-			if (request.getIssuedBy().isBlank() || request.getIssuedBy().isEmpty()) certification.setIssuedBy(null);
-			else certification.setIssuedBy(request.getIssuedBy());
-			
+
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty())
+				certification.setCertificateURL(null);
+			else
+				certification.setCertificateURL(request.getUrl());
+
+			if (request.getNumber().isBlank() || request.getNumber().isEmpty())
+				certification.setCertificationNumber(null);
+			else
+				certification.setCertificationNumber(request.getNumber());
+
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty())
+				certification.setCertificationName(null);
+			else
+				certification.setCertificationName(request.getTitle());
+
+			if (request.getIssuedBy().isBlank() || request.getIssuedBy().isEmpty())
+				certification.setIssuedBy(null);
+			else
+				certification.setIssuedBy(request.getIssuedBy());
+
 			certification.setExpiryDate(request.getExpiry_date());
 			certification.setIssueDate(request.getIssued_date());
-			
+
 			certificationRepo.save(certification);
-			
+
 			return ResponseEntity.ok().body("Certification added Successfully!");
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
-		
+
 	}
 
 	public ResponseEntity<String> updateCertification(int id, Certifications request) {
-		
-		 try {
-		 
+
+		try {
+
 			Certification certification = certificationRepo.findById(id).get();
-			
-			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) certification.setCertificateURL(null);
-			else certification.setCertificateURL(request.getUrl());
-						
-			if (request.getNumber().isBlank() || request.getNumber().isEmpty()) certification.setCertificationNumber(null);
-			else certification.setCertificationNumber(request.getNumber());
-			
-			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) certification.setCertificationName(null);
-			else certification.setCertificationName(request.getTitle());
-			
-			if (request.getIssuedBy().isBlank() || request.getIssuedBy().isEmpty()) certification.setIssuedBy(null);
-			else certification.setIssuedBy(request.getIssuedBy());
-			
+
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty())
+				certification.setCertificateURL(null);
+			else
+				certification.setCertificateURL(request.getUrl());
+
+			if (request.getNumber().isBlank() || request.getNumber().isEmpty())
+				certification.setCertificationNumber(null);
+			else
+				certification.setCertificationNumber(request.getNumber());
+
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty())
+				certification.setCertificationName(null);
+			else
+				certification.setCertificationName(request.getTitle());
+
+			if (request.getIssuedBy().isBlank() || request.getIssuedBy().isEmpty())
+				certification.setIssuedBy(null);
+			else
+				certification.setIssuedBy(request.getIssuedBy());
+
 			certification.setExpiryDate(request.getExpiry_date());
 			certification.setIssueDate(request.getIssued_date());
-			
+
 			certificationRepo.save(certification);
 			return ResponseEntity.ok("Certification updated successfully!");
-		 }
-		 catch(Exception e) {
-			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-		                .body("Error updating certifications: " + e.getMessage()); 
-		 }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error updating certifications: " + e.getMessage());
+		}
 	}
 
 	public ResponseEntity<String> deleteCertification(int id) {
 		try {
 			certificationRepo.deleteById(id);
 			return ResponseEntity.ok().body("certification deleted Successfully!");
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
@@ -713,87 +726,80 @@ public class JobseekerRegisterService {
 	public ResponseEntity<List<Languages>> getAllLanguages() {
 		try {
 			List<Languages> languages = languageRepo.findAll().stream().map(Languages::new).toList();
-			return ResponseEntity.ok(languages);	
-		}
-		catch(Exception e){
+			return ResponseEntity.ok(languages);
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
 
 	public ResponseEntity<List<Languages>> getAllSeekerLanguage(int id) {
-		
+
 		try {
 			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
 			List<Languages> languages = jobseeker.getSeekerLanguages().stream().map(Languages::new).toList();
 			return ResponseEntity.ok(languages);
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
 
 	public ResponseEntity<String> addLanguages(int id, List<Integer> languageIds) {
-	
+
 		try {
-	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
-	        if (optionalJobSeeker.isEmpty()) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                    .body("JobSeeker not found with ID: " + id);
-	        }
+			Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(id);
+			if (optionalJobSeeker.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("JobSeeker not found with ID: " + id);
+			}
 
-	        JobSeeker jobseeker = optionalJobSeeker.get();
+			JobSeeker jobseeker = optionalJobSeeker.get();
 
-	        for (Integer languageId : languageIds) {
-	            Optional<Language> optionalLanguage = languageRepo.findById(languageId);
-	            if (optionalLanguage.isPresent()) {
-	                Language language = optionalLanguage.get();
+			for (Integer languageId : languageIds) {
+				Optional<Language> optionalLanguage = languageRepo.findById(languageId);
+				if (optionalLanguage.isPresent()) {
+					Language language = optionalLanguage.get();
 
-	                if (!jobseeker.getSeekerLanguages().contains(language)) {
-	                    jobseeker.getSeekerLanguages().add(language);
-	                }
-	            } else {
-	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	                        .body("Invalid Language ID: " + languageId);
-	            }
-	        }
+					if (!jobseeker.getSeekerLanguages().contains(language)) {
+						jobseeker.getSeekerLanguages().add(language);
+					}
+				} else {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Language ID: " + languageId);
+				}
+			}
 
-	        jobseekerRepo.save(jobseeker);
-	        return ResponseEntity.ok("Langauge added successfully!");
+			jobseekerRepo.save(jobseeker);
+			return ResponseEntity.ok("Langauge added successfully!");
 
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("Error adding Language: " + e.getMessage());
-	    }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error adding Language: " + e.getMessage());
+		}
 	}
 
 	public ResponseEntity<String> deleteSeekerLanguage(int id, int jobseekerId) {
-		
-		try {
-	        Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(jobseekerId);
-	        if (optionalJobSeeker.isEmpty()) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                    .body("JobSeeker not found with ID: " + id);
-	        }
 
-	        JobSeeker jobseeker = optionalJobSeeker.get();
-	        
-	        Language language = languageRepo.findById(id).get();
-	        
-	        if (jobseeker.getSeekerLanguages().contains(language)){
-	        	jobseeker.getSeekerLanguages().remove(language);
-	        }
-	        jobseekerRepo.save(jobseeker);
-	        return ResponseEntity.ok("language deleted successfully!");
-		}
-		catch(Exception e) {
+		try {
+			Optional<JobSeeker> optionalJobSeeker = jobseekerRepo.findById(jobseekerId);
+			if (optionalJobSeeker.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("JobSeeker not found with ID: " + id);
+			}
+
+			JobSeeker jobseeker = optionalJobSeeker.get();
+
+			Language language = languageRepo.findById(id).get();
+
+			if (jobseeker.getSeekerLanguages().contains(language)) {
+				jobseeker.getSeekerLanguages().remove(language);
+			}
+			jobseekerRepo.save(jobseeker);
+			return ResponseEntity.ok("language deleted successfully!");
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("Error deleting Language: " + e.getMessage());
+					.body("Error deleting Language: " + e.getMessage());
 		}
 	}
 
 	public ResponseEntity<List<ProjectDTO>> getAllProjects(Integer id) {
-		List<ProjectDTO> projects = projectRepo.findByJobSeeker_JobSeekerId(id).stream().map(ProjectDTO::new)
-				.toList();
+		List<ProjectDTO> projects = projectRepo.findByJobSeeker_JobSeekerId(id).stream().map(ProjectDTO::new).toList();
 		return ResponseEntity.ok().body(projects);
 	}
 
@@ -801,59 +807,144 @@ public class JobseekerRegisterService {
 
 		try {
 			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
-			
+
 			Project project = new Project();
 			project.setJobSeeker(jobseeker);
-			
-			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) project.setProjectURL(null);
-			else project.setProjectURL(request.getUrl());
-			
-			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) project.setProjectTitle(null);
-			else project.setProjectTitle(request.getTitle());
-			
-			if (request.getDescription().isBlank() || request.getDescription().isEmpty()) project.setDescription(null);
-			else project.setDescription(request.getDescription());
-			
+
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty())
+				project.setProjectURL(null);
+			else
+				project.setProjectURL(request.getUrl());
+
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty())
+				project.setProjectTitle(null);
+			else
+				project.setProjectTitle(request.getTitle());
+
+			if (request.getDescription().isBlank() || request.getDescription().isEmpty())
+				project.setDescription(null);
+			else
+				project.setDescription(request.getDescription());
+
 			projectRepo.save(project);
-			
+
 			return ResponseEntity.ok().body("Project added Successfully!");
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
 
 	public ResponseEntity<String> updateProject(int id, ProjectDTO request) {
-		
+
 		try {
-			
+
 			Project project = projectRepo.findById(id).get();
-			
-			if (request.getUrl().isBlank() || request.getUrl().isEmpty()) project.setProjectURL(null);
-			else project.setProjectURL(request.getUrl());
-			
-			if (request.getTitle().isBlank() || request.getTitle().isEmpty()) project.setProjectTitle(null);
-			else project.setProjectTitle(request.getTitle());
-			
-			if (request.getDescription().isBlank() || request.getDescription().isEmpty()) project.setDescription(null);
-			else project.setDescription(request.getDescription());
-			
+
+			if (request.getUrl().isBlank() || request.getUrl().isEmpty())
+				project.setProjectURL(null);
+			else
+				project.setProjectURL(request.getUrl());
+
+			if (request.getTitle().isBlank() || request.getTitle().isEmpty())
+				project.setProjectTitle(null);
+			else
+				project.setProjectTitle(request.getTitle());
+
+			if (request.getDescription().isBlank() || request.getDescription().isEmpty())
+				project.setDescription(null);
+			else
+				project.setDescription(request.getDescription());
+
 			projectRepo.save(project);
-			
+
 			return ResponseEntity.ok().body("Project updated Successfully!");
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
-		
+
 	}
 
 	public ResponseEntity<String> deleteProject(int id) {
 		try {
 			projectRepo.deleteById(id);
 			return ResponseEntity.ok().body("project deleted Successfully!");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
 		}
-		catch(Exception e) {
+	}
+
+	public ResponseEntity<String> addExperience(int id, ExperienceDTO request) {
+		try {
+			JobSeeker jobseeker = jobseekerRepo.findById(id).get();
+
+			Experience experience = new Experience();
+			experience.setJobSeeker(jobseeker);
+
+			if (request.getCompany().isBlank() || request.getCompany().isEmpty())
+				experience.setCompanyName(null);
+			else
+				experience.setCompanyName(request.getCompany());
+
+			if (request.getRole().isBlank() || request.getRole().isEmpty())
+				experience.setRole(null);
+			else
+				experience.setRole(request.getRole());
+
+			if (request.getDescription().isBlank() || request.getDescription().isEmpty())
+				experience.setDescription(null);
+			else
+				experience.setDescription(request.getDescription());
+
+			experience.setStartDate(request.getStart());
+			experience.setEndDate(request.getEnd());
+
+			experience.setEmploymentType(employmentTypeRepo.findById(request.getEmploymentId()).orElse(null));
+			experienceRepo.save(experience);
+
+			return ResponseEntity.ok().body("Experience added Successfully!");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	public ResponseEntity<List<ExperienceDTO>> getAllExperience(Integer id) {
+		List<ExperienceDTO> experience = experienceRepo.findByJobSeeker_JobSeekerId(id).stream().map(ExperienceDTO::new)
+				.toList();
+		return ResponseEntity.ok().body(experience);
+	}
+
+	public ResponseEntity<String> updateExperience(int id, ExperienceDTO request) {
+		try {
+
+			Experience experience = experienceRepo.findById(id).get();
+
+			if (!request.getCompany().isBlank() && !request.getCompany().isEmpty())
+				experience.setCompanyName(request.getCompany());
+
+			if (!request.getRole().isBlank() && !request.getRole().isEmpty())
+				experience.setRole(request.getRole());
+
+			if (!request.getDescription().isBlank() && !request.getDescription().isEmpty())
+				experience.setDescription(request.getDescription());
+
+			if (request.getStart() != null) experience.setStartDate(request.getStart());
+			if (request.getEnd() != null) experience.setEndDate(request.getEnd());
+
+			experience.setEmploymentType(employmentTypeRepo.findById(request.getEmploymentId()).orElse(null));
+			experienceRepo.save(experience);
+
+			return ResponseEntity.ok().body("Experience updated Successfully!");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
+
+	}
+
+	public ResponseEntity<String> deleteExperience(int id) {
+		try {
+			experienceRepo.deleteById(id);
+			return ResponseEntity.ok().body("experience deleted Successfully!");
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}

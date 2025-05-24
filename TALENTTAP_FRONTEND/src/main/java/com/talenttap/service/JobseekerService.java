@@ -24,6 +24,7 @@ import com.talenttap.DTO.EducationDTO;
 import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.Experience;
 import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
@@ -635,7 +636,7 @@ public class JobseekerService {
 		}
 		return "redirect:/profile";
 	}
-
+	
 	public String deleteProject(int id, RedirectAttributes redirectAttributes) {
 		String url = "http://localhost:8083/jobseeker/project/delete/" + id;
 
@@ -649,4 +650,64 @@ public class JobseekerService {
 		return "redirect:/profile";
 	}
 
+	public List<Experience> getAllExperience(int id) {
+		String url = "http://localhost:8083/jobseeker/experience/" + id;
+
+		ResponseEntity<Experience[]> response = restTemplate.getForEntity(url, Experience[].class);
+
+		return Arrays.asList(response.getBody());
+	}
+
+	public String addExperience(int id, Experience experience, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/experience/add/" + id;
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Experience> requestEntity = new HttpEntity<>(experience, headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			redirectAttributes.addFlashAttribute("success", "Experience added successfully!");
+		} else {
+			redirectAttributes.addFlashAttribute("error", "error adding experience!");
+		}
+		return "redirect:/profile";
+	}
+
+	public String editExperience(Experience experience, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/experience/update/" + experience.getId();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<Experience> requestEntity = new HttpEntity<>(experience, headers);
+
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				redirectAttributes.addFlashAttribute("success", "Experience updated successfully!");
+			} else {
+				redirectAttributes.addFlashAttribute("error", "Failed to update experience.");
+			}
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error while updating experience" + e.getMessage());
+		}
+		return "redirect:/profile";
+	}
+
+	public String deleteExperience(int id, RedirectAttributes redirectAttributes) {
+		String url = "http://localhost:8083/jobseeker/experience/delete/" + id;
+
+		try {
+			restTemplate.delete(url);
+			redirectAttributes.addFlashAttribute("success", "experience deleted successfully!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Error occured while deleting experience!");
+		}
+
+		return "redirect:/profile";
+	}
 }

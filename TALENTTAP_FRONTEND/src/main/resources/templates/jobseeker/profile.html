@@ -362,14 +362,15 @@
 							<i class="fas fa-plus me-1"></i> Add Certification
 						</button>
 					</div>
-					
+
 					<div class="empty-state"
 						th:if="${certificationList == null or #lists.isEmpty(certificationList)}">
 						<i class="fa-solid fa-certificate fa-3x mb-3 text-muted"></i>
 						<p>No Certification Details to display</p>
 					</div>
-					
-					<div th:each="certificate : ${certificationList}" class="section-item">
+
+					<div th:each="certificate : ${certificationList}"
+						class="section-item">
 						<div class="item-actions">
 							<button class="btn btn-sm btn-link text-violet"
 								th:attr="data-id=${certificate.id},
@@ -392,11 +393,24 @@
 							</form>
 						</div>
 						<br>
-						<h6 class="card-title" th:if="${certificate.title!= null}" th:text="${certificate.title}">AWS Certified Solutions Architect</h6>
-						<p class="card-subtitle mb-1" th:if="${certificate.issuedBy != null}" th:text="${certificate.issuedBy}">Amazon Web Services</p>
-						<p class="card-text" th:if="${certificate.issued_date != null}" >Issued: <span th:text="${certificate.issued_date}"></span> | Expires: <span th:if="${certificate.expiry_date != null}" th:text="${certificate.expiry_date}"></span><span th:if="${certificate.expiry_date == null}">No Expiry</span></p>
-						<p class="card-text" th:if="${certificate.number != null}" >Certificate Number: <span th:text="${certificate.number}"></span></p>
-						<p class="card-text" th:if="${certificate.url != null}">Certificate URL: <span th:text="${certificate.url}"></span></p>
+						<h6 class="card-title" th:if="${certificate.title!= null}"
+							th:text="${certificate.title}">AWS Certified Solutions
+							Architect</h6>
+						<p class="card-subtitle mb-1"
+							th:if="${certificate.issuedBy != null}"
+							th:text="${certificate.issuedBy}">Amazon Web Services</p>
+						<p class="card-text" th:if="${certificate.issued_date != null}">
+							Issued: <span th:text="${certificate.issued_date}"></span> |
+							Expires: <span th:if="${certificate.expiry_date != null}"
+								th:text="${certificate.expiry_date}"></span><span
+								th:if="${certificate.expiry_date == null}">No Expiry</span>
+						</p>
+						<p class="card-text" th:if="${certificate.number != null}">
+							Certificate Number: <span th:text="${certificate.number}"></span>
+						</p>
+						<p class="card-text" th:if="${certificate.url != null}">
+							Certificate URL: <span th:text="${certificate.url}"></span>
+						</p>
 					</div>
 				</div>
 
@@ -415,7 +429,7 @@
 						<i class="fa-solid fa-laptop fa-3x mb-3 text-muted"></i>
 						<p>No Project Details to display</p>
 					</div>
-					
+
 					<div th:each="project : ${projectList}" class="section-item">
 						<div class="item-actions">
 							<button class="btn btn-sm btn-link text-violet"
@@ -437,7 +451,8 @@
 						</div>
 						<br>
 						<h6 class="card-title" th:text="${project.title}"></h6>
-						<p class="card-text" th:if="${project.description!=null}" th:text="${project.description}"></p>
+						<p class="card-text" th:if="${project.description!=null}"
+							th:text="${project.description}"></p>
 						<p class="card-text" th:if="${project.url != null}">
 							Project URL: <span class="text-muted" th:text="${project.url}"></span>
 						</p>
@@ -454,43 +469,47 @@
 						</button>
 					</div>
 
-					<div class="section-item">
-						<div class="item-actions">
-							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editExperienceModal">
-								<i class="fas fa-edit"></i>
-							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
-						</div>
-						<br>
-						<h6 class="card-title">Senior Software Engineer</h6>
-						<p class="card-subtitle mb-1">Google</p>
-						<p class="card-text">Jan 2020 - Present</p>
-						<p class="card-text">Led a team of 5 developers to build and
-							maintain cloud-based applications. Implemented CI/CD pipelines
-							and microservices architecture. Reduced deployment time by 40%.</p>
+					<div class="empty-state"
+						th:if="${experienceList == null or #lists.isEmpty(experienceList)}">
+						<i class="fa-solid fa-laptop fa-3x mb-3 text-muted"></i>
+						<p>No Experience Details to display</p>
 					</div>
 
-					<div class="section-item">
+					<div th:each="experience : ${experienceList}" class="section-item">
 						<div class="item-actions">
 							<button class="btn btn-sm btn-link text-violet"
-								data-bs-toggle="modal" data-bs-target="#editExperienceModal">
+								th:attr="data-id=${experience.id},
+										data-role=${experience.role},
+										data-description=${experience.description},
+             							data-start=${experience.start},
+             							date-end=${experience.end},
+             							data-employment=${experience.employment},
+             							data-employmentId=${experience.employmentId},
+             							data-company=${experience.company}"
+								onclick="openEditProjectModal(this)">
 								<i class="fas fa-edit"></i>
 							</button>
-							<button class="btn btn-sm btn-link text-secondary">
-								<i class="fas fa-trash-alt"></i>
-							</button>
+							<form
+								th:action="@{/jobseeker/experience/delete/{id}(id=${experience.id})}"
+								method="post" style="display: inline;" class="delete-form">
+								<button type="button"
+									class="btn btn-sm btn-link text-danger btn-delete">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</form>
 						</div>
 						<br>
-						<h6 class="card-title">Software Developer</h6>
-						<p class="card-subtitle mb-1">Microsoft</p>
-						<p class="card-text">Jun 2017 - Dec 2019</p>
-						<p class="card-text">Developed web applications using ASP.NET
-							and Angular. Collaborated with UX designers to improve user
-							interface and experience. Participated in code reviews and
-							mentored junior developers.</p>
+						<h6 class="card-title" th:text="${experience.role}"></h6>
+						<span class="card-subtitle mb-1" th:text="${experience.company}"></span>
+						- <span th:text=${experience.employment}></span>
+						<p class="card-text" th:if="${experience.start != null}">
+							<span th:text="${experience.start}"></span> - <span
+								th:if="${experience.end != null}"
+								th:text="${experience.end}"></span><span
+								th:if="${experience.end == null}">Present</span>
+						</p>
+						<p class="card-text" th:if="${experience.description != null}"
+							th:text="${experience.description}"></p>
 					</div>
 				</div>
 
@@ -509,8 +528,8 @@
 						<i class="fa-solid fa-language fa-3x mb-3 text-muted"></i>
 						<p>No Languages to display</p>
 					</div>
-					
-					
+
+
 					<div class="section-item" th:each="language : ${languageList}">
 						<div class="item-actions">
 							<form
@@ -916,9 +935,9 @@
 						aria-label="Close"></button>
 				</div>
 				<form th:action="@{'/jobseeker/skill/add/' + ${jobSeeker.id}}"
-						method="post">
-				<div class="modal-body">
-					
+					method="post">
+					<div class="modal-body">
+
 						<div class="form-group mb-3">
 							<label for="keySkills">Select Your Skills</label> <select
 								class="form-control" id="keySkills" name="skillIds" multiple
@@ -929,13 +948,13 @@
 							</select> <small class="form-text text-muted">Hold Ctrl (Windows)
 								or Cmd (Mac) to select multiple skills</small>
 						</div>
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-violet">Add</button>
-				</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-violet">Add</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -951,9 +970,10 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
-				<form th:action="@{'jobseeker/certification/add/' + ${jobSeeker.id}}"
+				<form
+					th:action="@{'jobseeker/certification/add/' + ${jobSeeker.id}}"
 					method="post" th:object="${certificationDTO}">
-				<div class="modal-body">
+					<div class="modal-body">
 						<div class="mb-3">
 							<label for="certificationName" class="form-label">Certification
 								Name</label> <input type="text" class="form-control"
@@ -967,17 +987,20 @@
 						</div>
 						<div class="mb-3">
 							<label for="certificationIssuer" class="form-label">Issuing
-								Organization</label> <input type="text" th:field="*{issuedBy}" class="form-control"
-								id="certificationIssuer" placeholder="e.g., Amazon Web Services">
+								Organization</label> <input type="text" th:field="*{issuedBy}"
+								class="form-control" id="certificationIssuer"
+								placeholder="e.g., Amazon Web Services">
 						</div>
 						<div class="row mb-3">
 							<div class="col">
 								<label for="issueDate" class="form-label">Issue Date</label> <input
-									type="date" th:field="*{issued_date}" class="form-control" id="issueDate">
+									type="date" th:field="*{issued_date}" class="form-control"
+									id="issueDate">
 							</div>
 							<div class="col">
 								<label for="expiryDate" class="form-label">Expiry Date</label> <input
-									type="date" class="form-control" th:field="*{expiry_date}" id="expiryDate">
+									type="date" class="form-control" th:field="*{expiry_date}"
+									id="expiryDate">
 							</div>
 						</div>
 						<div class="mb-3">
@@ -985,12 +1008,12 @@
 								Url</label> <input type="text" class="form-control"
 								id="certificationUrl" th:field="*{url}">
 						</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-violet">Add</button>
-				</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-violet">Add</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -1007,7 +1030,7 @@
 						aria-label="Close"></button>
 				</div>
 				<form th:action="@{/jobseeker/certification/edit}" method="post">
-				<div class="modal-body">
+					<div class="modal-body">
 						<input type="hidden" id="editCertificationId" name="id">
 						<div class="mb-3">
 							<label for="editCertificationName" class="form-label">Certification
@@ -1020,13 +1043,15 @@
 								id="editCertificationNumber" name="number">
 						</div>
 						<div class="mb-3">
-							<label for="editCertificationIssuer" class="form-label">Issuing Organization</label>
-							<input type="text" class="form-control" id="editCertificationIssuer" name="issuedBy">
+							<label for="editCertificationIssuer" class="form-label">Issuing
+								Organization</label> <input type="text" class="form-control"
+								id="editCertificationIssuer" name="issuedBy">
 						</div>
 						<div class="row mb-3">
 							<div class="col">
 								<label for="editIssueDate" class="form-label">Issue Date</label>
-								<input type="date" class="form-control" id="editIssueDate" name="issued_date">
+								<input type="date" class="form-control" id="editIssueDate"
+									name="issued_date">
 							</div>
 							<div class="col">
 								<label for="editExpiryDate" class="form-label">Expiry
@@ -1035,15 +1060,16 @@
 							</div>
 						</div>
 						<div class="mb-3">
-							<label for="editCertificationUrl" class="form-label">Certification Url</label> 
-							<input type="text" class="form-control" id="editCertificationUrl" name="url">
+							<label for="editCertificationUrl" class="form-label">Certification
+								Url</label> <input type="text" class="form-control"
+								id="editCertificationUrl" name="url">
 						</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-violet">Save Changes</button>
-				</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-violet">Save Changes</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -1059,31 +1085,33 @@
 						aria-label="Close"></button>
 				</div>
 				<form th:action="@{'jobseeker/project/add/' + ${jobSeeker.id}}"
-						method="post" th:object="${projectDTO}">
-				<div class="modal-body">
+					method="post" th:object="${projectDTO}">
+					<div class="modal-body">
 						<div class="mb-3">
-							<label for="projectTitle" class="form-label">Project Title</label>
-							<input type="text" class="form-control" id="projectTitle" th:field="*{title}"
-								placeholder="e.g., CRM System">
+							<label for="projectTitle" class="form-label">Project
+								Title</label> <input type="text" class="form-control" id="projectTitle"
+								th:field="*{title}" placeholder="e.g., CRM System">
 						</div>
-						
+
 						<div class="mb-3">
 							<label for="projectDescription" class="form-label">Description</label>
-							<textarea class="form-control" id="projectDescription" rows="4" th:field="*{description}"
+							<textarea class="form-control" id="projectDescription" rows="4"
+								th:field="*{description}"
 								placeholder="Describe your project and your contributions"></textarea>
 						</div>
-						
+
 						<div class="mb-3">
-							<label for="projectUrl" class="form-label">Project URL</label>
-							<input type="text" class="form-control" id="projectUrl" th:field="*{url}"
+							<label for="projectUrl" class="form-label">Project URL</label> <input
+								type="text" class="form-control" id="projectUrl"
+								th:field="*{url}"
 								placeholder="mention your project github link or any other related link">
 						</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-violet">Add</button>
-				</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-violet">Add</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -1107,7 +1135,7 @@
 								Title</label> <input type="text" class="form-control"
 								id="editProjectTitle" name="title">
 						</div>
-						
+
 						<div class="mb-3">
 							<label for="editProjectDescription" class="form-label">Description</label>
 							<textarea class="form-control" id="editProjectDescription"
@@ -1115,9 +1143,8 @@
 							</textarea>
 						</div>
 						<div class="mb-3">
-							<label for="editProjectUrl" class="form-label">URL</label>
-							<input type="text" class="form-control"
-								id="editProjectUrl" name="url">
+							<label for="editProjectUrl" class="form-label">URL</label> <input
+								type="text" class="form-control" id="editProjectUrl" name="url">
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary"
@@ -1141,26 +1168,47 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
+				<form th:action="@{'jobseeker/experience/add/' + ${jobSeeker.id}}"
+						method="post" th:object="${experienceDTO}">
 				<div class="modal-body">
-					<form>
 						<div class="mb-3">
 							<label for="jobTitle" class="form-label">Job Title</label> <input
 								type="text" class="form-control" id="jobTitle"
-								placeholder="e.g., Software Engineer">
+								th:field="*{role}" placeholder="e.g., Software Engineer">
 						</div>
 						<div class="mb-3">
 							<label for="companyName" class="form-label">Company</label> <input
 								type="text" class="form-control" id="companyName"
-								placeholder="e.g., ABC Corporation">
+								th:field="*{company}" placeholder="e.g., ABC Corporation">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Employment Type</label>
+							<div class="form-check">
+								<input type="radio" class="form-check-input"
+									th:field="*{employmentId}" id="internship" value="1"> <label
+									class="form-check-label" for="internship">Internship</label>
+							</div>
+							<div class="form-check">
+								<input type="radio" class="form-check-input"
+									th:field="*{employmentId}" id="fulltime" value="2"> <label
+									class="form-check-label" for="fulltime">Full Time</label>
+							</div>
+							<div class="form-check">
+								<input type="radio" class="form-check-input"
+									th:field="*{employmentId}" id="parttime" value="3"> <label
+									class="form-check-label" for="parttime">Part Time</label>
+							</div>
 						</div>
 						<div class="row mb-3">
 							<div class="col">
 								<label for="jobStartDate" class="form-label">Start Date</label>
-								<input type="month" class="form-control" id="jobStartDate">
+								<input type="date" class="form-control" id="jobStartDate"
+									th:field="*{start}">
 							</div>
 							<div class="col">
 								<label for="jobEndDate" class="form-label">End Date</label> <input
-									type="month" class="form-control" id="jobEndDate">
+									type="month" class="form-control" id="jobEndDate"
+									th:field="*{end}">
 								<div class="form-check mt-2">
 									<input class="form-check-input" type="checkbox" id="currentJob">
 									<label class="form-check-label" for="currentJob"> I
@@ -1171,97 +1219,8 @@
 						<div class="mb-3">
 							<label for="jobDescription" class="form-label">Description</label>
 							<textarea class="form-control" id="jobDescription" rows="4"
-								placeholder="Describe your responsibilities and achievements"></textarea>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-violet">Add</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Edit Experience Modal -->
-	<div class="modal fade" id="editExperienceModal" tabindex="-1"
-		aria-labelledby="editExperienceModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="editExperienceModalLabel">Edit
-						Experience</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form>
-						<div class="mb-3">
-							<label for="editJobTitle" class="form-label">Job Title</label> <input
-								type="text" class="form-control" id="editJobTitle"
-								value="Senior Software Engineer">
-						</div>
-						<div class="mb-3">
-							<label for="editCompanyName" class="form-label">Company</label> <input
-								type="text" class="form-control" id="editCompanyName"
-								value="Google">
-						</div>
-						<div class="row mb-3">
-							<div class="col">
-								<label for="editJobStartDate" class="form-label">Start
-									Date</label> <input type="month" class="form-control"
-									id="editJobStartDate" value="2020-01">
-							</div>
-							<div class="col">
-								<label for="editJobEndDate" class="form-label">End Date</label>
-								<input type="month" class="form-control" id="editJobEndDate">
-								<div class="form-check mt-2">
-									<input class="form-check-input" type="checkbox"
-										id="editCurrentJob" checked> <label
-										class="form-check-label" for="editCurrentJob"> I
-										currently work here </label>
-								</div>
-							</div>
-						</div>
-						<div class="mb-3">
-							<label for="editJobDescription" class="form-label">Description</label>
-							<textarea class="form-control" id="editJobDescription" rows="4">Led a team of 5 developers to build and maintain cloud-based applications. Implemented CI/CD pipelines and microservices architecture. Reduced deployment time by 40%.</textarea>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-violet">Save Changes</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Add Language Modal -->
-	<div class="modal fade" id="addLanguageModal" tabindex="-1"
-		aria-labelledby="addLanguageModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="addLanguageModalLabel">Add
-						Language</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<form th:action="@{'jobseeker/language/add/' + ${jobSeeker.id}}" method="post">
-				<div class="modal-body">
-						<div class="mb-3">
-							<label for="languageName" class="form-label">Language</label> 
-							<select
-								class="form-control" id="languageName" name="languageIds" multiple
-								required>
-								<option th:each="language : ${allLanguages}"
-									th:value="${language.languageId}" th:text="${language.language}">
-								</option>
-							</select>
-							<small class="form-text text-muted">Hold Ctrl (Windows)
-								or Cmd (Mac) to select multiple Languages</small>
+								placeholder="Describe your responsibilities and achievements"
+								th:field="*{description}"></textarea>
 						</div>
 				</div>
 				<div class="modal-footer">
@@ -1273,11 +1232,110 @@
 			</div>
 		</div>
 	</div>
-	
+
+	<!-- Edit Experience Modal -->
+	<div class="modal fade" id="editExperienceModal" tabindex="-1"
+		aria-labelledby="editExperienceModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editExperienceModalLabel">Edit
+						Experience</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<form th:action="@{/jobseeker/experience/edit}" method="post">
+					<div class="modal-body">
+						<input type="hidden" id="editExperienceId" name="id">
+						<div class="mb-3">
+							<label for="editExperienceRole" class="form-label">Job
+								Title</label> <input type="text" class="form-control"
+								id="editExperienceRole" name="role">
+						</div>
+						<div class="mb-3">
+							<label for="editExperienceCompany" class="form-label">Company</label>
+							<input type="text" class="form-control"
+								id="editExperienceCompany" name="company">
+						</div>
+						<div class="row mb-3">
+							<div class="col">
+								<label for="editExperienceStart" class="form-label">Start
+									Date</label> <input type="month" class="form-control"
+									id="editExperienceStart" name="start">
+							</div>
+							<div class="col">
+								<label for="editExperienceEnd" class="form-label">End
+									Date</label> <input type="month" class="form-control"
+									id="editExperienceEnd" name="end">
+								<div class="form-check mt-2">
+									<input class="form-check-input" type="checkbox"
+										id="editCurrentJob" checked> <label
+										class="form-check-label" for="editCurrentJob"> I
+										currently work here </label>
+								</div>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="editExperienceDesc" class="form-label">Description</label>
+							<textarea class="form-control" id="editExperienceDesc" rows="4"
+								name="description">Led a team of 5 developers to build and maintain cloud-based applications. Implemented CI/CD pipelines and microservices architecture. Reduced deployment time by 40%.</textarea>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Employment Type</label>
+							<div id="editExperienceEmploymentGroup">
+								<!-- Radio buttons will be populated dynamically -->
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-violet">Save Changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Language Modal -->
+	<div class="modal fade" id="addLanguageModal" tabindex="-1"
+		aria-labelledby="addLanguageModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addLanguageModalLabel">Add
+						Language</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<form th:action="@{'jobseeker/language/add/' + ${jobSeeker.id}}"
+					method="post">
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="languageName" class="form-label">Language</label> <select
+								class="form-control" id="languageName" name="languageIds"
+								multiple required>
+								<option th:each="language : ${allLanguages}"
+									th:value="${language.languageId}"
+									th:text="${language.language}"></option>
+							</select> <small class="form-text text-muted">Hold Ctrl (Windows)
+								or Cmd (Mac) to select multiple Languages</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-violet">Add</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-	
+
 	<script>
 
 	function toggleFields(value) {
@@ -1361,6 +1419,62 @@
 		    const modal = new bootstrap.Modal(document.getElementById('editCertificationModal'));
 		    modal.show();
 	  }
+
+	  function openEditExperienceModal(button) {
+		    const id = button.getAttribute('data-id');
+		    const role = button.getAttribute('data-role');
+		    const description = button.getAttribute('data-description');
+		    const start = button.getAttribute('data-start');
+		    const end = button.getAttribute('data-end');
+		    const employment = button.getAttribute('data-employment');
+		    const employmentId = parseInt(button.getAttribute('data-employmentId'));
+		    const company = button.getAttribute('data-company');
+		    
+		    document.getElementById('editExperienceId').value = id;
+		    document.getElementById('editExperienceRole').value = role;
+		    document.getElementById('editExperienceDesc').value = description;
+		    document.getElementById('editExperienceStart').value = start;
+		    document.getElementById('editExperienceEnd').value = end;
+		    document.getElementById('editExperienceCompany').value = company;
+
+		    // Employment type options
+		    const employmentTypes = [
+		        { id: 1, name: 'Full Time' },
+		        { id: 2, name: 'Part Time' },
+		        { id: 3, name: 'Internship'}
+		    ];
+
+		    const group = document.getElementById('editExperienceEmploymentGroup');
+		    group.innerHTML = ''; // Clear previous buttons if any
+
+		    employmentTypes.forEach(type => {
+		        const radioId = `employmentType-${type.id}`;
+		        const radio = document.createElement('input');
+		        radio.type = 'radio';
+		        radio.className = 'form-check-input';
+		        radio.name = 'employmentId';
+		        radio.id = radioId;
+		        radio.value = type.id;
+		        if (type.id === employmentId) {
+		            radio.checked = true;
+		        }
+
+		        const label = document.createElement('label');
+		        label.className = 'form-check-label ms-1 me-3';
+		        label.htmlFor = radioId;
+		        label.textContent = type.name;
+
+		        const wrapper = document.createElement('div');
+		        wrapper.className = 'form-check form-check-inline';
+		        wrapper.appendChild(radio);
+		        wrapper.appendChild(label);
+
+		        group.appendChild(wrapper);
+		    });
+
+		    const modal = new bootstrap.Modal(document.getElementById('editExperienceModal'));
+		    modal.show();
+		}
 	  
 	  function openEditProjectModal(button){
 		const id = button.getAttribute('data-id');

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.talenttap.DTO.EducationDTO;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
@@ -30,6 +31,7 @@ import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.EmploymentType;
+import com.talenttap.model.Experience;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
@@ -141,6 +143,12 @@ public class PageRenderController {
 			
 			Projects project = new Projects();
 			model.addAttribute("projectDTO", project);
+			
+			Experience experience = new Experience();
+			model.addAttribute("experienceDTO", experience);
+			
+			List<Experience> allExperience = jobseekerService.getAllExperience(jobseeker.getId());
+			model.addAttribute("experienceList", allExperience);
 			
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);
