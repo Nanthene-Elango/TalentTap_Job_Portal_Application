@@ -1,5 +1,6 @@
 package com.talenttap.service;
 
+import com.talenttap.DTO.AdminProfileDTO;
 import com.talenttap.DTO.AdminRegisterDTO;
 import com.talenttap.DTO.LoginDTO;
 import com.talenttap.entity.Roles;
@@ -11,12 +12,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -42,7 +45,7 @@ public class AdminService {
 
         // Verify password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.badRequest().body(createErrorResponse("Invalid credentials"));
+            return ResponseEntity.badRequest().body(createErrorResponse("Invalid Password"));
         }
 
         // Check if user has ADMIN role
@@ -101,4 +104,78 @@ public class AdminService {
         return ResponseEntity.ok("Admin registered successfully");
     }
 
+    public AdminProfileDTO getAdminProfile(String jwt) {
+        // Validate JWT and extract username
+        String username = validateJwtAndGetUsername(jwt);
+
+        // Fetch user from the database
+        Optional<Users> userOptional = usersRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            throw new RuntimeException("Admin not found with username: " + username);
+        }
+
+        Users user = userOptional.get();
+
+        // Verify the user is an admin
+        if (!user.getRole().getRole().equals("ADMIN")) {
+            throw new RuntimeException("User is not an admin");
+        }
+        
+        // Map entity to DTO
+        AdminProfileDTO adminProfileDTO = new AdminProfileDTO();
+        adminProfileDTO.setFullName(user.getFullName());
+        adminProfileDTO.setEmail(user.getEmail());
+        adminProfileDTO.setUsername(user.getUsername());
+        adminProfileDTO.setMobileNumber(user.getMobileNumber());
+        adminProfileDTO.setDateOfRegistration(user.getDateOfRegistration());
+
+        return adminProfileDTO;
+    }
+
+    // Update the admin's password
+    public void changePassword(String oldPassword, String newPassword, String confirmNewPassword, String jwt) {
+        // Validate JWT and extract username
+        String username = validateJwtAndGetUsername(jwt);
+
+        // Validate new password and confirmation match
+        if (!newPassword.equals(confirmNewPassword)) {
+            throw new RuntimeException("New password and confirmation do not match.");
+        }
+
+        // Fetch user from the database
+        Optional<Users> userOptional = usersRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            throw new RuntimeException("Admin not found with username: " + username);
+        }
+
+        Users user = userOptional.get();
+
+        // Verify the user is an admin
+        if (!user.getRole().getRole().equals("ADMIN")) {
+            throw new RuntimeException("User is not an admin");
+        }
+
+        // Verify old password
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect.");
+        }
+
+        // Encode and update the new password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        usersRepository.save(user);
+    }
+
+    // Helper method to validate JWT and extract username
+    private String validateJwtAndGetUsername(String jwt) {
+        try {
+            String username = jwtUtil.extractIdentifier(jwt);
+            
+            if (username == null || !jwtUtil.validateToken(jwt)) {
+                throw new RuntimeException("Invalid or expired JWT token");
+            }
+            return username;
+        } catch (Exception e) {
+            throw new RuntimeException("JWT validation failed: " + e.getMessage());
+        }
+    }
 }
