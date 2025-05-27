@@ -131,6 +131,18 @@ h2 {
     text-decoration: underline;
 }
 
+.error-message {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.password-container .error-message.visible {
+    display: block !important;
+    color: #d32f2f;
+}
+
 @media (max-width: 576px) {
     .login-container {
         padding: 20px;
