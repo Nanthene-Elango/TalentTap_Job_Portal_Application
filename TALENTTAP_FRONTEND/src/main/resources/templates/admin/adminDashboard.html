@@ -20,7 +20,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid px-3 px-md-4">
-            <a class="navbar-brand" th:href="@{/index.html}">
+            <a class="navbar-brand" th:href="@{adminDashboard}">
                 <img th:src="@{/img/Logo_Light.png}" alt="Logo-TalentTap" class="navbar-logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
@@ -43,8 +43,8 @@
                         <i class="fas fa-chevron-down ms-2" style="font-size: 0.7rem; color: #ffffff;"></i>
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                        <li><a class="dropdown-item" href="admin-profile.html"><i class="fas fa-user"></i> Profile View</a></li>
-                        <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/profile}"><i class="fas fa-user"></i>Profile</a></li>
+                        <li><a class="dropdown-item text-danger" th:href="@{/admin/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -304,7 +304,7 @@
                                 <div class="col-md-3 col-sm-6">
                                     <select id="approvalFilter" class="form-select">
                                         <option value="">All Approval Status</option>
-                                        <option value="pending"> FranPending</option>
+                                        <option value="pending"> Pending</option>
                                         <option value="approved">Approved</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
@@ -330,11 +330,12 @@
                                     <label for="selectAllJobs" class="ms-2">Select All</label>
                                 </div>
                             </div>
+                            
                             <div class="table-responsive">
                                 <table class="table table-hover" id="jobTable">
                                     <thead>
                                         <tr>
-                                            <th scope="col"><input type="checkbox" disabled></th>
+                                            <th><input type="checkbox" id="select-all-jobs" onclick="toggleSelectAllJobs()" disabled></th>
                                             <th scope="col">Job Title</th>
                                             <th scope="col">Company</th>
                                             <th scope="col">Type</th>
@@ -347,52 +348,30 @@
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody  th:each="job : ${jobs}">
-                                        <tr>
-                                            <td><input type="checkbox" class="job-select"></td>
-                                            <td th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'">Software Engineer</td>
-                                            <td>TechCorp</td>
-                                            <td>full-time</td>
-                                            <td>Hybrid</td>
-                                            <td>3</td>
-                                            <td>2025-04-10</td>
-                                            <td>2025-05-10</td>
-                                            <td><span class="badge bg-success">Open</span></td>
-                                            <td><span class="badge bg-success">Approved</span></td>
+                                    <tbody  th:each="job : ${jobs}" class="job-row">
+                                        <tr th:each="job : ${jobs}" class="job-row" 
+                            				th:attr="data-status=${job.jobStatus != null ? job.jobStatus.toLowerCase() : 'n/a'}, 
+                                     		data-approval=${job.approvalStatus != null ? job.approvalStatus.toLowerCase() : 'n/a'}, 
+                                     		data-company=${job.companyName != null ? job.companyName.toLowerCase() : 'n/a'}, 
+                                     		data-posted=${#temporals.format(job.postedDate, 'yyyy-MM-dd')} ?: 'n/a'">
+                                            <td><input type="checkbox" class="job-select" th:value="${job.jobId}"></td>
+                                            <td th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'"></td>
+                                            <td th:text="${job.companyName != null} ? ${job.companyName} : 'N/A'"></td>
+                                            <td th:text="${job.jobType != null} ? ${job.jobType} : 'N/A'"></td>
+                                            <td th:text="${job.workType != null} ? ${job.workType} : 'N/A'"></td>
+                                            <td th:text="${job.openings != null} ? ${job.openings} : 'N/A'"></td>
+                                            <td th:text="${job.postedDate != null} ? ${#temporals.format(job.postedDate, 'yyyy-MM-dd')} : 'N/A'"></td>
+                                            <td th:text="${job.deadline != null} ? ${#temporals.format(job.deadline, 'yyyy-MM-dd')} : 'N/A'"></td>
+                                            <td><span th:text="${job.jobStatus != null ? job.jobStatus : 'N/A'}" th:class="'badge ' + (${job.jobStatus} == 'open' ? 'bg-success' : 'bg-danger')"></span></td>
+											<td>
+    											<span th:text="${job.approvalStatus != null ? job.approvalStatus : 'N/A'}" th:class="'badge ' +
+                    								(${job.approvalStatus} == 'approved' ? 'bg-approved' :
+                    								(${job.approvalStatus} == 'pending' ? 'bg-pending' :
+                     								(${job.approvalStatus} == 'rejected' ? 'bg-rejected' : 'bg-default')))">
+    											</span>
+											</td>
                                             <td>
-                                                <a href="job-details.html?id=1" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="job-select"></td>
-                                            <td>Marketing Manager</td>
-                                            <td>MarketPro</td>
-                                            <td>part-time</td>
-                                            <td>Remote</td>
-                                            <td>2</td>
-                                            <td>2025-04-08</td>
-                                            <td>2025-04-30</td>
-                                            <td><span class="badge bg-success">Open</span></td>
-                                            <td><span class="badge bg-warning">Pending</span></td>
-                                            <td>
-                                                <a href="job-details.html?id=2" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="job-select"></td>
-                                            <td>Nurse Practitioner</td>
-                                            <td>HealthInc</td>
-                                            <td>full-time</td>
-                                            <td>On-Site</td>
-                                            <td>5</td>
-                                            <td>2025-04-05</td>
-                                            <td>2025-04-20</td>
-                                            <td><span class="badge bg-danger">Expired</span></td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                            <td>
-                                                <a href="job-details.html?id=3" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
+                                                <a th:href="@{/admin/jobs/details/{id}(id=${job.jobId})}" class="btn btn-sm btn-violet me-1"><i class="fas fa-eye"></i></a>
                                                 <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                             </td>
                                         </tr>
@@ -401,15 +380,20 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <div>
-                                    <button class="btn btn-sm btn-success me-1" id="bulkApprove" disabled>Approve Selected</button>
-                                    <button class="btn btn-sm btn-warning" id="bulkReject" disabled>Reject Selected</button>
-                                </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    				<!-- Form for bulk approval -->
+                    				<form id="approve-form" th:action="@{/admin/jobs/approve}" method="post" style="display:inline;">
+                        				<input type="hidden" name="jobIds" id="approve-job-ids" />
+                        				<button type="submit" id="bulkApprove" class="btn btn-sm btn-violet me-2" onclick="return approveSelectedJobs()" disabled>Approve Selected</button>
+                    				</form>
+                    				<!-- Form for bulk rejection -->
+                    				<form id="reject-form" th:action="@{/admin/jobs/reject}" method="post" style="display:inline;">
+                        				<input type="hidden" name="jobIds" id="reject-job-ids" />
+                        				<button type="submit" id="bulkReject" class="btn btn-sm btn-danger" onclick="return rejectSelectedJobs()" disabled>Reject Selected</button>
+                    				</form>
+                				</div>
+                                <nav aria-label="Job table pagination">
+                                    <ul class="pagination pagination-sm mb-0" id="jobPagination">
+                        				<!-- JavaScript will populate this -->     
                                     </ul>
                                 </nav>
                             </div>

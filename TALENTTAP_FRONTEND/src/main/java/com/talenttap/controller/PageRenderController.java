@@ -18,21 +18,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.EducationDTO;
-import com.talenttap.DTO.EmailDTO;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
-import com.talenttap.model.EmployerJobFilter;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.EmploymentType;
+import com.talenttap.model.Experience;
 import com.talenttap.model.IndustryType;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
@@ -40,8 +39,10 @@ import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
 import com.talenttap.model.JobseekerRegister;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
 import com.talenttap.model.Login;
+import com.talenttap.model.Projects;
 import com.talenttap.model.Skills;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
@@ -104,7 +105,9 @@ public class PageRenderController {
 	public String LoadProfile(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
 
 		if (jwt != null && !jwt.trim().isEmpty()) {
+			
 			JwtToken token = new JwtToken(jwt.trim());
+			
 			Jobseeker jobseeker = jobseekerService.getJobseeker(token);
 			model.addAttribute("jobSeeker", jobseeker);
 
@@ -120,6 +123,30 @@ public class PageRenderController {
 			List<Education> educations = jobseekerService.getAllEducation(jobseeker.getId());
 			model.addAttribute("educationList", educations);
 
+			List<Certifications> certifications = jobseekerService.getAllCertifications(jobseeker.getId());
+			model.addAttribute("certificationList", certifications);
+			
+			Certifications certification = new Certifications();
+			model.addAttribute("certificationDTO", certification);
+			
+			List<Languages> allLanguages = jobseekerService.getAllLanguages();
+			model.addAttribute("allLanguages", allLanguages);
+			
+			List<Languages> allSeekerLanguage = jobseekerService.getAllSeekerLanguage(jobseeker.getId());
+			model.addAttribute("languageList", allSeekerLanguage);
+			
+			List<Projects> allProjects = jobseekerService.getAllProjects(jobseeker.getId());
+			model.addAttribute("projectList", allProjects);
+			
+			Projects project = new Projects();
+			model.addAttribute("projectDTO", project);
+			
+			Experience experience = new Experience();
+			model.addAttribute("experienceDTO", experience);
+			
+			List<Experience> allExperience = jobseekerService.getAllExperience(jobseeker.getId());
+			model.addAttribute("experienceList", allExperience);
+			
 			List<Skills> skills = jobseekerService.getAllSkillsById(jobseeker.getId());
 			model.addAttribute("skills", skills);
 
@@ -229,7 +256,7 @@ public class PageRenderController {
 	@GetMapping("/employer/jobs")
     public String loadJobs(Model model, @CookieValue(value = "jwt", required = false) String jwt) {
 		System.out.println("reaching the controller hii");
-		
+		model.addAttribute("currentPage", "jobs");
         try {
             if (jwt == null || jwt.trim().isEmpty()) {
                 model.addAttribute("error", "Please log in to view jobs.");
@@ -245,14 +272,14 @@ public class PageRenderController {
             } else {
                 model.addAttribute("jobs", jobs);
             }
-            model.addAttribute("employmentTypes", jobService.getEmploymentType());
-    	    model.addAttribute("jobCategories", jobService.getJobCategories());
-    	    model.addAttribute("skills", jobseekerService.getAllSkills());
-    	    model.addAttribute("locations", jobseekerService.getAllLocations());
-    		model.addAttribute("currentPage", "jobs");
-    		model.addAttribute("jobFilter", new EmployerJobFilter());
-            model.addAttribute("email",new EmailDTO());
-          
+            
+         // 🔥 Add a blank form DTO for editing
+            EditJobFormDTO job = new EditJobFormDTO();
+            model.addAttribute("jobForm", job);
+	        model.addAttribute("employmentTypes", jobService.getEmploymentType());
+	        model.addAttribute("jobCategories", jobService.getJobCategories());
+	        model.addAttribute("skills", jobseekerService.getAllSkills());
+	        model.addAttribute("locations", jobseekerService.getAllLocations());
 	       
             return "employer/jobs";
         } catch (IllegalArgumentException e) {
@@ -523,9 +550,53 @@ public class PageRenderController {
         }
         return "admin/adminDashboard";
     }
+	
+	@PostMapping("/admin/jobs/approve")
+    public String approveJobs(@RequestParam("jobIds") List<Integer> jobIds,
+                              @CookieValue(value = "jwt", required = false) String jwt,
+                              Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = jobService.approveJobs(jobIds, jwt);
+            System.out.println(jobIds);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to approve jobs: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#jobs";
+    }
 
-	public String loadAdminIndex() {
-		return "admin/adminDashboard";
-	}
-
+    // New endpoint for rejecting jobs
+    @PostMapping("/admin/jobs/reject")
+    public String rejectJobs(@RequestParam("jobIds") List<Integer> jobIds,
+                             @CookieValue(value = "jwt", required = false) String jwt,
+                             Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = jobService.rejectJobs(jobIds, jwt);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to reject jobs: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#jobs";
+    }
+    
+    @GetMapping("/admin/jobs/details/{id}")
+    public String jobDetails(@PathVariable("id") Integer jobId,
+                             @CookieValue(value = "jwt", required = false) String jwt,
+                             Model model) {
+        try {
+        	System.out.println(jobId);
+            AdminJobDTO job = jobService.getAdminJobById(jobId, jwt);
+            model.addAttribute("job", job);
+        } catch (Exception e) {
+            model.addAttribute("job", null); // Job not found
+        }
+    	
+        return "admin/job-details"; // Template name without .html
+    }
 }

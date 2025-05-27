@@ -119,7 +119,7 @@ public class EmployerController {
 	    return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("api/candidate/{id}/reject")
+	@PatchMapping("api/candidate/{id}/reject")
 	public ResponseEntity<Void> rejectCandidate(@RequestHeader("Authorization") String authHeader, @RequestBody EmailDTO email,@PathVariable int id) {
 		String token = authHeader.replace("Bearer ", "");
 		JobApplication updatedJob = employerService.rejectApplication(id, token);

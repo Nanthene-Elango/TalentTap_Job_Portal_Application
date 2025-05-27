@@ -2,11 +2,15 @@ package com.talenttap.controller;
 
 import java.util.List;
 
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,12 +20,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EducationDTO;
+import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
+import com.talenttap.model.Experience;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
 import com.talenttap.model.Jobseeker;
+import com.talenttap.model.Languages;
 import com.talenttap.model.Location;
+import com.talenttap.model.Projects;
 import com.talenttap.service.JobsService;
 import com.talenttap.service.JobseekerService;
 
@@ -154,4 +162,45 @@ public class JobseekerController {
 	public String deleteEducationById(@PathVariable int id , RedirectAttributes redirectAttributes) {
 		return jobseekerService.deleteEducation(id , redirectAttributes);
 	}
+	
+	@PostMapping("/jobseeker/certification/add/{id}")
+	public String addCertification(@PathVariable int id , @ModelAttribute Certifications certification , RedirectAttributes redirectAttributes) {
+		return jobseekerService.addCertification(id , certification , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/certification/edit")
+	public String updateEducation(@ModelAttribute Certifications certification, RedirectAttributes redirectAttributes) {
+		return jobseekerService.editCertification(certification , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/certification/delete/{id}")
+	public String deleteCertificationById(@PathVariable int id , RedirectAttributes redirectAttributes) {
+		return jobseekerService.deleteCertification(id , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/language/add/{id}")
+	public String addLanguage(@PathVariable int id , @RequestParam("languageIds") List<Integer> languageIds, RedirectAttributes redirectAttributes) {
+		return jobseekerService.addLanguages(id , languageIds , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/language/delete/{id}/{jobseekerId}")
+	public String deleteLanguage(@PathVariable int id , @PathVariable int jobseekerId , RedirectAttributes redirectAttributes){
+		return jobseekerService.deleteSeekerLanguage(id , jobseekerId , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/experience/add/{id}")
+	public String addCertification(@PathVariable int id , @ModelAttribute Experience experience , RedirectAttributes redirectAttributes) {
+		return jobseekerService.addExperience(id , experience , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/experience/edit")
+	public String updateEducation(@ModelAttribute Experience experience, RedirectAttributes redirectAttributes) {
+		return jobseekerService.editExperience(experience , redirectAttributes);
+	}
+	
+	@PostMapping("/jobseeker/experience/delete/{id}")
+	public String deleteProjectById(@PathVariable int id , RedirectAttributes redirectAttributes) {
+		return jobseekerService.deleteExperience(id , redirectAttributes);
+	}
+	
 }

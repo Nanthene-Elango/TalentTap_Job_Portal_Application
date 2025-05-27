@@ -89,13 +89,9 @@ body {
 	height: 60px;
 	margin: 0 1.5rem;
 	object-fit: contain;
-	filter: grayscale(100%);
 	transition: filter 0.3s;
 }
 
-.carousel img:hover {
-	filter: grayscale(0%);
-}
 
 @keyframes scroll {from { transform:translateX(0);
 	

@@ -3,7 +3,6 @@ package com.talenttap.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +22,13 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.talenttap.DTO.AdminJobDTO;
-
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
-
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.exception.JobFetchException;
-import com.talenttap.model.EmployerJobFilter;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.JobCategory;
-import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
 import com.talenttap.model.JwtToken;
 
@@ -44,15 +39,11 @@ public class JobsService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
 	
 	@Value("${backend.api.base-url}")
     private String backendBaseUrl;
-	
-
 
 	private static final Logger logger = LoggerFactory.getLogger(JobsService.class);
-
 
 	public List<EmploymentType> getEmploymentType() {
 		String url = "http://localhost:8083/jobs/jobtype";
@@ -285,90 +276,6 @@ public class JobsService {
         System.out.println(response.getBody());
         return response.getBody();
     }
- 
- // Fetch all jobs from the backend
-    public List<AdminJobDTO> getAllAdminJobs(String jwt) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + jwt);
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        try {
-            ResponseEntity<List<AdminJobDTO>> response = restTemplate.exchange(
-                    backendBaseUrl + "/admin/jobs",
-                    HttpMethod.GET,
-                    entity,
-                    new ParameterizedTypeReference<List<AdminJobDTO>>() {}
-            );
-            System.out.println(response.getBody().get(0).getJobRole());
-            return response.getBody() != null ? response.getBody() : Collections.emptyList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
-
-//    // Fetch a single job by ID
-    public JobDisplayDTO getJobById(int jobId, String jwt) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwt);
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        try {
-            ResponseEntity<JobDisplayDTO> response = restTemplate.exchange(
-                    backendBaseUrl + "/admin/jobs" + jobId,
-                    HttpMethod.GET,
-                    entity,
-                    JobDisplayDTO.class
-            );
-            return response.getBody();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // Approve jobs
-    public void approveJobs(List<Integer> jobIds, String jwt) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwt);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<List<Integer>> entity = new HttpEntity<>(jobIds, headers);
-
-        try {
-            restTemplate.exchange(
-                    backendBaseUrl + "/admin/jobs/approve",
-                    HttpMethod.POST,
-                    entity,
-                    Void.class
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Reject jobs
-    public void rejectJobs(List<Integer> jobIds, String jwt) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + jwt);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<List<Integer>> entity = new HttpEntity<>(jobIds, headers);
-
-        try {
-            restTemplate.exchange(
-                    backendBaseUrl + "/admin/jobs/reject",
-                    HttpMethod.POST,
-                    entity,
-                    Void.class
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 	public boolean deleteJob(int id) {
 	    String apiUrl = "http://localhost:8083/jobs/" + id + "/delete";
@@ -452,26 +359,107 @@ public class JobsService {
 	    }
 	}
 
-	public List<JobDisplayDTO> filterJobs(EmployerJobFilter jobFilter) {
+	// Fetch all jobs from the backend
+    public List<AdminJobDTO> getAllAdminJobs(String jwt) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + jwt);
 
-		System.out.println("filter at service");
-		System.out.println("Employment type: " + jobFilter.getEmploymentType());
-		System.out.println("Job status: " + jobFilter.getJobStatus());
-		System.out.println("Search keyword: " + jobFilter.getKeyword());
-		System.out.println("location id: " + jobFilter.getLocation());
-		System.out.println("worktype: " + jobFilter.getWorkType());
-        System.out.println("location id: " + jobFilter.getLocation());
-		String url = "http://localhost:8083/jobs/searchAndFilter";
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+        try {
+            ResponseEntity<List<AdminJobDTO>> response = restTemplate.exchange(
+                    backendBaseUrl + "/admin/jobs",
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<List<AdminJobDTO>>() {}
+            );
+            System.out.print(response);
+            return response.getBody() != null ? response.getBody() : Collections.emptyList();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 
-		HttpEntity<EmployerJobFilter> requestEntity = new HttpEntity<>(jobFilter, headers);
+//    // Fetch a single job by ID
+    public AdminJobDTO getAdminJobById(Integer jobId, String jwt) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + jwt);
 
-		ResponseEntity<JobDisplayDTO[]> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JobDisplayDTO[].class);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-		return Arrays.asList(response.getBody());
-	}
+        try {
+            ResponseEntity<AdminJobDTO> response = restTemplate.exchange(
+                    backendBaseUrl + "/admin/jobs/" + jobId,
+                    HttpMethod.GET,
+                    entity,
+                    AdminJobDTO.class
+            );
+            return response.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch job with ID: " + jobId, e);
+        }
+    }
+
+ // New method to approve jobs
+    public String approveJobs(List<Integer> jobIds, String jwt) {
+        String url = backendBaseUrl + "/admin/jobs/approve";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + jwt);
+
+        HttpEntity<List<Integer>> request = new HttpEntity<>(jobIds, headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody() != null ? response.getBody() : "Jobs approved successfully";
+            } else {
+                return "Failed to approve jobs: HTTP " + response.getStatusCode();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to approve jobs: " + e.getMessage();
+        }
+    }
+
+    // New method to reject jobs
+    public String rejectJobs(List<Integer> jobIds, String jwt) {
+        String url = backendBaseUrl + "/admin/jobs/reject";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + jwt);
+
+        HttpEntity<List<Integer>> request = new HttpEntity<>(jobIds, headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody() != null ? response.getBody() : "Jobs rejected successfully";
+            } else {
+                return "Failed to reject jobs: HTTP " + response.getStatusCode();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to reject jobs: " + e.getMessage();
+        }
+    }
 
 	
 }

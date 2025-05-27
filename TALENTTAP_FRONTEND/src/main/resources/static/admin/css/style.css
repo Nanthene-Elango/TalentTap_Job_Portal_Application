@@ -402,23 +402,40 @@ body {
     background: rgba(94, 23, 235, 0.05);
 }
 
+
 .jobs-section .badge {
     font-size: 0.8rem;
-    padding: 6px 10px;
+    padding: 3px 12px;
     border-radius: 12px;
+    color: white;
+    display: inline-block;
+    min-width: 70px;
+    text-align: center;
 }
 
-.jobs-section .badge.bg-success {
-    background-color: #5e17eb !important;
+.jobs-section .bg-approved {
+    background-color: #5e17eb; /* Purple */
 }
 
-.jobs-section .badge.bg-danger {
-    background-color: #dc3545 !important;
-}
-
-.jobs-section .badge.bg-warning {
-    background-color: #c4a0ff !important;
+.jobs-section .bg-pending {
+    background-color: #c4a0ff; /* Light purple */
     color: #2a0a5a;
+}
+
+.jobs-section .bg-success {
+    background-color: #5e17eb !important; /* Purple (for Open) */
+}
+
+.jobs-section .bg-danger {
+    background-color: #dc3545 !important; /* Red (for Expired) */
+}
+
+.jobs-section .bg-rejected {
+    background-color: #dc3545 !important; /* Red (for Expired) */
+}
+
+.jobs-section .bg-default {
+    background-color: #6c757d; /* Gray */
 }
 
 .jobs-section .btn-sm {
@@ -831,7 +848,7 @@ body {
     .jobseekers-section .table tbody td {
         display: block;
         text-align: left;
-        padding: 8px 12px;
+        padding: 3px 12px;
         border: none;
         position: relative;
     }
