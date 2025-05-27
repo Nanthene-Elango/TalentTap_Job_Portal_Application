@@ -122,112 +122,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Edit functionality with password confirmation
-    let isEditingCompany = false;
+	window.addEventListener('DOMContentLoaded', () => {
+	  const urlParams = new URLSearchParams(window.location.search);
+	  if (urlParams.get('edit') === 'true') {
+	    // Enable edit mode UI
 
-    document.getElementById('editCompanyBtn').addEventListener('click', () => {
-        document.getElementById('passwordOverlay').style.display = 'flex';
-        isEditingCompany = true;
-    });
+	    const editFields = document.querySelectorAll('.edit-field');
+		
+	    const displayFields = document.querySelectorAll('.field-value');
+	    const logoDisplay = document.getElementById('companyLogoDisplay');
+	    const logoInput = document.getElementById('editCompanyLogoField');
+	    const saveBtn = document.getElementById('saveCompanyBtn');
+	    const editBtn = document.getElementById('editCompanyBtn');
 
-    document.getElementById('cancelBtn').addEventListener('click', () => {
-        document.getElementById('passwordOverlay').style.display = 'none';
-        document.getElementById('confirmPasswordInput').value = '';
-        isEditingCompany = false;
-    });
+	    editFields.forEach(field => {
+	      field.style.display = 'block';
+	      field.removeAttribute('disabled');
+	    });
+	
+		
+		
+	    displayFields.forEach(field => field.style.display = 'none');
 
-    document.getElementById('confirmBtn').addEventListener('click', () => {
-        const password = document.getElementById('confirmPasswordInput');
-        if (!validateField(password)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Password Required',
-                text: 'Please enter your password to proceed.',
-                confirmButtonColor: '#5e17eb'
-            });
-            return;
-        }
+	    if (logoDisplay) logoDisplay.style.display = 'none';
+	    if (logoInput) {
+	      logoInput.style.display = 'block';
+	      logoInput.removeAttribute('disabled');
+	    }
 
-        if (password.value === "password123") { // Simulated correct password
-            document.getElementById('passwordOverlay').style.display = 'none';
-            document.getElementById('confirmPasswordInput').value = '';
+	    if (saveBtn) saveBtn.style.display = 'inline-block';
+	    if (editBtn) editBtn.style.display = 'none';
+	  }
+	});
 
-            if (isEditingCompany) {
-                const companyCard = document.querySelector('#my-info .content-card:last-of-type');
-                const fieldValues = companyCard.querySelectorAll('.field-value');
-                const editFields = companyCard.querySelectorAll('.edit-field');
-                fieldValues.forEach(el => el.style.display = 'none');
-                editFields.forEach(el => el.style.display = 'block');
-                document.getElementById('companyLogoDisplay').style.display = 'none';
-                document.getElementById('editCompanyLogoField').style.display = 'block';
-                document.getElementById('saveCompanyBtn').style.display = 'block';
-                document.getElementById('editCompanyBtn').style.display = 'none';
-            }
-            isEditingCompany = false;
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Incorrect Password',
-                text: 'The password you entered is incorrect.',
-                confirmButtonColor: '#5e17eb'
-            });
-        }
-    });
 
-    // Save Company Details
-    document.getElementById('saveCompanyBtn').addEventListener('click', () => {
-        const companyCard = document.querySelector('#my-info .content-card:last-of-type');
-        const editFields = companyCard.querySelectorAll('.edit-field');
-        let allValid = true;
-
-        editFields.forEach(field => {
-            if (!validateField(field)) allValid = false;
-        });
-
-        if (allValid) {
-            const fieldValues = companyCard.querySelectorAll('.field-value');
-            fieldValues.forEach((el) => {
-                const inputField = document.getElementById(`${el.id}Input`);
-                if (inputField) {
-                    if (el.id === 'companyIndustry' || el.id === 'location') {
-                        el.textContent = inputField.options[inputField.selectedIndex].text;
-                    } else {
-                        el.textContent = inputField.value;
-                    }
-                }
-                el.style.display = 'block';
-            });
-
-            const fileInput = document.getElementById('companyLogo');
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const companyLogoImg = document.getElementById('companyLogoImg');
-                companyLogoImg.src = URL.createObjectURL(file);
-            }
-
-            editFields.forEach(el => el.style.display = 'none');
-            document.getElementById('companyLogoDisplay').style.display = 'block';
-            document.getElementById('editCompanyLogoField').style.display = 'none';
-            document.getElementById('saveCompanyBtn').style.display = 'none';
-            document.getElementById('editCompanyBtn').style.display = 'block';
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Saved!',
-                text: 'Company details updated successfully.',
-                confirmButtonColor: '#5e17eb',
-                timer: 2000,
-                timerProgressBar: true
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Please correct the errors in the form.',
-                confirmButtonColor: '#5e17eb'
-            });
-        }
-    });
 
     // Company logo preview
     document.getElementById('companyLogo').addEventListener('change', (e) => {

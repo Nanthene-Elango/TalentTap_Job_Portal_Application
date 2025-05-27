@@ -2,6 +2,7 @@ package com.talenttap.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.CompanyUpdateDTO;
+import com.talenttap.DTO.DashboardMetrics;
 import com.talenttap.DTO.LoginDTO;
 import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.Company;
 import com.talenttap.entity.Employer;
 import com.talenttap.entity.IndustryType;
 import com.talenttap.entity.JobApplication;
+import com.talenttap.entity.Jobs;
 import com.talenttap.entity.Users;
 import com.talenttap.exceptions.InvalidCredentialsException;
 import com.talenttap.repository.CompanyRepository;
 import com.talenttap.repository.EmployerRepository;
 import com.talenttap.repository.IndustryTypeRepository;
 import com.talenttap.repository.JobApplicationRepository;
+import com.talenttap.repository.JobsRepository;
 import com.talenttap.repository.LocationRepository;
 import com.talenttap.repository.UsersRepository;
 import com.talenttap.security.JwtUtil;
@@ -47,10 +51,13 @@ public class EmployerService {
 	
 	private JobApplicationRepository jobApplicationRepository;
 	
+	private JobsRepository jobsRepo;
+	
 	
 	public EmployerService(EmployerRepository employerRepo, JwtUtil jwtUtil, 
 			UsersRepository userRepo,LocationRepository locationRepo, 
-			IndustryTypeRepository industryTypeRepo, CompanyRepository companyRepo, PasswordEncoder passwordEncoder, JobApplicationRepository jobApplicationRepository) {
+			IndustryTypeRepository industryTypeRepo, CompanyRepository companyRepo, PasswordEncoder passwordEncoder,
+			JobApplicationRepository jobApplicationRepository, JobsRepository jobsRepo) {
 		this.employerRepo = employerRepo;
 		this.jwtUtil = jwtUtil;
 		this.userRepo = userRepo;
@@ -59,6 +66,7 @@ public class EmployerService {
 		this.companyRepo = companyRepo;
 		this.passwordEncoder =  passwordEncoder;
 		this.jobApplicationRepository = jobApplicationRepository;
+		this.jobsRepo = jobsRepo;
 	}
 	
 	// update profile photo
@@ -122,7 +130,7 @@ public class EmployerService {
 	}
 	
 	// verify employer
-	public String verifyEmployer(LoginDTO dto, String jwt) {
+	public String verifyEmployer(String dto, String jwt) {
 		 if (jwt == null || jwt.isBlank()) {
 	            throw new IllegalArgumentException("JWT token is empty or null");
 	        }
@@ -133,7 +141,7 @@ public class EmployerService {
 	                .orElseThrow(() -> new RuntimeException("User not found: " + username));
 	   
 
-			if (user != null && passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+			if (user != null && passwordEncoder.matches(dto, user.getPassword())) {
 
 				return "User verification successfull";
 			} else {
@@ -158,5 +166,72 @@ public class EmployerService {
 		return updatedApplication;
 	}
 	
+	public DashboardMetrics getAllDashboardMetrics(String jwt) {
+//		DashboardMetrics dm = new DashboardMetrics();
+//		
+//		 if (jwt == null || jwt.isBlank()) {
+//	            throw new IllegalArgumentException("JWT token is empty or null");
+//	        }
+//
+//	        // Extract username from JWT
+//	        String username = jwtUtil.extractIdentifier(jwt);
+//	        Users user = userRepo.findByUsername(username)
+//	                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+//	        
+//	        Employer employer = employerRepo.findByUser(user).get();
+//	        
+//	       List<Jobs> openJobs = jobsRepo.findByEmployerIdAndJobStatus(employer.getEmployerId(), "open");
+//	        
+//	        dm.setActiveJobs(openJobs.size());
+//	        System.out.println(openJobs.size());
+//	        
+        return null;
+	        
+		
+		
+	}
+
+	public boolean verifyEmployerAndCompany(String jwt) {
+		   if (jwt == null || jwt.isBlank()) {
+	            throw new IllegalArgumentException("JWT token is empty or null");
+	        }
+
+	        // Extract username from JWT
+	        String username = jwtUtil.extractIdentifier(jwt);
+	        Users user = userRepo.findByUsername(username)
+	                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+		    Employer employer = employerRepo.findByUser(user).get();
+		    
+		    Company company = employer.getCompany();
+		    
+		    company.setVerified(true);
+		    companyRepo.save(company);
+		    return true;
+	}
+
+	public Boolean isCompanyVerified(String jwt) {
+		 if (jwt == null || jwt.isBlank()) {
+	            throw new IllegalArgumentException("JWT token is empty or null");
+	        }
+
+	        // Extract username from JWT
+	        String username = jwtUtil.extractIdentifier(jwt);
+	        Users user = userRepo.findByUsername(username)
+	                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+		    Employer employer = employerRepo.findByUser(user).get();
+		    
+		    Company company = employer.getCompany();
+		    
+		    if(company.isVerified()) {
+		    	return true;
+		    }
+		    else {
+		    	return false;
+		    }
+	}
+
+
 
 }

@@ -182,7 +182,7 @@ public class EmployerAuthService {
         cookie.setSecure(false);
         cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
-        
+        System.out.println(jwt);
         Map<String, Object> response1 = new HashMap<>();
 		response1.put("message", "Login successful");
 		response1.put("code", 200);

@@ -47,5 +47,8 @@ public interface JobsRepository extends JpaRepository<Jobs,Integer> {
     int markExpiredJobs(@Param("expiredStatus") JobStatus expiredStatus,
                         @Param("now") LocalDateTime now,
                         @Param("employer") Employer employer);
+    
+    // Find jobs with "open" status for a specific employer
+    //List<Jobs> findByEmployerIdAndJobStatus(int employerId, String status);
 
 }

@@ -254,7 +254,7 @@
             color: #333;
             font-weight: 500;
         }
-        .password-overlay {
+        .password-overlay, .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -266,7 +266,7 @@
             align-items: center;
             z-index: 1000;
         }
-        .password-modal {
+        .password-modal, .edit-modal {
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -335,16 +335,18 @@
             font-weight: 500;
         }
         .verification-status { color: #666; margin-top: 10px; }
+        .company-logo-section {
+            text-align: center;
+            margin: 20px 0;
+        }
         .company-logo {
             width: 120px;
+           guida: center;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #5e17eb;
             margin-bottom: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
         }
         @media (max-width: 992px) {
             .main-content { flex-direction: column; }
@@ -394,6 +396,10 @@
             content: '\2717';
             color: #e74c3c;
             margin-right: 5px;
+        }
+        .file-upload.disabled {
+            opacity: 0.5;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -482,6 +488,13 @@
         </div>
     </nav>
 
+    <!-- Company Logo Section -->
+    <div class="container">
+        <div class="company-logo-section">
+            <img src="./img/default-logo.png" alt="Company Logo" class="company-logo" id="companyLogoImg">
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="container">
         <div class="main-content">
@@ -490,6 +503,7 @@
                 <h2 class="sidebar-heading">Settings</h2>
                 <ul class="sidebar-menu">
                     <li><a href="#" class="sidebar-link active" data-section="my-info"><i class="fas fa-user"></i> My Info</a></li>
+                    <li><a href="#" class="sidebar-link" data-section="employer"><i class="fas fa-user-tie"></i> Employer</a></li>
                     <li><a href="#" class="sidebar-link" data-section="password"><i class="fas fa-lock"></i> Password & Security</a></li>
                     <li><a href="#" class="sidebar-link" data-section="identity"><i class="fas fa-id-card"></i> Identity Verification</a></li>
                 </ul>
@@ -502,99 +516,68 @@
                     <h2 class="content-title">My Info</h2>
                     <div class="content-card">
                         <div class="content-header">
-                            <h3 class="content-title">Account Details</h3>
-                            <button class="edit-button" id="editAccountBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Full Name</div>
-                            <div class="field-value" id="fullName">John Doe</div>
-                            <input type="text" class="form-control edit-field" id="fullNameInput" style="display: none;" value="John Doe">
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Username</div>
-                            <div class="field-value" id="username">johndoe123</div>
-                            <input type="text" class="form-control edit-field" id="usernameInput" style="display: none;" value="johndoe123">
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Email</div>
-                            <div class="field-value" id="email">john.doe@example.com<span class="verified-badge" id="emailVerified" style="display: inline-block;">Verified</span></div>
-                            <input type="email" class="form-control edit-field" id="emailInput" style="display: none;" value="john.doe@example.com" readonly>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Phone Number</div>
-                            <div class="field-value" id="phoneNumber">9876543210<span class="verified-badge" id="phoneVerified" style="display: inline-block;">Verified</span></div>
-                            <input type="tel" class="form-control edit-field" id="phoneNumberInput" style="display: none;" value="9876543210" readonly>
-                        </div>
-                        <button class="btn btn-primary" id="saveAccountBtn" style="display: none;">Save Changes</button>
-                    </div>
-                    <div class="content-card">
-                        <div class="content-header">
                             <h3 class="content-title">Company Details</h3>
-                            <button class="edit-button" id="editCompanyBtn"><i class="fas fa-pencil-alt"></i> Edit</button>
-                        </div>
-                        <div class="info-field text-center" id="companyLogoDisplay">
-                            <img src="./img/default-logo.png" alt="Company Logo" class="company-logo" id="companyLogoImg">
-                        </div>
-                        <div class="info-field" id="editCompanyLogoField" style="display: none;">
-                            <div class="file-upload">
-                                <label for="companyLogo">Change Logo</label>
-                                <input type="file" class="form-control edit-field" id="companyLogo" accept="image/*">
-                            </div>
+                            <button class="edit-button" id="editCompanyBtn" data-bs-toggle="modal" data-bs-target="#editCompanyModal"><i class="fas fa-pencil-alt"></i> Edit</button>
                         </div>
                         <div class="info-field">
                             <div class="field-label">Company Name</div>
                             <div class="field-value" id="companyName">Acme Inc.</div>
-                            <input type="text" class="form-control edit-field" id="companyNameInput" style="display: none;" value="Acme Inc.">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Industry Type</div>
                             <div class="field-value" id="companyIndustry">Technology</div>
-                            <select class="form-control edit-field" id="companyIndustryInput" style="display: none;">
-                                <option value="technology" selected>Technology</option>
-                                <option value="finance">Finance</option>
-                                <option value="healthcare">Healthcare</option>
-                                <option value="education">Education</option>
-                                <option value="manufacturing">Manufacturing</option>
-                                <option value="retail">Retail</option>
-                                <option value="other">Other</option>
-                            </select>
                         </div>
                         <div class="info-field">
                             <div class="field-label">Company Email</div>
                             <div class="field-value" id="companyEmail">contact@acme.com</div>
-                            <input type="email" class="form-control edit-field" id="companyEmailInput" style="display: none;" value="contact@acme.com">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Company Phone</div>
                             <div class="field-value" id="companyPhone">9876543210</div>
-                            <input type="tel" class="form-control edit-field" id="companyPhoneInput" style="display: none;" value="9876543210">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Designation</div>
                             <div class="field-value" id="designation">HR Manager</div>
-                            <input type="text" class="form-control edit-field" id="designationInput" style="display: none;" value="HR Manager">
                         </div>
                         <div class="info-field">
                             <div class="field-label">About the Company</div>
                             <div class="field-value" id="companyAbout">A leading tech solutions provider.</div>
-                            <textarea class="form-control edit-field" id="companyAboutInput" style="display: none;">A leading tech solutions provider.</textarea>
                         </div>
                         <div class="info-field">
                             <div class="field-label">Company Size</div>
                             <div class="field-value" id="companySize">51-200</div>
-                            <input type="text" class="form-control edit-field" id="companySizeInput" style="display: none;" value="51-200">
                         </div>
                         <div class="info-field">
                             <div class="field-label">Location</div>
                             <div class="field-value" id="location">USA</div>
-                            <select class="form-control edit-field" id="locationInput" style="display: none;">
-                                <option value="usa" selected>USA</option>
-                                <option value="uk">UK</option>
-                                <option value="india">India</option>
-                                <option value="other">Other</option>
-                            </select>
                         </div>
-                        <button class="btn btn-primary" id="saveCompanyBtn" style="display: none;">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Employer Section -->
+                <div id="employer" class="content-section" style="display: none;">
+                    <h2 class="content-title">Employer</h2>
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h3 class="content-title">Account Details</h3>
+                            <button class="edit-button" id="editEmployerBtn" data-bs-toggle="modal" data-bs-target="#editEmployerModal"><i class="fas fa-pencil-alt"></i> Edit</button>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Full Name</div>
+                            <div class="field-value" id="fullName">John Doe</div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Username</div>
+                            <div class="field-value" id="username">johndoe123</div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Email</div>
+                            <div class="field-value" id="email">john.doe@example.com<span class="verified-badge" id="emailVerified" style="display: inline-block;">Verified</span></div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Phone Number</div>
+                            <div class="field-value" id="phoneNumber">9876543210<span class="verified-badge" id="phoneVerified" style="display: inline-block;">Verified</span></div>
+                        </div>
                     </div>
                 </div>
 
@@ -641,7 +624,7 @@
                 <div id="identity" class="content-section" style="display: none;">
                     <h2 class="content-title">Identity Verification</h2>
                     <div class="content-card">
-                        <div class="form-group">
+                        <div class="form-group" id="govIdUploadBlock">
                             <label class="form-label">Government-Issued ID</label>
                             <div class="file-upload">
                                 <label for="govId">Upload ID</label>
@@ -651,7 +634,7 @@
                             <img id="govIdPreview" class="file-preview" alt="Government ID Preview">
                             <div class="error-message"></div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="companyIdUploadBlock">
                             <label class="form-label">Company ID Card (or use Company Email below)</label>
                             <div class="file-upload">
                                 <label for="companyId">Upload ID</label>
@@ -670,6 +653,120 @@
                         <p class="verification-status" id="verificationStatus">Status: Not Submitted</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Details Modal -->
+    <div class="modal-overlay" id="editCompanyModal" tabindex="-1" aria-labelledby="editCompanyModalLabel" aria-hidden="true">
+        <div class="edit-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editCompanyModalLabel">Edit Company Details</h3>
+            </div>
+            <div class="modal-body">
+                <form id="companyForm">
+                    <div class="form-group">
+                        <label for="companyLogo" class="form-label">Company Logo</label>
+                        <div class="file-upload">
+                            <label for="companyLogo">Change Logo</label>
+                            <input type="file" class="form-control" id="companyLogo" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyNameInput" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="companyNameInput" value="Acme Inc.">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyIndustryInput" class="form-label">Industry Type</label>
+                        <select class="form-control" id="companyIndustryInput">
+                            <option value="technology" selected>Technology</option>
+                            <option value="finance">Finance</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="retail">Retail</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyEmailInput" class="form-label">Company Email</label>
+                        <input type="email" class="form-control" id="companyEmailInput" value="contact@acme.com">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyPhoneInput" class="form-label">Company Phone</label>
+                        <input type="tel" class="form-control" id="companyPhoneInput" value="9876543210">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="designationInput" class="form-label">Designation</label>
+                        <input type="text" class="form-control" id="designationInput" value="HR Manager">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyAboutInput" class="form-label">About the Company</label>
+                        <textarea class="form-control" id="companyAboutInput">A leading tech solutions provider.</textarea>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companySizeInput" class="form-label">Company Size</label>
+                        <input type="text" class="form-control" id="companySizeInput" value="51-200">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="locationInput" class="form-label">Location</label>
+                        <select class="form-control" id="locationInput">
+                            <option value="usa" selected>USA</option>
+                            <option value="uk">UK</option>
+                            <option value="india">India</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="saveCompanyBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employer Details Modal -->
+    <div class="modal-overlay" id="editEmployerModal" tabindex="-1" aria-labelledby="editEmployerModalLabel" aria-hidden="true">
+        <div class="edit-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editEmployerModalLabel">Edit Employer Details</h3>
+            </div>
+            <div class="modal-body">
+                <form id="employerForm">
+                    <div class="form-group">
+                        <label for="fullNameInput" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullNameInput" value="John Doe">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="usernameInput" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="usernameInput" value="johndoe123">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailInput" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="emailInput" value="john.doe@example.com" readonly>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumberInput" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phoneNumberInput" value="9876543210" readonly>
+                        <div class="error-message"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="saveEmployerBtn">Save Changes</button>
             </div>
         </div>
     </div>
@@ -795,7 +892,7 @@
             }
 
             // Real-time validation
-            const inputs = document.querySelectorAll('.edit-field, #currentPassword, #newPassword, #confirmPassword, #confirmPasswordInput, #companyEmailVerification');
+            const inputs = document.querySelectorAll('.form-control, #currentPassword, #newPassword, #confirmPassword, #confirmPasswordInput, #companyEmailVerification');
             inputs.forEach(input => {
                 input.addEventListener('input', () => validateField(input));
             });
@@ -833,24 +930,24 @@
             });
 
             // Edit functionality with password confirmation
-            let isEditingAccount = false;
             let isEditingCompany = false;
-
-            document.getElementById('editAccountBtn').addEventListener('click', () => {
-                document.getElementById('passwordOverlay').style.display = 'flex';
-                isEditingAccount = true;
-            });
+            let isEditingEmployer = false;
 
             document.getElementById('editCompanyBtn').addEventListener('click', () => {
                 document.getElementById('passwordOverlay').style.display = 'flex';
                 isEditingCompany = true;
             });
 
+            document.getElementById('editEmployerBtn').addEventListener('click', () => {
+                document.getElementById('passwordOverlay').style.display = 'flex';
+                isEditingEmployer = true;
+            });
+
             document.getElementById('cancelBtn').addEventListener('click', () => {
                 document.getElementById('passwordOverlay').style.display = 'none';
                 document.getElementById('confirmPasswordInput').value = '';
-                isEditingAccount = false;
                 isEditingCompany = false;
+                isEditingEmployer = false;
             });
 
             document.getElementById('confirmBtn').addEventListener('click', () => {
@@ -869,27 +966,15 @@
                     document.getElementById('passwordOverlay').style.display = 'none';
                     document.getElementById('confirmPasswordInput').value = '';
 
-                    if (isEditingAccount) {
-                        const accountCard = document.querySelector('#my-info .content-card:first-of-type');
-                        const fieldValues = accountCard.querySelectorAll('.field-value');
-                        const editFields = accountCard.querySelectorAll('.edit-field');
-                        fieldValues.forEach(el => el.style.display = 'none');
-                        editFields.forEach(el => el.style.display = 'block');
-                        document.getElementById('saveAccountBtn').style.display = 'block';
-                        document.getElementById('editAccountBtn').style.display = 'none';
-                    } else if (isEditingCompany) {
-                        const companyCard = document.querySelector('#my-info .content-card:last-of-type');
-                        const fieldValues = companyCard.querySelectorAll('.field-value');
-                        const editFields = companyCard.querySelectorAll('.edit-field');
-                        fieldValues.forEach(el => el.style.display = 'none');
-                        editFields.forEach(el => el.style.display = 'block');
-                        document.getElementById('companyLogoDisplay').style.display = 'none';
-                        document.getElementById('editCompanyLogoField').style.display = 'block';
-                        document.getElementById('saveCompanyBtn').style.display = 'block';
-                        document.getElementById('editCompanyBtn').style.display = 'none';
+                    if (isEditingCompany) {
+                        document.getElementById('editCompanyModal').classList.add('show');
+                        document.getElementById('editCompanyModal').style.display = 'flex';
+                    } else if (isEditingEmployer) {
+                        document.getElementById('editEmployerModal').classList.add('show');
+                        document.getElementById('editEmployerModal').style.display = 'flex';
                     }
-                    isEditingAccount = false;
                     isEditingCompany = false;
+                    isEditingEmployer = false;
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -900,40 +985,42 @@
                 }
             });
 
-            // Save Account Details
-            document.getElementById('saveAccountBtn').addEventListener('click', () => {
-                const accountCard = document.querySelector('#my-info .content-card:first-of-type');
-                const editFields = accountCard.querySelectorAll('.edit-field');
+            // Save Company Details
+            document.getElementById('saveCompanyBtn').addEventListener('click', () => {
+                const editFields = document.querySelectorAll('#companyForm .form-control');
                 let allValid = true;
 
                 editFields.forEach(field => {
-                    if (field.id !== 'phoneNumberInput' && field.id !== 'emailInput') { // Skip validation for readonly fields
-                        if (!validateField(field)) allValid = false;
-                    }
+                    if (!validateField(field)) allValid = false;
                 });
 
                 if (allValid) {
-                    const fieldValues = accountCard.querySelectorAll('.field-value');
+                    const fieldValues = document.querySelectorAll('#my-info .field-value');
+                    const editFields = document.querySelectorAll('#companyForm .form-control');
                     fieldValues.forEach((el, index) => {
-                        if (el.id === 'phoneNumber') {
-                            el.innerHTML = `${editFields[index].value}<span class="verified-badge" id="phoneVerified">Verified</span>`;
-                        } else if (el.id === 'email') {
-                            el.innerHTML = `${editFields[index].value}<span class="verified-badge" id="emailVerified">Verified</span>`;
-                        } else {
-                            el.innerHTML = editFields[index].value;
+                        if (editFields[index]) {
+                            if (el.id === 'companyIndustry' || el.id === 'location') {
+                                el.textContent = editFields[index].options[editFields[index].selectedIndex].text;
+                            } else {
+                                el.textContent = editFields[index].value;
+                            }
                         }
-                        el.style.display = 'block';
                     });
-                    editFields.forEach(el => el.style.display = 'none');
-                    document.getElementById('saveAccountBtn').style.display = 'none';
-                    document.getElementById('editAccountBtn').style.display = 'block';
-                    document.getElementById('emailVerified').style.display = 'inline-block';
-                    document.getElementById('phoneVerified').style.display = 'inline-block';
+
+                    const fileInput = document.getElementById('companyLogo');
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const companyLogoImg = document.getElementById('companyLogoImg');
+                        companyLogoImg.src = URL.createObjectURL(file);
+                    }
+
+                    document.getElementById('editCompanyModal').classList.remove('show');
+                    document.getElementById('editCompanyModal').style.display = 'none';
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Saved!',
-                        text: 'Account details updated successfully.',
+                        text: 'Company details updated successfully.',
                         confirmButtonColor: '#5e17eb',
                         timer: 2000,
                         timerProgressBar: true
@@ -948,47 +1035,37 @@
                 }
             });
 
-            // Save Company Details
-            document.getElementById('saveCompanyBtn').addEventListener('click', () => {
-                const companyCard = document.querySelector('#my-info .content-card:last-of-type');
-                const editFields = companyCard.querySelectorAll('.edit-field');
+            // Save Employer Details
+            document.getElementById('saveEmployerBtn').addEventListener('click', () => {
+                const editFields = document.querySelectorAll('#employerForm .form-control');
                 let allValid = true;
 
                 editFields.forEach(field => {
-                    if (!validateField(field)) allValid = false;
+                    if (field.id !== 'phoneNumberInput' && field.id !== 'emailInput') { // Skip readonly fields
+                        if (!validateField(field)) allValid = false;
+                    }
                 });
 
                 if (allValid) {
-                    const fieldValues = companyCard.querySelectorAll('.field-value');
-                    fieldValues.forEach((el) => {
-                        const inputField = document.getElementById(`${el.id}Input`);
-                        if (inputField) {
-                            if (el.id === 'companyIndustry' || el.id === 'location') {
-                                el.textContent = inputField.options[inputField.selectedIndex].text;
+                    const fieldValues = document.querySelectorAll('#employer .field-value');
+                    const editFields = document.querySelectorAll('#employerForm .form-control');
+                    fieldValues.forEach((el, index) => {
+                        if (editFields[index]) {
+                            if (el.id === 'email' || el.id === 'phoneNumber') {
+                                el.innerHTML = `${editFields[index].value}<span class="verified-badge" id="${el.id}Verified" style="display: inline-block;">Verified</span>`;
                             } else {
-                                el.textContent = inputField.value;
+                                el.textContent = editFields[index].value;
                             }
                         }
-                        el.style.display = 'block';
                     });
 
-                    const fileInput = document.getElementById('companyLogo');
-                    if (fileInput.files.length > 0) {
-                        const file = fileInput.files[0];
-                        const companyLogoImg = document.getElementById('companyLogoImg');
-                        companyLogoImg.src = URL.createObjectURL(file);
-                    }
-
-                    editFields.forEach(el => el.style.display = 'none');
-                    document.getElementById('companyLogoDisplay').style.display = 'block';
-                    document.getElementById('editCompanyLogoField').style.display = 'none';
-                    document.getElementById('saveCompanyBtn').style.display = 'none';
-                    document.getElementById('editCompanyBtn').style.display = 'block';
+                    document.getElementById('editEmployerModal').classList.remove('show');
+                    document.getElementById('editEmployerModal').style.display = 'none';
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Saved!',
-                        text: 'Company details updated successfully.',
+                        text: 'Employer details updated successfully.',
                         confirmButtonColor: '#5e17eb',
                         timer: 2000,
                         timerProgressBar: true
@@ -1075,6 +1152,17 @@
             let govIdUploaded = false;
             let companyIdUploaded = false;
 
+            function checkVerificationStatus() {
+                if (document.getElementById('govIdVerified').style.display === 'inline-block') {
+                    document.getElementById('govIdUploadBlock').classList.add('disabled');
+                    document.getElementById('govId').disabled = true;
+                }
+                if (document.getElementById('companyIdVerified').style.display === 'inline-block') {
+                    document.getElementById('companyIdUploadBlock').classList.add('disabled');
+                    document.getElementById('companyId').disabled = true;
+                }
+            }
+
             document.getElementById('govId').addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -1124,9 +1212,13 @@
                     setTimeout(() => {
                         if (govIdUploaded) {
                             document.getElementById('govIdVerified').style.display = 'inline-block';
+                            document.getElementById('govIdUploadBlock').classList.add('disabled');
+                            document.getElementById('govId').disabled = true;
                         }
                         if (companyIdUploaded) {
                             document.getElementById('companyIdVerified').style.display = 'inline-block';
+                            document.getElementById('companyIdUploadBlock').classList.add('disabled');
+                            document.getElementById('companyId').disabled = true;
                         }
                         document.getElementById('verificationStatus').textContent = 'Status: Verified';
                         document.getElementById('verificationStatus').style.color = '#28a745';
@@ -1140,6 +1232,17 @@
                         });
                     }, 2000);
                 }
+            });
+
+            // Check verification status on page load
+            checkVerificationStatus();
+
+            // Modal close buttons
+            document.querySelectorAll('.modal-overlay .btn-secondary').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.closest('.modal-overlay').classList.remove('show');
+                    btn.closest('.modal-overlay').style.display = 'none';
+                });
             });
         });
     </script>

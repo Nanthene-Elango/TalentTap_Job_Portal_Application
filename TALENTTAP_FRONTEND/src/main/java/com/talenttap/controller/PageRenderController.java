@@ -57,10 +57,7 @@ public class PageRenderController {
 
 	private JobsService jobService;
 
-	
-
 	public PageRenderController(JobseekerService jobseekerService, EmployerAuthService employerService,JobsService jobService){
-
 		this.jobseekerService = jobseekerService;
 		this.employerService = employerService;
 		this.jobService = jobService;
