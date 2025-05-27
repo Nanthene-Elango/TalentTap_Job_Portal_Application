@@ -347,10 +347,10 @@
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody  th:each="job : ${jobs}">
                                         <tr>
                                             <td><input type="checkbox" class="job-select"></td>
-                                            <td>Software Engineer</td>
+                                            <td th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'">Software Engineer</td>
                                             <td>TechCorp</td>
                                             <td>full-time</td>
                                             <td>Hybrid</td>

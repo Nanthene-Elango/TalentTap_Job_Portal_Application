@@ -621,4 +621,27 @@ public class JobService {
 		return candidates;
 	}
 
+	// applied candidates
+	public List<CandidatesDTO> getRecentAppliedCandidates(String jwt) {
+		if (jwt == null || jwt.isBlank()) {
+		    throw new IllegalArgumentException("JWT token is empty or null");
+		}
+
+		// Extract username from JWT
+		String username = jwtutil.extractIdentifier(jwt);
+		Users user = userRepo.findByUsername(username)
+		        .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+		// Fetch employer
+		Employer employer = employerRepo.findByUser(user)
+		        .orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
+
+		// Fetch top 5 recent applications
+		List<JobApplication> application = jobApplicationRepo.findTop5ByJob_EmployerAndStatusOrderByDateOfApplicationDesc(employer,ApplicationStatus.pending);
+		List<CandidatesDTO> candidates = application.stream().map(CandidatesDTO::new).toList();
+
+		return candidates;
+
+	}
+
 }

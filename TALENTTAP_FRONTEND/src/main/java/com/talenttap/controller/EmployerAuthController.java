@@ -4,8 +4,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,19 +18,26 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
+import com.talenttap.DTO.EditCompanyProfileDTO;
+import com.talenttap.DTO.PasswordRequest;
 import com.talenttap.model.EmployerRegister;
+import com.talenttap.model.IndustryType;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobseekerService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -36,6 +46,9 @@ public class EmployerAuthController {
     private EmployerAuthService employerService;
     
     private JobseekerService jobseekerService;
+    @Autowired
+	private RestTemplate restTemplate;
+	
 
     public EmployerAuthController(EmployerAuthService employerService, JobseekerService jobseekerService) {
         this.employerService = employerService;
@@ -181,6 +194,82 @@ public class EmployerAuthController {
 	}
 
 
+    @PostMapping("/uploadIdentity")
+    public String uploadIdentity(
+            @RequestParam("govId") MultipartFile govIdFile,
+            @RequestParam("companyId") MultipartFile companyIdFile,
+            @RequestParam("companyEmail") String companyEmail,
+            @CookieValue(value = "jwt", required = false) String jwt,
+            Model model) {
+
+        boolean uploadSuccess = employerService.handleIdentityUpload(govIdFile, companyIdFile, companyEmail, jwt);
+
+        if (uploadSuccess) {
+            model.addAttribute("message", "Files uploaded successfully!");
+        } else {
+            model.addAttribute("message", "Upload failed. Please try again.");
+        }
+
+        return "employer/employerProfile"; // or redirect to some page
+    }
+	
+	 
+	 @GetMapping("/employer/employer/profile/edit")
+	 public String getCompanyProfile(@RequestParam(value = "edit", required = false,defaultValue = "false") Boolean edit, Model model, @CookieValue(value = "jwt", required = false) String jwt) {
+			try {
+				if (jwt != null && !jwt.trim().isEmpty()) {
+					JwtToken token = new JwtToken(jwt.trim());
+					EmployerProfileDTO profile = employerService.profile(token);
+					System.out.println(
+							"In employerProfile - Profile fetched: " + (profile != null ? profile.getFullname() : "null"));
+					System.out.println(profile.getCompanyEmail());
+					System.out.println(profile.getPhoneNumber());
+					System.out.println(profile.getEmail());
+					System.out.println(profile.getCompanyLogo());
+
+					if (profile != null) {
+						model.addAttribute("Fullname", profile.getFullname());
+						model.addAttribute("username", profile.getUsername());
+						model.addAttribute("email", profile.getEmail());
+						model.addAttribute("phoneNumber", profile.getPhoneNumber());
+						model.addAttribute("companyName", profile.getCompanyName());
+						model.addAttribute("companyIndustry-1", profile.getIndustryType());
+						model.addAttribute("companyEmail", profile.getCompanyEmail());
+						model.addAttribute("companyPhone", profile.getCompanyPhone());
+						model.addAttribute("designation", profile.getDesignation());
+						model.addAttribute("companyAbout", profile.getAbout());
+						model.addAttribute("companySize", profile.getCompanySize());
+						model.addAttribute("location", profile.getLocation());
+						model.addAttribute("companyLogo", profile.getCompanyLogo());
+						model.addAttribute("loggedIn", true);
+						model.addAttribute("editMode", edit != null && edit.equals("true"));
+						List<Location> locations = jobseekerService.getAllLocations();
+						System.out.println(locations.get(0).getLocation());
+						model.addAttribute("locations", locations);
+
+						List<IndustryType> industryType = employerService.getAllIndustryType();
+						System.out.println(industryType.get(0).getIndustryType());
+						model.addAttribute("companyIndustry", industryType);
+						
+						EditCompanyProfileDTO  dto = new EditCompanyProfileDTO();
+						dto.setCompanyName(profile.getCompanyName());
+						dto.setCompanyEmail(profile.getCompanyEmail());
+						model.addAttribute("edit", dto);
+					}
+				} else {
+					System.out.println("No JWT token found in cookie");
+					model.addAttribute("loggedIn", false);
+				}
+			} catch (Exception e) {
+				System.out.println("Error in employerProfile: " + e.getMessage());
+				model.addAttribute("error", "Unable to load profile data. Please try again.");
+				model.addAttribute("loggedIn", false);
+			}
+			return "employer/employerprofile";
+	 }
+
+
+  
 
 	
 

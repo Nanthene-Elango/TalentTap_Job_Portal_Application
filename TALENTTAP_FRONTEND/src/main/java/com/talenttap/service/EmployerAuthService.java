@@ -17,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
@@ -193,6 +194,26 @@ public class EmployerAuthService {
 	    } catch (Exception e) {
 	        throw new RuntimeException("Error occurred while calling approval API: " + e.getMessage());
 	    }
+	}
+
+	public boolean handleIdentityUpload(MultipartFile govIdFile, MultipartFile companyIdFile, String companyEmail, String token) {
+		 String url = "http://localhost:8083/api/verify/employer/company";
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.setBearerAuth(token); // automatically adds Bearer prefix
+
+	    HttpEntity<Void> request = new HttpEntity<>(null, headers);
+
+	    try {
+	        ResponseEntity<Boolean> response = restTemplate.postForEntity(url, request, Boolean.class);
+	        if (!response.getStatusCode().is2xxSuccessful()) {
+	            throw new RuntimeException("rejection failed with status: " + response.getStatusCode());
+	        }
+
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error occurred while calling approval API: " + e.getMessage());
+	    }
+	    return true;
 	}
 
 }

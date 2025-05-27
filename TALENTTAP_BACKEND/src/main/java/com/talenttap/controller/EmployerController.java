@@ -3,6 +3,10 @@ package com.talenttap.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.CompanyUpdateDTO;
+import com.talenttap.DTO.DashboardMetrics;
 import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.IndustryTypeDTO;
 import com.talenttap.DTO.LoginDTO;
@@ -81,13 +86,7 @@ public class EmployerController {
 		return employerService.updateCompanyProfile(dto, token);
 	}
 	
-	// verify employer
-	@PostMapping("employer/verify")
-	public ResponseEntity<String> verifyEmployer(@RequestBody LoginDTO verifyEmployer,
-			@RequestHeader("Authorization") String authHeader){
-		String token = authHeader.replace("Bearer ", "");
-		return ResponseEntity.ok(employerService.verifyEmployer(verifyEmployer, token));
-	}
+	
 	
 	// Employer Login
 	@PostMapping("auth/login/employer")
@@ -100,6 +99,13 @@ public class EmployerController {
 	public ResponseEntity<List<CandidatesDTO>> getAllAppliedCandidates(@RequestHeader("Authorization") String authHeader){
 		String token = authHeader.replace("Bearer ", "");
 		return ResponseEntity.ok(jobService.getAllAppliedCandidates(token));
+	}
+	
+	
+	@GetMapping("/employer/candidates/recent")
+	public ResponseEntity<List<CandidatesDTO>> getRecentAppliedCandidates(@RequestHeader("Authorization") String authHeader){
+		String token = authHeader.replace("Bearer ", "");
+		return ResponseEntity.ok(jobService.getRecentAppliedCandidates(token));
 	}
 	
 	@PostMapping("api/candidate/{id}/approve")
@@ -123,4 +129,35 @@ public class EmployerController {
 	    }
 	    return ResponseEntity.ok().build();
 	}
+	
+	@GetMapping("api/dashboard/metrics")
+	public ResponseEntity<DashboardMetrics> getAllDashBoard(@RequestHeader("Authorization") String authHeader){
+		String token = authHeader.replace("Bearer ", "");
+		return ResponseEntity.ok(employerService.getAllDashboardMetrics(token));
+	}
+	
+	@PostMapping("/verify/employer/company")
+	public ResponseEntity<Boolean> verifyEmployerAndCompany(@RequestHeader("Authorization") String authHeader){
+		String token = authHeader.replace("Bearer ", "");
+		return ResponseEntity.ok(employerService.verifyEmployerAndCompany(token));
+	}
+	
+	@GetMapping("/isVerified")
+	public ResponseEntity<Boolean> isVerified(@RequestHeader("Authorization") String authHeader){
+		String token = authHeader.replace("Bearer ", "");
+	    return  ResponseEntity.ok(employerService.isCompanyVerified(token));
+	}
+	
+	
+	// verify employer
+		@PostMapping("employer/verify")
+		public ResponseEntity<String> verifyEmployer(@RequestBody Map<String,String> password,
+				@RequestHeader("Authorization") String authHeader){
+			String token = authHeader.replace("Bearer ", "");
+			return ResponseEntity.ok(employerService.verifyEmployer(password.get("password"), token));
+		}
+		
+	
+	
+	
 }

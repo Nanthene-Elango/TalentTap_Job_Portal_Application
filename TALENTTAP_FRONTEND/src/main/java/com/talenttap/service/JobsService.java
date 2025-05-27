@@ -301,6 +301,7 @@ public class JobsService {
                     entity,
                     new ParameterizedTypeReference<List<AdminJobDTO>>() {}
             );
+            System.out.println(response.getBody().get(0).getJobRole());
             return response.getBody() != null ? response.getBody() : Collections.emptyList();
         } catch (Exception e) {
             e.printStackTrace();
