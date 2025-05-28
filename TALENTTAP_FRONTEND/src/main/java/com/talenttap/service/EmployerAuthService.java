@@ -93,12 +93,15 @@ public class EmployerAuthService {
 	    
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    HttpEntity<JwtToken> request = new HttpEntity<>(jwtToken, headers);
+
+	    headers.setBearerAuth(jwtToken.getJwt()); // automatically adds Bearer prefix
+
+	    HttpEntity<EmailDTO> request = new HttpEntity<>(headers);
 	    
 	    try {
 	        ResponseEntity<EmployerProfileDTO> response = restTemplate.exchange(
 	            url,
-	            HttpMethod.POST,
+	            HttpMethod.GET,
 	            request,
 	            EmployerProfileDTO.class
 	        );

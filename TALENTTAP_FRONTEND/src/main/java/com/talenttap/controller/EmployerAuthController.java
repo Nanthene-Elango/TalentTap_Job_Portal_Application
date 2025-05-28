@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
 import com.talenttap.DTO.EditCompanyProfileDTO;
+import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.PasswordRequest;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.IndustryType;
@@ -189,7 +191,6 @@ public class EmployerAuthController {
 	    return "redirect:/employer/candidates";
 	}
 
-
     @PostMapping("/uploadIdentity")
     public String uploadIdentity(
             @RequestParam("govId") MultipartFile govIdFile,
@@ -208,5 +209,9 @@ public class EmployerAuthController {
 
         return "employer/employerProfile"; // or redirect to some page
     }
+    
+    
+    
+  
 
 }
