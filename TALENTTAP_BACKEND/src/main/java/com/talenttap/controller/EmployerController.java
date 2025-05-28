@@ -63,12 +63,7 @@ public class EmployerController {
 		return ResponseEntity.ok().body(industryTypeService.getAllIndustryType());
 		}
 	
-	@PostMapping("/employer/profile")
-	public ResponseEntity<?> getProfile(@RequestBody Map<String,String> jwt){
-		EmployerProfileDTO d = employerAuthService.profile(jwt.get("jwt"));
-		System.out.println("username from service"+ d.getUsername());
-		return ResponseEntity.ok().body(d);
-	}
+	
 	
 	// update employer profile photo
 	@PutMapping("employer/update-profile-photo")
@@ -155,6 +150,14 @@ public class EmployerController {
 				@RequestHeader("Authorization") String authHeader){
 			String token = authHeader.replace("Bearer ", "");
 			return ResponseEntity.ok(employerService.verifyEmployer(password.get("password"), token));
+		}
+		
+		@GetMapping("/employer/profile")
+		public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String authHeader){
+			String token = authHeader.replace("Bearer ", "");
+			EmployerProfileDTO d = employerAuthService.profile(token);
+			System.out.println("username from service"+ d.getUsername());
+			return ResponseEntity.ok().body(d);
 		}
 		
 	

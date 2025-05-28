@@ -115,9 +115,6 @@ public class EmployerAuthService {
     }
     
     public EmployerProfileDTO profile(String jwt) {
-//        if (jwt == null || jwt.isBlank() || jwt.isEmpty()) {
-//            return ResponseEntity.badRequest().body("JWT Token is Empty!");
-//        }
 
         String username = jwtutil.extractIdentifier(jwt);
         Users user = userRepository.findByUsername(username)
@@ -139,15 +136,8 @@ public class EmployerAuthService {
         profileData.setUsername(user.getUsername());
         profileData.setPhoneNumber(user.getMobileNumber());
         profileData.setEmail(user.getEmail());
-        profileData.setCompanyLogo(companyLogoBase64); // Updated field
-        profileData.setCompanyName(company.getCompanyName());
-        profileData.setIndustryType(company.getIndustryType().getIndustryType());
-        profileData.setCompanyEmail(company.getEmail());
-        profileData.setCompanyPhone(company.getPhoneNumber());
         profileData.setDesignation(employer.getDesignation());
-        profileData.setAbout(company.getAbout());
-        profileData.setCompanySize(company.getCompanySize());
-        profileData.setLocation(company.getLocation().getLocation());
+
         System.out.println("Data isbeign sent from service");
         return profileData;
     }

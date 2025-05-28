@@ -26,290 +26,48 @@
 <body>
 	<div th:replace="~{employer/navbar :: navbar}"></div>
 
-	<!-- Main Content -->
-	<div class="container">
-		<div class="main-content">
-			<!-- Sidebar -->
-			<div class="sidebar">
-				<h2 class="sidebar-heading">Profile</h2>
-				<ul class="sidebar-menu">
-					<li><a href="#" class="sidebar-link active"
-						data-section="my-info"><i class="fas fa-user"></i> My Info</a></li>
-					<li><a href="#password" class="sidebar-link"
-						data-section="password"><i class="fas fa-lock"></i> Password &
-							Security</a></li>
-					<li><a href="#" class="sidebar-link" data-section="identity"><i
-							class="fas fa-id-card"></i> Identity Verification</a></li>
-				</ul>
-			</div>
+	 <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <div class="content">
+                <div id="my-info" class="content-section">
+                    <h2 class="content-title mb-3">Employer Profile</h2>
+                    <div class="content-card">
+                        <div class="content-header">
+                            <h3 class="content-title">Account Details</h3>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Full Name</div>
+                            <div class="field-value" id="fullName">John Doe</div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Username</div>
+                            <div class="field-value" id="username">johndoe123</div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Email</div>
+                            <div class="field-value" id="email">
+                                john.doe@example.com
+                                <span class="verified-badge" id="emailVerified">Verified</span>
+                            </div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Phone Number</div>
+                            <div class="field-value" id="phoneNumber">
+                                9876543210
+                                <span class="verified-badge" id="phoneVerified">Verified</span>
+                            </div>
+                        </div>
+                        <div class="info-field">
+                            <div class="field-label">Designation</div>
+                            <div class="field-value" id="designation">HR Manager</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-			<!-- Content Area -->
-
-			<div class="content">
-				<!-- My Info Section -->
-
-				<div id="my-info" class="content-section" style="display: block;">
-					<h2 class="content-title">My Info</h2>
-					<div class="content-card">
-						<div class="content-header">
-							<h3 class="content-title">Account Details</h3>
-						</div>
-						<div class="info-field">
-							<div class="field-label">Full Name</div>
-							<div class="field-value" id="fullName" th:text="${Fullname}">John
-								Doe</div>
-							<input type="text" class="form-control edit-field"
-								id="fullNameInput" style="display: none;" th:value="${fullname}"
-								readonly>
-
-						</div>
-						<div class="info-field">
-							<div class="field-label">Username</div>
-							<div class="field-value" id="username" th:text="${username}">johndoe123</div>
-							<input type="text" class="form-control edit-field"
-								id="usernameInput" style="display: none;" th:value="${username}"
-								readonly>
-
-						</div>
-						<div class="info-field">
-							<div class="field-label">Phone Number</div>
-							<div class="field-value">
-								<span id="phoneNumber" th:text="${phoneNumber}">9876543210</span>
-								<span class="verified-badge" id="phoneVerified"
-									style="display: inline-block;">Verified</span>
-							</div>
-							<input type="tel" class="form-control edit-field"
-								id="phoneNumberInput" style="display: none;"
-								th:value="${phoneNumber}" readonly>
-
-						</div>
-						<div class="info-field">
-							<div class="field-label">Email</div>
-							<div class="field-value">
-								<span id="email" th:text="${email}">john.doe@example.com</span>
-								<span class="verified-badge" id="emailVerified"
-									style="display: inline-block;">Verified</span>
-							</div>
-							<input type="email" class="form-control edit-field"
-								id="emailInput" style="display: none;" th:value="${email}"
-								readonly>
-
-						</div>
-
-					</div>
-					<div class="content-card">
-						<div class="content-header">
-							<h3 class="content-title">Company Details</h3>
-							<button class="edit-button" id="editCompanyBtn"
-								onclick="window.location.href='/employer/employer/profile/edit?edit=true'">
-								<i class="fas fa-pencil-alt"></i> Edit
-							</button>
-
-						</div>
-						<div class="info-field text-center" id="companyLogoDisplay">
-							<img th:src="'data:image/png;base64,' + ${companyLogo}"
-								alt="Company Logo" class="company-logo" id="companyLogoImg">
-						</div>
-
-						<div class="info-field" id="editCompanyLogoField"
-							style="display: none;">
-
-							<div class="file-upload">
-								<label for="companyLogo">Change Logo</label> <input type="file"
-									class="form-control edit-field" id="companyLogo"
-									name="companyLogo" accept="image/*" required>
-							</div>
-							<div class="mt-3">
-								<img id="logoPreview" src="#" alt="Logo Preview"
-									style="max-width: 150px; display: none; border: 1px solid #ddd; padding: 5px;">
-							</div>
-							<button type="submit" class="btn btn-primary mt-3">Submit
-								Logo</button>
-
-						</div>
-
-						<div>
-							<form th:action="@{/post}" method="post" th:object="${edit}">
-								<div class="info-field">
-									<div class="field-label">Company Name</div>
-									<div class="field-value" id="companyName"
-										th:text="${companyName}">Acme Inc.</div>
-									<input type="text" class="form-control edit-field"
-										id="companyNameInput" style="display: none;"
-										
-										th:field=*{companyName}>
-								</div>
-								<div class="info-field">
-									<div class="field-label">Industry Type</div>
-									<div class="field-value" id="companyIndustry"
-										th:text="${companyIndustry}">Technology</div>
-									<select class="form-control edit-field"
-										id="companyIndustryInput" style="display: none;">
-										<option value="technology" selected>Technology</option>
-										<option value="finance">Finance</option>
-										<option value="healthcare">Healthcare</option>
-										<option value="education">Education</option>
-										<option value="manufacturing">Manufacturing</option>
-										<option value="retail">Retail</option>
-										<option value="other">Other</option>
-									</select>
-								</div>
-								<div class="info-field">
-									<div class="field-label">Company Email</div>
-									<div class="field-value" id="companyEmail"
-										th:text="${companyEmail}">contact@acme.com</div>
-									<input type="email" class="form-control edit-field"
-										id="companyEmailInput" style="display: none;"
-										th:field="*{companyEmail}">
-								</div>
-								<div class="info-field">
-									<div class="field-label">Company Phone</div>
-									<div class="field-value" id="companyPhone"
-										th:text="${companyPhone}">9876543210</div>
-									<input type="tel" class="form-control edit-field"
-										id="companyPhoneInput" style="display: none;"
-										th:value="${companyPhone}">
-								</div>
-								<div class="info-field">
-									<div class="field-label">Designation</div>
-									<div class="field-value" id="designation"
-										th:text="${designation}">HR Manager</div>
-									<input type="text" class="form-control edit-field"
-										id="designationInput" style="display: none;"
-										th:value="${designation}">
-								</div>
-								<div class="info-field">
-									<div class="field-label">About the Company</div>
-									<div class="field-value" id="companyAbout"
-										th:text="${companyAbout}">A leading tech solutions
-										provider.</div>
-									<textarea class="form-control edit-field"
-										id="companyAboutInput" style="display: none;"
-										th:text="${companyAbout}">A leading tech solutions provider.</textarea>
-								</div>
-								<div class="info-field">
-									<div class="field-label">Company Size</div>
-									<div class="field-value" id="companySize"
-										th:text="${companySize}">51-200</div>
-									<input type="text" class="form-control edit-field"
-										id="companySizeInput" style="display: none;"
-										th:value="${companySize}">
-								</div>
-								<div class="info-field">
-									<div class="field-label">Location</div>
-									<div class="field-value" id="locationDisplay"
-										th:text="${location}">USA</div>
-
-									<select class="form-control edit-field" id="locationInput"
-										name="locationId" style="display: none;">
-										<option value="" disabled th:selected="${locationId == null}">Select
-											location</option>
-										<option th:each="loc : ${locations}"
-											th:value="${loc.locationId}" th:text="${loc.location}"
-											th:selected="${locationId == loc.locationId}"></option>
-									</select>
-								</div>
-
-
-
-
-								<button class="btn btn-primary" id="saveCompanyBtn"
-									style="display: none;">Save Changes</button>
-								</form>
-						</div>
-						
-					</div>
-				</div>
-
-
-				<!-- Password & Security Section -->
-				<div id="password" class="content-section" style="display: none;">
-					<h2 class="content-title">Password & Security</h2>
-					<div class="content-card">
-						<div id="passwordStatus" class="info-field">
-							<div class="field-label">Password</div>
-							<div class="field-value">Current Password Set</div>
-						</div>
-						<div id="changePasswordFields" style="display: none;">
-							<div class="form-group">
-								<label for="newPassword" class="form-label">New Password</label>
-								<input type="password" id="newPassword" class="form-control"
-									placeholder="Enter new password">
-								<div class="error-message"></div>
-								<div class="password-requirements">
-									<ul>
-										<li id="length">At least 8 characters</li>
-										<li id="uppercase">At least one uppercase letter</li>
-										<li id="lowercase">At least one lowercase letter</li>
-										<li id="number">At least one number</li>
-										<li id="special">At least one special character</li>
-									</ul>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="confirmPassword" class="form-label">Confirm
-									New Password</label> <input type="password" id="confirmPassword"
-									class="form-control" placeholder="Confirm new password">
-								<div class="error-message"></div>
-							</div>
-							<button class="btn btn-primary" id="savePasswordBtn">Save
-								Password</button>
-						</div>
-						<button class="btn btn-primary" id="changePasswordBtn">Change
-							Password</button>
-					</div>
-				</div>
-
-				<!-- Identity Verification Section -->
-				<form th:action="@{/uploadIdentity}" method="post"
-					enctype="multipart/form-data">
-					<div id="identity" class="content-section" style="display: none;">
-						<h2 class="content-title">Identity Verification</h2>
-						<div class="content-card">
-							<div class="form-group">
-								<label class="form-label">Government-Issued ID</label>
-								<div class="file-upload">
-									<label for="govId">Upload ID</label> <input type="file"
-										id="govId" name="govId" accept="image/*,application/pdf">
-									<span id="govIdVerified" class="verified-badge">Verified</span>
-								</div>
-								<img id="govIdPreview" class="file-preview"
-									alt="Government ID Preview">
-								<div class="error-message"></div>
-							</div>
-							<div class="form-group">
-								<label class="form-label">Company ID Card (or use
-									Company Email below)</label>
-								<div class="file-upload">
-									<label for="companyId">Upload ID</label> <input type="file"
-										id="companyId" name="companyId"
-										accept="image/*,application/pdf"> <span
-										id="companyIdVerified" class="verified-badge">Verified</span>
-								</div>
-								<img id="companyIdPreview" class="file-preview"
-									alt="Company ID Preview">
-								<div class="error-message"></div>
-							</div>
-							<div class="form-group">
-								<label for="companyEmailVerification" class="form-label">Company
-									Email (or use Company ID above)</label> <input type="email"
-									id="companyEmailVerification" name="companyEmail"
-									class="form-control" placeholder="Enter company email">
-								<div class="error-message"></div>
-							</div>
-							<button type="submit" class="btn btn-primary"
-								id="submitVerificationBtn">Submit for Verification</button>
-
-							<p class="verification-status" id="verificationStatus">Status:
-								Not Submitted</p>
-						</div>
-					</div>
-				</form>
-
-			</div>
-		</div>
-
-	</div>
 
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
