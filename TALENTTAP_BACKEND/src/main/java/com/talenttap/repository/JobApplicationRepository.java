@@ -18,7 +18,8 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication,I
 
 	 boolean existsByJobSeekerAndJob_JobId(JobSeeker jobSeeker, int jobId);
 	 
-	 
+	 List<JobApplication> findByJob_EmployerAndStatus(Employer employer, ApplicationStatus status);
+
 	 List<JobApplication> findByJob_Employer(Employer employer);
 
 	List<JobApplication> findTop5ByJob_EmployerAndStatusOrderByDateOfApplicationDesc(Employer employer, ApplicationStatus status);

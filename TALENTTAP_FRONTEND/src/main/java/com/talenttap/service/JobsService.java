@@ -27,6 +27,7 @@ import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.exception.JobFetchException;
+import com.talenttap.model.EmployerDashBoardMetrics;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.Jobs;
@@ -166,6 +167,48 @@ public class JobsService {
 	
 	public List<JobDisplayDTO> getAllJobs(JwtToken jwtToken) {
 	    String url = "http://localhost:8083/jobs/getAllJobs";
+
+	    logger.info("Calling job service to fetch jobs");
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.set("Authorization", "Bearer " + jwtToken.getJwt());
+
+	    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+	    try {
+	        ResponseEntity<JobDisplayDTO[]> response = restTemplate.exchange(
+	                url,
+	                HttpMethod.GET,
+	                requestEntity,
+	                JobDisplayDTO[].class
+	        );
+
+	        if (response.getStatusCode().is2xxSuccessful()) {
+	            JobDisplayDTO[] jobs = response.getBody();
+	            logger.info("Fetched {} jobs successfully", (jobs == null ? 0 : jobs.length));
+	            if(jobs == null) {
+	            	
+	            }
+	            return Arrays.asList(jobs != null ? jobs : new JobDisplayDTO[0]);
+	        } else {
+	            logger.error("Failed to fetch jobs. Status: {}", response.getStatusCode());
+	            throw new JobFetchException("Failed to fetch jobs with status: " + response.getStatusCode());
+	        }
+
+	    } catch (HttpClientErrorException | HttpServerErrorException ex) {
+	        logger.error("HTTP error when fetching jobs: status={}, responseBody={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+	        throw new JobFetchException("HTTP error fetching jobs: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
+	    } catch (ResourceAccessException ex) {
+	        logger.error("Resource access exception when fetching jobs: {}", ex.getMessage());
+	        throw new JobFetchException("Resource access error fetching jobs: " + ex.getMessage());
+	    } catch (Exception ex) {
+	        logger.error("Unexpected error when fetching jobs", ex);
+	        throw new JobFetchException("Unexpected error fetching jobs: " + ex.getMessage());
+	    }
+	}
+	public List<JobDisplayDTO> getAllExpiredJobs(JwtToken jwtToken) {
+	    String url = "http://localhost:8083/jobs/getAllExpiredJobs";
 
 	    logger.info("Calling job service to fetch jobs");
 
@@ -358,6 +401,51 @@ public class JobsService {
 	        throw new Exception("Unexpected error applied candidates: " + ex.getMessage());
 	    }
 	}
+	
+	public List<CandidatesDTO> getAllRecentAppliedCandidates(JwtToken jwtToken) throws Exception {
+	    String url = "http://localhost:8083/api/employer/candidates/recent";
+
+	    logger.info("Calling job service to fetch applied candidates");
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.set("Authorization", "Bearer " + jwtToken.getJwt());
+
+	    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+	    try {
+	        ResponseEntity<CandidatesDTO[]> response = restTemplate.exchange(
+	                url,
+	                HttpMethod.GET,
+	                requestEntity,
+	                CandidatesDTO[].class
+	        );
+
+	        if (response.getStatusCode().is2xxSuccessful()) {
+	        	CandidatesDTO[] jobs = response.getBody();
+	            logger.info("Fetched {} applied candidates successfully", (jobs == null ? 0 : jobs.length));
+	            if(jobs == null) {
+	            	
+	            }
+	            return Arrays.asList(jobs != null ? jobs : new CandidatesDTO[0]);
+	        } else {
+	            logger.error("Failed to fetch applied candidates. Status: {}", response.getStatusCode());
+	            throw new Exception("Failed to fetch applied candidates with status: " + response.getStatusCode());
+	        }
+
+	    } catch (HttpClientErrorException | HttpServerErrorException ex) {
+	        logger.error("HTTP error when fetching jobs: status={}, responseBody={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+	        throw new Exception("HTTP error fetching applied candidates: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
+	    } catch (ResourceAccessException ex) {
+	        logger.error("Resource access exception when fetching jobs: {}", ex.getMessage());
+	        throw new Exception("Resource access error applied candidates: " + ex.getMessage());
+	    } catch (Exception ex) {
+	        logger.error("Unexpected error when fetching jobs", ex);
+	        throw new Exception("Unexpected error applied candidates: " + ex.getMessage());
+	    }
+	}
+	
+	
 
 	// Fetch all jobs from the backend
     public List<AdminJobDTO> getAllAdminJobs(String jwt) {
@@ -460,6 +548,46 @@ public class JobsService {
             return "Failed to reject jobs: " + e.getMessage();
         }
     }
+    
+    public EmployerDashBoardMetrics getDashboardMetrics(JwtToken jwtToken) throws Exception {
+	    String url = "http://localhost:8083/api/api/dashboard/metrics";
+
+	    logger.info("Calling job service to fetch dashboard metrics");
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.set("Authorization", "Bearer " + jwtToken.getJwt());
+
+	    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+	    try {
+	        ResponseEntity<EmployerDashBoardMetrics> response = restTemplate.exchange(
+	                url,
+	                HttpMethod.GET,
+	                requestEntity,
+	                EmployerDashBoardMetrics.class
+	        );
+
+	        if (response.getStatusCode().is2xxSuccessful()) {
+	        	EmployerDashBoardMetrics metrics = response.getBody();
+	            logger.info("Fetched {} applied candidates successfully", (metrics == null ? 0 : 0));
+	            return metrics;
+	        } else {
+	            logger.error("Failed to fetch applied candidates. Status: {}", response.getStatusCode());
+	            throw new Exception("Failed to fetch applied candidates with status: " + response.getStatusCode());
+	        }
+
+	    } catch (HttpClientErrorException | HttpServerErrorException ex) {
+	        logger.error("HTTP error when fetching jobs: status={}, responseBody={}", ex.getStatusCode(), ex.getResponseBodyAsString());
+	        throw new Exception("HTTP error fetching applied candidates: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
+	    } catch (ResourceAccessException ex) {
+	        logger.error("Resource access exception when fetching jobs: {}", ex.getMessage());
+	        throw new Exception("Resource access error applied candidates: " + ex.getMessage());
+	    } catch (Exception ex) {
+	        logger.error("Unexpected error when fetching jobs", ex);
+	        throw new Exception("Unexpected error applied candidates: " + ex.getMessage());
+	    }
+	}
 
 	
 }

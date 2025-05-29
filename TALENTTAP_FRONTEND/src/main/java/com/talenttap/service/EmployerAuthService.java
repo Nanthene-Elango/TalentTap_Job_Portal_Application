@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenttap.DTO.ChangePasswordDTO;
 import com.talenttap.DTO.EmailDTO;
 
 import com.talenttap.DTO.EmployerProfileDTO;
@@ -200,7 +201,7 @@ public class EmployerAuthService {
 	}
 
 	public boolean handleIdentityUpload(MultipartFile govIdFile, MultipartFile companyIdFile, String companyEmail, String token) {
-		 String url = "http://localhost:8083/api/verify/employer/company";
+		String url = "http://localhost:8083/api/verify/employer/company";
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
 	    headers.setBearerAuth(token); // automatically adds Bearer prefix
@@ -217,6 +218,26 @@ public class EmployerAuthService {
 	        throw new RuntimeException("Error occurred while calling approval API: " + e.getMessage());
 	    }
 	    return true;
+	}
+
+	public String changePassword(ChangePasswordDTO changePassword, String jwt) {
+		String url = "http://localhost:8083/admin/profile/change-password";
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.setBearerAuth(jwt); // automatically adds Bearer prefix
+
+	    HttpEntity<ChangePasswordDTO> request = new HttpEntity<>(changePassword, headers);
+
+	    try {
+	        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+	        if (!response.getStatusCode().is2xxSuccessful()) {
+	            throw new RuntimeException("rejection failed with status: " + response.getStatusCode());
+	        }
+	        return response.getBody();
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error occurred while calling approval API: " + e.getMessage());
+	    }
+	    
 	}
 
 }

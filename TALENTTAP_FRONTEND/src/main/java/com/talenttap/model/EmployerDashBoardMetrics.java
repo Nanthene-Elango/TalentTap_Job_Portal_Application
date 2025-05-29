@@ -1,7 +1,6 @@
-package com.talenttap.DTO;
+package com.talenttap.model;
 
-public class DashboardMetrics {
-
+public class EmployerDashBoardMetrics {
 	private int activeJobs;
 	private int closeJobs;
 	private int expiredJobs;
@@ -59,5 +58,5 @@ public class DashboardMetrics {
 		this.totalApplications = totalApplications;
 	}
 
-	
+
 }

@@ -1,5 +1,6 @@
 package com.talenttap.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ public interface JobsRepository extends JpaRepository<Jobs,Integer> {
 
 	List<Jobs> findByEmployer(Employer employer);
 
-    List<Jobs> findTop2ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(
+    List<Jobs> findTop3ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(
             Employer employer, JobStatus jobStatus, LocalDateTime deadline);
     
     @Query("SELECT j FROM Jobs j " +
@@ -47,8 +48,11 @@ public interface JobsRepository extends JpaRepository<Jobs,Integer> {
     int markExpiredJobs(@Param("expiredStatus") JobStatus expiredStatus,
                         @Param("now") LocalDateTime now,
                         @Param("employer") Employer employer);
+
+	//List<Jobs> findByEmployerAndJobStatus(int employerId, String string);
     
-    // Find jobs with "open" status for a specific employer
-    //List<Jobs> findByEmployerIdAndJobStatus(int employerId, String status);
+    List<Jobs> findByEmployerAndJobStatus(Employer employerId, JobStatus status);
+
+	List<Jobs> findByEmployerAndDeadlineAfter(Employer employer, LocalDate now);
 
 }

@@ -22,6 +22,7 @@ import com.talenttap.DTO.EducationDTO;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
+import com.talenttap.DTO.ChangePasswordDTO;
 import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
@@ -29,6 +30,7 @@ import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
+import com.talenttap.model.EmployerDashBoardMetrics;
 import com.talenttap.model.EmployerRegister;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.Experience;
@@ -246,10 +248,12 @@ public class PageRenderController {
 	@GetMapping("/employer/employerDashboard")
 	public String loadEmployerDashboard(Model model, @CookieValue(value = "jwt", required = false) JwtToken jwt) throws Exception {
 		model.addAttribute("currentPage", "dashboard");
-		List<CandidatesDTO> candidates= jobService.getAllAppliedCandidates(jwt);
+		List<CandidatesDTO> candidates= jobService.getAllRecentAppliedCandidates(jwt);
 		List<JobDisplayDTO> getTop2ActiveJobs = jobService.getAllDashBoardJobs(jwt);
+		EmployerDashBoardMetrics metrics = jobService.getDashboardMetrics(jwt);
 		model.addAttribute("applicants", candidates);
 		model.addAttribute("jobs",getTop2ActiveJobs);
+		model.addAttribute("metrics", metrics);
 		return "employer/employerDashboard";
 	}
 
@@ -264,6 +268,7 @@ public class PageRenderController {
             }
             JwtToken token = new JwtToken(jwt.trim());
             List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
+            List<JobDisplayDTO> expired = jobService.getAllExpiredJobs(token);
            System.out.println("hi");
            System.out.println(jobs.get(0).getJobId());
             System.out.println(jobs.get(0).getJobDescription());
@@ -271,6 +276,7 @@ public class PageRenderController {
                 model.addAttribute("jobs", new ArrayList<>()); // ensures not null
             } else {
                 model.addAttribute("jobs", jobs);
+                model.addAttribute("expired", expired);
             }
             
          // 🔥 Add a blank form DTO for editing
@@ -453,16 +459,8 @@ public class PageRenderController {
 					model.addAttribute("username", profile.getUsername());
 					model.addAttribute("email", profile.getEmail());
 					model.addAttribute("phoneNumber", profile.getPhoneNumber());
-					model.addAttribute("companyName", profile.getCompanyName());
-					model.addAttribute("companyIndustry", profile.getIndustryType());
-					model.addAttribute("companyEmail", profile.getCompanyEmail());
-					model.addAttribute("companyPhone", profile.getCompanyPhone());
 					model.addAttribute("designation", profile.getDesignation());
-					model.addAttribute("companyAbout", profile.getAbout());
-					model.addAttribute("companySize", profile.getCompanySize());
-					model.addAttribute("location", profile.getLocation());
-					model.addAttribute("companyLogo", profile.getCompanyLogo());
-					model.addAttribute("loggedIn", true);
+					
 				}
 			} else {
 				System.out.println("No JWT token found in cookie");
@@ -489,6 +487,12 @@ public class PageRenderController {
 	        model.addAttribute("skills", jobseekerService.getAllSkills());
 	        model.addAttribute("locations", jobseekerService.getAllLocations());
 		return "employer/postjob";
+	}
+	
+	@GetMapping("/employer/account/security")
+	public String loadAccountSecurity(Model model) {
+		model.addAttribute("changePassword",new ChangePasswordDTO());
+		return "employer/accountSettings";
 	}
 	
 	// edit job

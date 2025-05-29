@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
+import com.talenttap.DTO.ChangePasswordDTO;
 import com.talenttap.DTO.EditCompanyProfileDTO;
 import com.talenttap.DTO.EmailDTO;
 import com.talenttap.DTO.PasswordRequest;
@@ -210,8 +211,33 @@ public class EmployerAuthController {
         return "employer/employerProfile"; // or redirect to some page
     }
     
-    
-    
+    @PostMapping("/employer/update/password")
+    public String updatePassword(
+            @ModelAttribute("changePassword") @Valid ChangePasswordDTO changePassword,
+            BindingResult bindingResult,
+            @CookieValue(value = "jwt", required = false) String jwt,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // If form validation fails
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("changePassword", changePassword);
+            return "employer/accountSettings"; // Return the same page with errors
+        }
+
+        // Call service to change password
+        String message = employerService.changePassword(changePassword, jwt);
+
+        if (message.equalsIgnoreCase("success")) {
+            redirectAttributes.addFlashAttribute("successMessage", "Password updated successfully!");
+            return "redirect:/employer/account/security";
+        } else {
+            model.addAttribute("errorMessage", message); // Show failure message
+            model.addAttribute("changePassword", changePassword);
+            return "employer/accountSettings";
+        }
+    }
+
   
 
 }
