@@ -28,6 +28,7 @@ import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
 import com.talenttap.exception.JobFetchException;
 import com.talenttap.model.EmployerDashBoardMetrics;
+import com.talenttap.model.EmployerJobFilter;
 import com.talenttap.model.EmploymentType;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.Jobs;
@@ -155,7 +156,26 @@ public class JobsService {
 
 	
 	
-	
+	public List<JobDisplayDTO> filterJobs(EmployerJobFilter jobFilter) {
+
+		System.out.println("filter at service");
+		System.out.println("Employment type: " + jobFilter.getEmploymentType());
+		System.out.println("Job status: " + jobFilter.getJobStatus());
+		System.out.println("Search keyword: " + jobFilter.getKeyword());
+		System.out.println("location id: " + jobFilter.getLocation());
+		System.out.println("worktype: " + jobFilter.getWorkType());
+        System.out.println("location id: " + jobFilter.getLocation());
+		String url = "http://localhost:8083/jobs/searchAndFilter";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<EmployerJobFilter> requestEntity = new HttpEntity<>(jobFilter, headers);
+
+		ResponseEntity<JobDisplayDTO[]> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JobDisplayDTO[].class);
+
+		return Arrays.asList(response.getBody());
+	}
 	
 	
 	
