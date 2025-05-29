@@ -225,7 +225,48 @@ public class JobService {
 	    int updatedCount = jobsRepo.markExpiredJobs(JobStatus.expired, LocalDateTime.now(), employer);
 	    logger.info("Marked {} jobs as EXPIRED for employer {}", updatedCount, username);
 
-	    List<Jobs> jobs = jobsRepo.findByEmployer(employer);
+	    List<Jobs> jobs = jobsRepo.findByEmployerAndDeadlineAfter(employer, LocalDate.now());
+
+
+	    logger.info("Returning {} job(s) for employer {}", jobs.size(), username);
+	    
+	    List<JobDisplayDTO> jobs1 = jobs.stream().map(JobDisplayDTO::new).toList();
+	    
+	    for (JobDisplayDTO j : jobs1) {
+			j.setApplicants(jobApplicationRepo.countByJob_JobId(j.getJobId()));
+		}
+
+	    return jobs1;
+	}
+	@Transactional
+	public List<JobDisplayDTO> getAllExpiredJobs(String jwt) {
+	    if (jwt == null || jwt.isBlank()) {
+	        logger.error("JWT token is empty or null");
+	        throw new InvalidJwtException("JWT token is empty or null");
+	    }
+
+	    logger.info("Received getAllJobs request with JWT token");
+
+	    String username = jwtutil.extractIdentifier(jwt);
+	    logger.debug("Extracted username from JWT: {}", username);
+
+	    Users user = userRepo.findByUsername(username)
+	            .orElseThrow(() -> {
+	                logger.error("User not found for username: {}", username);
+	                return new EmployerNotFoundException("User not found: " + username);
+	            });
+
+	    Employer employer = employerRepo.findByUser(user)
+	            .orElseThrow(() -> {
+	                logger.error("Employer not found for user: {}", username);
+	                return new EmployerNotFoundException("Employer not found for user: " + username);
+	            });
+
+	    logger.info("Marking expired jobs as EXPIRED for employer: {}", username);
+	    int updatedCount = jobsRepo.markExpiredJobs(JobStatus.expired, LocalDateTime.now(), employer);
+	    logger.info("Marked {} jobs as EXPIRED for employer {}", updatedCount, username);
+
+	    List<Jobs> jobs = jobsRepo.findByEmployerAndJobStatus(employer, JobStatus.expired);
 
 	    logger.info("Returning {} job(s) for employer {}", jobs.size(), username);
 	    
@@ -254,7 +295,7 @@ public class JobService {
 				.orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
 
 		// Fetch top 2 active jobs (not expired, ordered by posted date)
-		List<Jobs> jobs = jobsRepo.findTop2ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(employer,
+		List<Jobs> jobs = jobsRepo.findTop3ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(employer,
 				JobStatus.expired, LocalDateTime.now());
 
 		// Map to JobDisplayDTO

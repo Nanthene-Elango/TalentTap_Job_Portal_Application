@@ -26,47 +26,50 @@
 <body>
 	<div th:replace="~{employer/navbar :: navbar}"></div>
 
-	 <!-- Main Content -->
-    <div class="container">
-        <div class="main-content">
-            <div class="content">
-                <div id="my-info" class="content-section">
-                    <h2 class="content-title mb-3">Employer Profile</h2>
-                    <div class="content-card">
-                        <div class="content-header">
-                            <h3 class="content-title">Account Details</h3>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Full Name</div>
-                            <div class="field-value" id="fullName">John Doe</div>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Username</div>
-                            <div class="field-value" id="username">johndoe123</div>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Email</div>
-                            <div class="field-value" id="email">
-                                john.doe@example.com
-                                <span class="verified-badge" id="emailVerified">Verified</span>
-                            </div>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Phone Number</div>
-                            <div class="field-value" id="phoneNumber">
-                                9876543210
-                                <span class="verified-badge" id="phoneVerified">Verified</span>
-                            </div>
-                        </div>
-                        <div class="info-field">
-                            <div class="field-label">Designation</div>
-                            <div class="field-value" id="designation">HR Manager</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<!-- Main Content -->
+	<div class="container">
+		<div class="main-content">
+			<div class="content">
+				<div id="my-info" class="content-section">
+					<h2 class="content-title mb-3">Employer Profile</h2>
+					<div class="content-card">
+						<div class="content-header">
+							<h3 class="content-title">Account Details</h3>
+						</div>
+						<div class="info-field">
+							<div class="field-label">Full Name</div>
+							<div class="field-value" id="fullName" th:text="${fullname}">John
+								Doe</div>
+						</div>
+						<div class="info-field">
+							<div class="field-label">Username</div>
+							<div class="field-value" id="username" th:text="${username}">johndoe123</div>
+						</div>
+						<div class="info-field">
+							<div class="field-label">Email</div>
+							<div class="field-value">
+								<span  id="email" th:text="${email}"></span>
+								<span class="verified-badge" id="emailVerified">Verified</span>
+							</div>
+						</div>
+						<div class="info-field">
+							<div class="field-label">Phone Number</div>
+							<div class="field-value">
+								<span id="phoneNumber" th:text="${phoneNumber}">9876543210</span>
+								<span class="verified-badge" id="phoneVerified">Verified</span>
+							</div>
+						</div>
+
+						<div class="info-field">
+							<div class="field-label">Designation</div>
+							<div class="field-value" id="designation"
+								th:text="${designation}">HR Manager</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 	<script

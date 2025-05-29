@@ -158,5 +158,18 @@ public class JobsController {
 
 		return ResponseEntity.ok(jobs);
 	}
+	
+	@GetMapping("/getAllExpiredJobs")
+	public ResponseEntity<List<JobDisplayDTO>> getEmployerExpiredJobs(@RequestHeader("Authorization") String authHeader) {
+		
+		String token = authHeader.replace("Bearer ", "");
+		logger.info("Received request to fetch jobs with token: {}",
+				 token.hashCode());
+
+		List<JobDisplayDTO> jobs = jobService.getAllExpiredJobs(token);
+		logger.info("Returning {} job(s)", jobs.size());
+
+		return ResponseEntity.ok(jobs);
+	}
 
 }

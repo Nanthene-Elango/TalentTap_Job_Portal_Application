@@ -49,6 +49,7 @@ public class CompanyController {
 					System.out.println(locations.get(0).getLocation());
 					model.addAttribute("locations", locations);
 
+			
 					List<IndustryType> industryType = employerService.getAllIndustryType();
 					System.out.println(industryType.get(0).getIndustryType());
 					model.addAttribute("industry", industryType);
@@ -85,10 +86,10 @@ public class CompanyController {
 
 			String message = companyService.updateCompanyLogo(logoBytes, jwt);
 			System.out.println(message);
-			return "redirect:/employer/company/profile"; // Or wherever you want
+			return "redirect:/employer/company/profile"; 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return "redirect:/employer/companyProfile"; // Or handle as needed
+			return "redirect:/employer/companyProfile"; 
 		}
 	}
 

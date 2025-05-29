@@ -74,6 +74,4 @@ public class CompanyProfileDTO {
 				+ ", phoneNumber=" + phoneNumber + ", companySize=" + companySize + ", location=" + location
 				+ ", websiteUrl=" + websiteUrl + ", foundedAt=" + foundedAt + ", about=" + about + "]";
 	}
-	
-	
 }

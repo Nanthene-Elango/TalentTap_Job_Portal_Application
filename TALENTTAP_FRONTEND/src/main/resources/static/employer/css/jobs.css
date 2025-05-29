@@ -237,3 +237,156 @@
             font-weight: 500;
             padding: 1rem;
         }
+        
+        /* ----- Violet-Themed Job Tabs ----- */
+.job-tabs {
+  display: flex;
+  gap: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.job-tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 50px;
+  background-color: #f4f0ff; /* light violet background */
+  color: #5e17eb; /* violet text */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  user-select: none;
+  border: 2px solid transparent;
+}
+
+.job-tab:hover {
+  background-color: #d7caff;
+}
+
+.job-tab.active {
+  background-color: #5e17eb;
+  color: #fff;
+  border-color: #4a12c2;
+}
+
+/* ----- Violet-Themed Table ----- */
+.table-bordered {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(94, 23, 235, 0.2);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  background-color: #fff;
+}
+
+.table-bordered thead {
+  background-color: #5e17eb;
+  color: #fff;
+}
+
+.table-bordered th,
+.table-bordered td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1e6fe;
+  text-align: left;
+}
+
+.table-bordered tbody tr:hover {
+  background-color: #f4f0ff;
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(94, 23, 235, 0.15);
+  transition: all 0.2s ease;
+}
+
+/* Remove default table border to rely on box shadow and spacing */
+.table-bordered,
+.table-bordered thead th,
+.table-bordered tbody td {
+  border: none;
+}
+
+/* ----- Status Badges ----- */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  color: #fff;
+}
+
+.status-open {
+  background-color: #6f42c1; /* violet */
+}
+
+.status-closing {
+  background-color: #d48806; /* amber/dark orange */
+}
+
+.status-closed {
+  background-color: #c92a2a; /* dark red */
+}
+
+.status-expired {
+  background-color: #6c757d; /* grey */
+}
+
+/* ----- Violet Buttons ----- */
+.btn-outline-violet {
+  color: #5e17eb;
+  border: 2px solid #5e17eb;
+  background-color: transparent;
+  border-radius: 0.5rem;
+  padding: 6px 6px;
+  margin: 2px 0px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-outline-violet:hover,
+.btn-outline-violet:focus {
+  background-color: #5e17eb;
+  color: #fff;
+  outline: none;
+  box-shadow: 0 0 8px #8c4dff;
+}
+
+/* Button icons spacing */
+.btn-outline-violet i {
+  margin-right: 6px;
+}
+
+/* Warning and Danger buttons - keep bootstrap colors or customize slightly */
+.btn-outline-warning {
+  color: #d48806;
+  border-color: #d48806;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-warning:hover {
+  background-color: #d48806;
+  color: #fff;
+}
+
+.btn-outline-danger {
+  color: #c92a2a;
+  border-color: #c92a2a;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+  background-color: #c92a2a;
+  color: #fff;
+}
+        
