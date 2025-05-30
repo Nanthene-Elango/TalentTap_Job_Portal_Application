@@ -60,6 +60,7 @@ import com.talenttap.repository.SkillsRepository;
 import com.talenttap.repository.UsersRepository;
 import com.talenttap.security.JwtUtil;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -85,13 +86,14 @@ public class JobseekerRegisterService {
 	private ProjectRepository projectRepo;
 	private EmploymentTypeRepository employmentTypeRepo;
 	private ExperienceRepository experienceRepo;
+	private EmailService emailService;
 
 	public JobseekerRegisterService(UsersRepository userRepo, JobseekerRepository jobseekerRepo,
 			EducationRepository educationRepo, SkillsRepository skillsRepo, RoleRepository roleRepo,
 			LocationRepository locationRepo, EducationLevelRepository educationLevelRepo,
 			PasswordEncoder passwordEncoder, JobsRepository jobRepo, JobApplicationRepository jobApplicationRepo,
 			CertificationRepository certificationRepo, LanguageRepository languageRepo, ProjectRepository projectRepo,
-			EmploymentTypeRepository employmentTypeRepo ,ExperienceRepository experienceRepo) {
+			EmploymentTypeRepository employmentTypeRepo ,ExperienceRepository experienceRepo , EmailService emailService) {
 		this.educationRepo = educationRepo;
 		this.jobseekerRepo = jobseekerRepo;
 		this.employmentTypeRepo = employmentTypeRepo;
@@ -106,6 +108,7 @@ public class JobseekerRegisterService {
 		this.certificationRepo = certificationRepo;
 		this.languageRepo = languageRepo;
 		this.projectRepo = projectRepo;
+		this.emailService = emailService;
 		this.experienceRepo = experienceRepo;
 	}
 
@@ -486,6 +489,11 @@ public class JobseekerRegisterService {
 			application.setLastUpdated(LocalDateTime.now());
 			application.setStatus(ApplicationStatus.pending);
 
+			try {
+				emailService.jobAppliedMail(jobseeker , job);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
 			jobApplicationRepo.save(application);
 
 			return ResponseEntity.ok().body("Job Applied Successfully!");
