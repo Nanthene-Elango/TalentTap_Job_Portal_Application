@@ -37,11 +37,11 @@ public class AdminLoginController {
                              HttpServletResponse response,
                              Model model) {
         String result = adminService.loginAdmin(login, response);
-        System.out.println("Login Result: " + login);
+        System.out.println("Login Result: " + response);
         if ("SUCCESS".equals(result)) {
             return "redirect:/admin/adminDashboard";
         }
-//        model.addAttribute("Login", login);
+        model.addAttribute("Login", login);
         model.addAttribute("error", result);
         return "redirect:/admin/login";
     }
@@ -93,4 +93,6 @@ public class AdminLoginController {
         }
         return "redirect:/admin/profile";
     }
+    
+    
 }

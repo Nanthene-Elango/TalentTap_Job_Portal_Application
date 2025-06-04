@@ -3,10 +3,12 @@ package com.talenttap.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -24,6 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.AdminProfileDTO;
 import com.talenttap.DTO.ChangePasswordDTO;
+import com.talenttap.DTO.EmployerAdminDTO;
+import com.talenttap.DTO.EmployerDetailsDTO;
 import com.talenttap.service.AdminService;
 import com.talenttap.service.JobService;
 
@@ -40,10 +44,10 @@ public class AdminController {
 		this.jobService = jobService;
 	}
 	
-    @GetMapping("/verify")
-    public ResponseEntity<?> verifyAdmin() {
-        return ResponseEntity.ok("Authorized");
-    }
+//    @GetMapping("/verify")
+//    public ResponseEntity<?> verifyAdmin() {
+//        return ResponseEntity.ok("Authorized");
+//    }
 
 
 	// get all jobs
@@ -142,4 +146,69 @@ public class AdminController {
         }
     }
 
+ // Employer Section Endpoints
+    @GetMapping("/employers")
+    public ResponseEntity<List<EmployerAdminDTO>> getAllEmployers(
+            @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            List<EmployerAdminDTO> employers = adminService.getAllEmployers(jwt);
+            return ResponseEntity.ok(employers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping("/employers/search")
+    public ResponseEntity<List<EmployerAdminDTO>> searchEmployers(
+            @RequestHeader("Authorization") String jwtToken,
+            @RequestParam(value = "status", required = false) String statusFilter,
+            @RequestParam(value = "industry", required = false) String industryFilter,
+            @RequestParam(value = "search", required = false) String searchTerm,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            List<EmployerAdminDTO> employers = adminService.searchEmployers(jwt, statusFilter, industryFilter, searchTerm, startDate, endDate);
+            return ResponseEntity.ok(employers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+    
+    @GetMapping("/employer/{id}")
+    public ResponseEntity<EmployerDetailsDTO> getEmployerDetails(@PathVariable("id") int employerId,
+                                                                @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            EmployerDetailsDTO employerDetails = adminService.getEmployerDetails(employerId, jwt);
+            return ResponseEntity.ok(employerDetails);
+        } catch (Exception e) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @PostMapping("/employers/verify")
+    public ResponseEntity<String> verifyEmployers(@RequestBody List<Integer> employerIds,
+                                                 @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            adminService.updateVerificationStatus(employerIds, true, jwt);
+            return ResponseEntity.ok("Selected employers set to Active");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error verifying employers: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/employers/unverify")
+    public ResponseEntity<String> unverifyEmployers(@RequestBody List<Integer> employerIds,
+                                                   @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            adminService.updateVerificationStatus(employerIds, false, jwt);
+            return ResponseEntity.ok("Selected employers set to Inactive");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error unverifying employers: " + e.getMessage());
+        }
+    }
 }

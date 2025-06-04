@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Details</title>
+    <link rel="stylesheet" th:href="@{/admin/css/employer-details.css}">
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Main Content -->
+        <main>
+            <div th:if="${error != null}" class="alert alert-danger" th:text="${error}"></div>
+
+            <h2>Employer Details</h2>
+            <div th:if="${employers != null}">
+            <div class="card-container">
+                <div class="card employer-card">
+                <!-- Employer Information -->
+                <div class="section">
+                    <h3>Employer Information</h3>
+                    <p><strong>ID:</strong> <span th:text="${employers.employerId}"></span></p>
+                    <p><strong>Full Name:</strong> <span th:text="${employers.fullName}"></span></p>
+                    <p><strong>User Name:</strong> <span th:text="${employers.username}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${employers.email}"></span></p>
+                    <p><strong>Mobile Number:</strong> <span th:text="${employers.mobileNumber}"></span></p>
+                    <p><strong>Designation:</strong> <span th:text="${employers.designation}"></span></p>
+                    <p><strong>Date of Registration:</strong> <span th:text="${employers.dateOfRegistration}"></span></p>
+                </div>
+              </div>
+
+                <!-- Company Information -->
+                <div class="card company-card">
+                <div class="section">
+                    <h3>Company Information</h3>
+                    <p><strong>Company Name:</strong> <span th:text="${employers.companyName}"></span></p>
+                    <p><strong>Company Email:</strong> <span th:text="${employers.companyEmail}"></span></p>
+                    <p><strong>Company Phone:</strong> <span th:text="${employers.companyPhone}"></span></p>
+                    <p><strong>Company Size:</strong> <span th:text="${employers.companySize}"></span></p>
+                    <p>
+                        <strong>Location:</strong>
+                        <span th:if="${employers.location != null}" class="skill-badge" th:text="${employers.location}"></span>
+                        <span th:unless="${employers.location != null}" class="skill-badge-na">N/A</span>
+                    </p>
+                    <p>
+                        <strong>Website URL:</strong>
+                        <span th:if="${employers.websiteUrl != null}">
+                            <a th:href="${employers.websiteUrl}" th:text="${employers.websiteUrl}"></a>
+                        </span>
+                        <span th:unless="${employers.websiteUrl != null}" class="skill-badge-na">N/A</span>
+                    </p>
+                    <p><strong>Founded Year:</strong> <span th:text="${employers.foundedAt}"></span></p>
+                    <p>
+                        <strong>Industry Type:</strong>
+                        <span th:if="${employers.industryType != null}" class="skill-badge" th:text="${employers.industryType}"></span>
+                        <span th:unless="${employers.industryType != null}" class="skill-badge-na">N/A</span>
+                    </p>
+                    <p><strong>About:</strong> <span th:text="${employers.about}"></span></p>
+                </div>
+            </div>
+            </div>
+            </div>
+
+            <div th:if="${employers == null}" class="alert alert-danger">
+                Employer not found.
+            </div>
+
+            <div class="mt-3">
+                <a href="/admin/adminDashboard#employers" class="btn-violet">Back to Employers</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
