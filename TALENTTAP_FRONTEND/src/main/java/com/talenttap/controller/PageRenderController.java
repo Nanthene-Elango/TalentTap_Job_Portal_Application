@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.talenttap.DTO.EducationDTO;
+import com.talenttap.DTO.EmployerAdminDTO;
+import com.talenttap.DTO.EmployerDetailsDTO;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EditJobFormDTO;
@@ -42,6 +44,7 @@ import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.model.Projects;
 import com.talenttap.model.Skills;
+import com.talenttap.service.AdminService;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobsService;
 import com.talenttap.service.JobseekerService;
@@ -54,14 +57,16 @@ public class PageRenderController {
 	private EmployerAuthService employerService;
 
 	private JobsService jobService;
-
 	
+	private AdminService adminService;
 
-	public PageRenderController(JobseekerService jobseekerService, EmployerAuthService employerService,JobsService jobService){
+
+	public PageRenderController(JobseekerService jobseekerService, EmployerAuthService employerService,JobsService jobService,AdminService adminService){
 
 		this.jobseekerService = jobseekerService;
 		this.employerService = employerService;
 		this.jobService = jobService;
+		this.adminService=adminService;
 	}
 
 	@GetMapping
@@ -540,8 +545,15 @@ public class PageRenderController {
             } else {
                 model.addAttribute("jobs", jobs);
             }
+         // Fetch employers for the employers section
+            List<EmployerAdminDTO> employers = adminService.getAllEmployers(jwt);
+            if (employers == null || employers.isEmpty()) {
+                model.addAttribute("employerError", "No employers found or failed to fetch employers.");
+            } else {
+                model.addAttribute("employers", employers);
+            }
         } catch (Exception e) {
-            model.addAttribute("error", "Failed to fetch jobs: " + e.getMessage());
+            model.addAttribute("error", "Failed to fetch data: " + e.getMessage());
         }
         return "admin/adminDashboard";
     }
@@ -593,5 +605,24 @@ public class PageRenderController {
         }
     	
         return "admin/job-details"; // Template name without .html
+    }
+    
+    @GetMapping("/admin/employer/{id}")
+    public String employerDetails(@PathVariable("id") Integer employerId,
+                                  @CookieValue(value = "jwt", required = false) String jwt,
+                                  Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            System.out.println("Fetching employer details for ID: " + employerId);
+            EmployerDetailsDTO employers = adminService.getEmployerDetails(jwt, employerId);
+            model.addAttribute("employers", employers);
+        } catch (Exception e) {
+            System.out.println("Error fetching employer details: " + e.getMessage());
+            model.addAttribute("employers", null); // Employer not found
+            model.addAttribute("error", "Failed to fetch employer details: " + e.getMessage());
+        }
+        return "admin/employer-details"; // Template name without .html
     }
 }

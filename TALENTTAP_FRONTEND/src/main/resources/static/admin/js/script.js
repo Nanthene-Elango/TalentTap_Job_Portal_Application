@@ -330,16 +330,95 @@ document.querySelectorAll('.job-select').forEach(checkbox => {
 
 document.getElementById('selectAllJobs')?.addEventListener('change', toggleSelectAllJobs);
 
-// Employers Section Functionality
-const employerTable = document.getElementById('employerTable');
-const employerStatusFilter = document.getElementById('employerStatusFilter');
-const industryFilter = document.getElementById('industryFilter');
-const employerSearch = document.getElementById('employerSearch');
-const selectAllEmployers = document.getElementById('selectAllEmployers');
-const bulkApproveEmployers = document.getElementById('bulkApproveEmployers');
-const bulkRejectEmployers = document.getElementById('bulkRejectEmployers');
-const registeredStartDate = document.getElementById('postedStartDate');
-const registeredEndDate = document.getElementById('postedEndDate');
+// Employers Section Pagination and Functionality
+const employersPerPage = 4;
+let currentEmployerPage = 1;
+let allEmployerRows = [];
+let filteredEmployerRows = [];
+
+function initEmployerPagination() {
+    // Get all employer rows
+    const initialRows = Array.from(document.querySelectorAll('#employerTable tbody tr'));
+    
+    // Remove duplicates based on employerId
+    const seenEmployerIds = new Set();
+    allEmployerRows = initialRows.filter(row => {
+        const employerId = row.querySelector('.employer-select')?.value;
+        if (!employerId) return false;
+        if (seenEmployerIds.has(employerId)) {
+            row.remove();
+            return false;
+        }
+        seenEmployerIds.add(employerId);
+        return true;
+    });
+
+    filteredEmployerRows = [...allEmployerRows];
+    showEmployerPage(currentEmployerPage);
+    setupEmployerPagination();
+}
+
+function showEmployerPage(page) {
+    currentEmployerPage = page;
+    const startIndex = (page - 1) * employersPerPage;
+    const endIndex = startIndex + employersPerPage;
+
+    filteredEmployerRows.forEach(row => row.style.display = 'none');
+    const rowsToShow = filteredEmployerRows.slice(startIndex, endIndex);
+    rowsToShow.forEach(row => row.style.display = '');
+
+    setupEmployerPagination();
+    updateSelectAllEmployersState();
+}
+
+function setupEmployerPagination() {
+    const paginationUl = document.getElementById('employerPagination');
+    if (!paginationUl) return;
+    const totalEmployers = filteredEmployerRows.length;
+    const totalPages = Math.ceil(totalEmployers / employersPerPage);
+    paginationUl.innerHTML = '';
+
+    const prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (currentEmployerPage === 1 ? ' disabled' : '');
+    const prevLink = document.createElement('a');
+    prevLink.className = 'page-link';
+    prevLink.href = '#';
+    prevLink.textContent = 'Previous';
+    prevLink.onclick = (e) => {
+        e.preventDefault();
+        if (currentEmployerPage > 1) showEmployerPage(currentEmployerPage - 1);
+    };
+    prevLi.appendChild(prevLink);
+    paginationUl.appendChild(prevLi);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = 'page-item' + (i === currentEmployerPage ? ' active' : '');
+        const pageLink = document.createElement('a');
+        pageLink.className = 'page-link';
+        pageLink.href = '#';
+        pageLink.textContent = i;
+        pageLink.onclick = (e) => {
+            e.preventDefault();
+            showEmployerPage(i);
+        };
+        pageLi.appendChild(pageLink);
+        paginationUl.appendChild(pageLi);
+    }
+
+    const nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (currentEmployerPage === totalPages ? ' disabled' : '');
+    const nextLink = document.createElement('a');
+    nextLink.className = 'page-link';
+    nextLink.href = '#';
+    nextLink.textContent = 'Next';
+    nextLink.onclick = (e) => {
+        e.preventDefault();
+        if (currentEmployerPage < totalPages) showEmployerPage(currentEmployerPage + 1);
+    };
+    nextLi.appendChild(nextLink);
+    paginationUl.appendChild(nextLi);
+}
 
 function filterEmployers() {
     const status = employerStatusFilter?.value.toLowerCase() || '';
@@ -348,125 +427,168 @@ function filterEmployers() {
     const startDate = registeredStartDate?.value ? new Date(registeredStartDate.value) : null;
     const endDate = registeredEndDate?.value ? new Date(registeredEndDate.value) : null;
 
-    const rows = employerTable?.querySelectorAll('tbody tr') || [];
-    rows.forEach(row => {
-        const company = row.cells[1]?.textContent.toLowerCase() || '';
-        const email = row.cells[2]?.textContent.toLowerCase() || '';
-        const rowIndustry = row.cells[3]?.textContent.toLowerCase() || '';
-        const statusText = row.cells[6]?.textContent.toLowerCase() || '';
-        const registeredDate = row.cells[7] ? new Date(row.cells[7].textContent) : null;
+    filteredEmployerRows = allEmployerRows.filter(row => {
+        const company = row.getAttribute('data-company') || '';
+        const email = row.getAttribute('data-email') || '';
+        const rowIndustry = row.getAttribute('data-industry') || '';
+        const statusText = row.getAttribute('data-status') || '';
+        const registeredDate = row.getAttribute('data-registered') ? new Date(row.getAttribute('data-registered')) : null;
 
         const matchesSearch = company.includes(search) || email.includes(search);
         const matchesStatus = !status || statusText.includes(status);
         const matchesIndustry = !industry || rowIndustry.includes(industry);
         const matchesDate = (!startDate || (registeredDate && registeredDate >= startDate)) && (!endDate || (registeredDate && registeredDate <= endDate));
 
-        row.style.display = matchesSearch && matchesStatus && matchesIndustry && matchesDate ? '' : 'none';
+        return matchesSearch && matchesStatus && matchesIndustry && matchesDate;
     });
+
+    showEmployerPage(1);
 }
 
-if (employerStatusFilter) employerStatusFilter.addEventListener('change', filterEmployers);
-if (industryFilter) industryFilter.addEventListener('change', filterEmployers);
-if (employerSearch) employerSearch.addEventListener('input', filterEmployers);
-if (registeredStartDate) registeredStartDate.addEventListener('change', filterEmployers);
-if (registeredEndDate) registeredEndDate.addEventListener('change', filterEmployers);
+function updateSelectAllEmployersState() {
+    const visibleCheckboxes = filteredEmployerRows
+        .filter((row, index) => {
+            const startIndex = (currentEmployerPage - 1) * employersPerPage;
+            const endIndex = startIndex + employersPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.employer-select'));
+
+    const selectAllCheckbox = document.getElementById('selectAllEmployers');
+    if (selectAllCheckbox) {
+        const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every(checkbox => checkbox.checked);
+        selectAllCheckbox.checked = allChecked;
+    }
+
+    updateEmployerBulkActions();
+}
+
+function toggleSelectAllEmployers() {
+    const selectAllCheckbox = document.getElementById('selectAllEmployers');
+    const visibleCheckboxes = filteredEmployerRows
+        .filter((row, index) => {
+            const startIndex = (currentEmployerPage - 1) * employersPerPage;
+            const endIndex = startIndex + employersPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.employer-select'));
+
+    visibleCheckboxes.forEach(checkbox => {
+        if (checkbox) checkbox.checked = selectAllCheckbox.checked;
+    });
+
+    updateEmployerBulkActions();
+}
+
+function verifySelectedEmployers() {
+    const selectedEmployers = filteredEmployerRows
+        .filter((row, index) => {
+            const startIndex = (currentEmployerPage - 1) * employersPerPage;
+            const endIndex = startIndex + employersPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.employer-select'))
+        .filter(checkbox => checkbox && checkbox.checked)
+        .map(checkbox => parseInt(checkbox.value));
+
+    if (selectedEmployers.length === 0) {
+        alert('Please select at least one employer to verify.');
+        return false;
+    }
+    if (!confirm('Are you sure you want to verify the selected employers?')) {
+        return false;
+    }
+
+    const form = document.querySelector('form[action="/admin/employers/verify"]');
+    if (form) {
+        form.innerHTML = '';
+        selectedEmployers.forEach(employerId => {
+            const newInput = document.createElement('input');
+            newInput.type = 'hidden';
+            newInput.name = 'employerIds';
+            newInput.value = employerId;
+            form.appendChild(newInput);
+        });
+    }
+    return true;
+}
+
+function unverifySelectedEmployers() {
+    const selectedEmployers = filteredEmployerRows
+        .filter((row, index) => {
+            const startIndex = (currentEmployerPage - 1) * employersPerPage;
+            const endIndex = startIndex + employersPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.employer-select'))
+        .filter(checkbox => checkbox && checkbox.checked)
+        .map(checkbox => parseInt(checkbox.value));
+
+    if (selectedEmployers.length === 0) {
+        alert('Please select at least one employer to unverify.');
+        return false;
+    }
+    if (!confirm('Are you sure you want to unverify the selected employers?')) {
+        return false;
+    }
+
+    const form = document.querySelector('form[action="/admin/employers/unverify"]');
+    if (form) {
+        form.innerHTML = '';
+        selectedEmployers.forEach(employerId => {
+            const newInput = document.createElement('input');
+            newInput.type = 'hidden';
+            newInput.name = 'employerIds';
+            newInput.value = employerId;
+            form.appendChild(newInput);
+        });
+    }
+    return true;
+}
 
 function updateEmployerBulkActions() {
-    const selected = document.querySelectorAll('.employer-select:checked')?.length || 0;
-    if (bulkApproveEmployers) bulkApproveEmployers.disabled = selected === 0;
-    if (bulkRejectEmployers) bulkRejectEmployers.disabled = selected === 0;
+    const selected = filteredEmployerRows
+        .filter((row, index) => {
+            const startIndex = (currentEmployerPage - 1) * employersPerPage;
+            const endIndex = startIndex + employersPerPage;
+            return index >= startIndex && index < endIndex && row.style.display !== 'none';
+        })
+        .map(row => row.querySelector('.employer-select'))
+        .filter(checkbox => checkbox && checkbox.checked);
+
+    const bulkApproveBtn = document.getElementById('bulkApproveEmployers');
+    const bulkRejectBtn = document.getElementById('bulkRejectEmployers');
+
+    if (bulkApproveBtn) bulkApproveBtn.disabled = selected.length === 0;
+    if (bulkRejectBtn) bulkRejectBtn.disabled = selected.length === 0;
 }
 
-if (selectAllEmployers) {
-    selectAllEmployers.addEventListener('change', function() {
-        document.querySelectorAll('.employer-select').forEach(checkbox => {
-            checkbox.checked = this.checked;
-        });
+// Event Listeners for Employers Section
+document.getElementById('employerStatusFilter')?.addEventListener('change', filterEmployers);
+document.getElementById('industryFilter')?.addEventListener('change', filterEmployers);
+document.getElementById('employerSearch')?.addEventListener('input', filterEmployers);
+document.getElementById('postedStartDate')?.addEventListener('change', filterEmployers);
+document.getElementById('postedEndDate')?.addEventListener('change', filterEmployers);
+
+document.querySelectorAll('.employer-select').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        updateSelectAllEmployersState();
         updateEmployerBulkActions();
     });
-}
+});
 
-if (employerTable) {
-    document.querySelectorAll('.employer-select').forEach(checkbox => {
-        checkbox.addEventListener('change', updateEmployerBulkActions);
-    });
+document.getElementById('selectAllEmployers')?.addEventListener('change', toggleSelectAllEmployers);
 
-    employerTable.querySelectorAll('thead th').forEach((th, index) => {
-        if (index === 0 || index === 8) return;
-        th.addEventListener('click', () => {
-            const rows = Array.from(employerTable.querySelectorAll('tbody tr'));
-            const isAscending = th.dataset.sort !== 'asc';
-            th.dataset.sort = isAscending ? 'asc' : 'desc';
+// Initialize pagination after DOM content is loaded
+document.addEventListener('DOMContentLoaded', function() {
+	showSectionFromHash();
+	    window.addEventListener('hashchange', showSectionFromHash);
 
-            rows.sort((a, b) => {
-                let aText = a.cells[index]?.textContent.trim() || '';
-                let bText = b.cells[index]?.textContent.trim() || '';
-
-                if (index === 4 || index === 5) {
-                    aText = parseInt(aText) || 0;
-                    bText = parseInt(bText) || 0;
-                }
-                else if (index === 7) {
-                    aText = new Date(aText);
-                    bText = new Date(bText);
-                }
-
-                if (aText < bText) return isAscending ? -1 : 1;
-                if (aText > bText) return isAscending ? 1 : -1;
-                return 0;
-            });
-
-            employerTable.querySelector('tbody').innerHTML = '';
-            rows.forEach(row => employerTable.querySelector('tbody').appendChild(row));
-        });
-    });
-
-    employerTable.addEventListener('click', function(e) {
-        const row = e.target.closest('tr');
-        if (!row) return;
-
-        if (e.target.closest('.approve-btn')) {
-            row.cells[6].innerHTML = '<span class="badge bg-success">Approved</span>';
-            filterEmployers();
-        } else if (e.target.closest('.reject-btn')) {
-            row.cells[6].innerHTML = '<span class="badge bg-danger">Rejected</span>';
-            filterEmployers();
-        } else if (e.target.closest('.delete-btn')) {
-            row.remove();
-            updateEmployerBulkActions();
-        }
-    });
-}
-
-if (bulkApproveEmployers) {
-    bulkApproveEmployers.addEventListener('click', () => {
-        document.querySelectorAll('.employer-select:checked').forEach(checkbox => {
-            const row = checkbox.closest('tr');
-            if (row && row.cells[6]) {
-                row.cells[6].innerHTML = '<span class="badge bg-success">Approved</span>';
-                checkbox.checked = false;
-            }
-        });
-        if (selectAllEmployers) selectAllEmployers.checked = false;
-        updateEmployerBulkActions();
-        filterEmployers();
-    });
-}
-
-if (bulkRejectEmployers) {
-    bulkRejectEmployers.addEventListener('click', () => {
-        document.querySelectorAll('.employer-select:checked').forEach(checkbox => {
-            const row = checkbox.closest('tr');
-            if (row && row.cells[6]) {
-                row.cells[6].innerHTML = '<span class="badge bg-danger">Rejected</span>';
-                checkbox.checked = false;
-            }
-        });
-        if (selectAllEmployers) selectAllEmployers.checked = false;
-        updateEmployerBulkActions();
-        filterEmployers();
-    });
-}
+	    // Initialize pagination for all sections
+	    initJobPagination();
+	    initEmployerPagination();
+	    initCharts();
+});
 
 // Job Seekers Section Functionality
 const seekerTable = document.getElementById('seekerTable');
