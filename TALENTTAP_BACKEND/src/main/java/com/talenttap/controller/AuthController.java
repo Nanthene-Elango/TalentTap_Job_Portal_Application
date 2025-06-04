@@ -62,4 +62,6 @@ public class AuthController {
 	 public ResponseEntity<?> loginAdmin(@Valid @RequestBody LoginDTO request, HttpServletResponse response) {
 	     return adminService.loginAdmin(request, response);
     }
+	 
+	
 }

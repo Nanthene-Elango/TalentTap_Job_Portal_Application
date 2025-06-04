@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TalentTap | All Jobs</title>
+<title>TalentTap | Employer Posted jobs</title>
 <link rel="icon" type="image/x-icon" href="./img/favicon.png">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -59,6 +59,8 @@
 
 		<!-- Filter Section -->
 		<div class="filter-section">
+		<form th:action="@{/employer/filterEmployerJobs}" th:object="${jobFilter}"
+			method="post" novalidate>
 			<div class="filter-title">
 				<i class="fas fa-filter"></i> Filter Jobs
 			</div>
@@ -66,95 +68,59 @@
 				<div class="col-md-3">
 					<div class="search-box">
 						<i class="fas fa-search"></i> <input type="text"
-							class="form-control" id="searchInput"
+							class="form-control" id="searchInput" th:field="*{keyword}"
 							placeholder="Search by title or location">
 					</div>
-				</div>
-
-				<div class="col-md-3">
-					<select class="form-select" id="typeFilter">
-						<option value="">All Employment Types</option>
-						<option value="Full-time">Full-time</option>
-						<option value="Part-time">Part-time</option>
-						<option value="Contract">Contract</option>
-						<option value="Freelance">Freelance</option>
-						<option value="Internship">Internship</option>
-						<option value="Remote">Remote</option>
-					</select>
-				</div>
-				<div class="col-md-3">
-					<select class="form-select" id="statusFilter">
-						<option value="">All Statuses</option>
-						<option value="Open">Open</option>
-						<option value="Closing">Closing</option>
-						<option value="Closed">Closed</option>
-						<option value="Expired">Expired</option>
-					</select>
-				</div>
-				<div class="col-md-3">
-					<select class="form-select" id="categoryFilter">
-						<option value="">All Categories</option>
-						<option value="Engineering">Engineering</option>
-						<option value="Design">Design</option>
-						<option value="Marketing">Marketing</option>
-					</select>
-				</div>
+				</div>				
 			</div>
 			<div class="row g-3 align-items-center">
 				<div class="col-md-3">
-					<select class="form-select" id="typeFilter">
-						<option value="">All Employment Types</option>
-						<option value="Full-time">Full-time</option>
-						<option value="Part-time">Part-time</option>
-						<option value="Contract">Contract</option>
-						<option value="Freelance">Freelance</option>
-						<option value="Internship">Internship</option>
-						<option value="Remote">Remote</option>
-					</select>
+					 <label for="jobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
+                    <select class="form-select" id="jobType" th:field="*{employmentType}">
+                        <option value="" selected>Select Employment type</option>
+                        <option th:each="type : ${employmentTypes}" th:value="${type.employmentTypeId}" th:text="${type.employmentType}"></option>
+                    </select>
 				</div>
 				<div class="col-md-3">
-					<select class="form-select" id="typeFilter">
-						<option value="">All Employment Types</option>
-						<option value="Full-time">Full-time</option>
-						<option value="Part-time">Part-time</option>
-						<option value="Contract">Contract</option>
-						<option value="Freelance">Freelance</option>
-						<option value="Internship">Internship</option>
-						<option value="Remote">Remote</option>
-					</select>
+					<label for="workType" class="form-label">Work Type <span class="text-danger">*</span></label>
+                    <select class="form-select" id="workType" th:field="*{workType}">
+                        <option value="" selected>Select work type</option>
+                        <option th:value="REMOTE">Remote</option>
+                        <option th:value="HYBRID">Hybrid</option>
+                        <option th:value="ONSITE">On-site</option>
+                    </select>
 				</div>
 				<div class="col-md-3">
-					<select class="form-select" id="statusFilter">
-						<option value="">All Statuses</option>
-						<option value="Open">Open</option>
-						<option value="Closing">Closing</option>
-						<option value="Closed">Closed</option>
-						<option value="Expired">Expired</option>
-					</select>
+					<label for="locations" class="form-label">Job Location(s) <span class="text-danger">*</span></label>
+                    <select class="form-control" id="locations"  th:field="*{location}" required>   
+                    	 <option value="" selected>Select job Location</option>   	
+                        <option th:each="location : ${locations}" th:value="${location.locationId}" th:text="${location.location}"></option>
+                    </select>
 				</div>
 				<div class="col-md-3">
-					<select class="form-select" id="categoryFilter">
-						<option value="">All Categories</option>
-						<option value="Engineering">Engineering</option>
-						<option value="Design">Design</option>
-						<option value="Marketing">Marketing</option>
-					</select>
+					<label for="workType" class="form-label">Job Status <span class="text-danger">*</span></label>
+                    <select class="form-select" id="jobStatus"   th:field="*{jobStatus}" required>
+                        <option value="" selected>Select job status</option>
+                        <option th:value="open">Open</option>
+                        <option th:value="closed">Closed</option>
+                        <option th:value="expired">Expired</option>
+                    </select>
 				</div>
 			</div>
 			<div></div>
 			<div class="d-flex gap-2">
 				<div class="filter-actions">
-					<button class="btn btn-outline-secondary" id="resetFilters">
+					<a class="btn btn-outline-secondary" id="resetFilters" th:href="@{/employer/jobs}">
 						<i class="fas fa-sync-alt"></i> Reset
-					</button>
+					</a>
 				</div>
 				<div class="filter-actions">
-					<button class="btn btn-outline-primary" id="applyFilters">
+					<button type="submit" class="btn btn-outline-primary" id="applyFilters">
 						<i class="fas fa-check"></i> Apply
 					</button>
 				</div>
 			</div>
-
+	</form>
 		</div>
 
 		<!-- Job Tabs -->
@@ -165,75 +131,130 @@
 			</div>
 		</div>
 
+		<!-- Active Jobs Table -->
 		<div id="activeJobs" class="job-list-section">
-			<div th:each="job : ${jobs}" class="job-card">
-				<div class="row">
-					<div class="col-md-7">
-						<h5 class="job-title"
-							th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'"></h5>
-						<div class="job-info">
-							<i class="fas fa-map-marker-alt"></i> <span
-								th:text="${job.locations != null and !#sets.isEmpty(job.locations)} ? ${#strings.listJoin(#lists.toList(job.locations), ', ')} : 'N/A'"></span>
-						</div>
-						<div class="job-info">
-							<i class="fas fa-briefcase"></i> <span
-								th:text="${job.jobType != null} ? ${job.jobType} : 'N/A'"></span>
-						</div>
-						<div class="job-info">
-							<i class="fas fa-users"></i> <span
-								th:text="${job.applicants != null} ? ${job.applicants} + ' Applicants' : '0 Applicants'"></span>
-						</div>
-					</div>
-					<div class="col-md-5 text-md-end">
-						<span
-							th:classappend="'status-badge status-' + (${job.jobStatus != null} ? ${job.jobStatus.toLowerCase()} : 'unknown')"
-							th:text="${job.jobStatus != null} ? ${job.jobStatus} : 'Unknown'"></span>
-						<div class="job-info">
-							<i class="fas fa-calendar-alt"></i> <span
-								th:text="'Expires: ' + (${job.deadline != null} ? ${#temporals.format(job.deadline, 'MMM dd, yyyy')} : 'N/A')"></span>
-						</div>
-						<div class="job-info">
-							<i class="fas fa-clock"></i> <span
-								th:text="'Posted: ' + (${job.postedDate != null} ? ${#temporals.format(job.postedDate, 'MMM dd, yyyy')} : 'N/A')"></span>
-						</div>
-					</div>
-				</div>
-				<div class="action-buttons mt-3">
-					<button class="btn btn-outline-violet action-btn view-details"
-						th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}, data-bs-target='#viewModal-' + ${job.jobId} "
-						data-bs-toggle="modal">
-						<i class="fas fa-eye"></i> View
-					</button>
-
-					<a class="btn btn-outline-violet action-btn"
-						th:href="@{'/employer/jobs/update/' + ${job.jobId}}"
-						aria-label="Edit job"> <i class="fas fa-edit"></i> Edit
-					</a>
-
-
-
-					<form th:action="@{'/employer/job/' + ${job.jobId} + '/toggle'}"
-						method="post">
-
-						<button class="btn btn-outline-warning" type="submit">
-							<i class="fas"
-								th:classappend="${updatedJobStatus == 'OPEN'} ? 'fa-pause-circle' : 'fa-play-circle'"></i>
-							<span th:text="${updatedJobStatus}"></span>
-						</button>
-					</form>
-					<button type="button" class="btn btn-outline-danger delete-job-btn"
-						th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}"
-						data-bs-toggle="modal" data-bs-target="#deleteModal">
-						<i class="fas fa-trash-alt"></i> Delete
-					</button>
-
-
-				</div>
+			<div class="table-responsive">
+				<table class="table-bordered">
+					<thead>
+						<tr>
+							<th>Job Title</th>
+							<th>Location</th>
+							<th>Job Type</th>
+							<th>Applicants</th>
+							<th>Status</th>
+							<th>Expires</th>
+							<th>Posted</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="job : ${jobs}">
+							<td th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'"></td>
+							<td
+								th:text="${job.locations != null and !#sets.isEmpty(job.locations)} ? ${#strings.listJoin(#lists.toList(job.locations), ', ')} : 'N/A'"></td>
+							<td th:text="${job.jobType != null} ? ${job.jobType} : 'N/A'"></td>
+							<td
+								th:text="${job.applicants != null} ? ${job.applicants} + '' : '0'"></td>
+							<td><span
+								th:classappend="'status-badge status-' + (${job.jobStatus != null} ? ${job.jobStatus.toLowerCase()} : 'unknown')"
+								th:text="${job.jobStatus != null} ? ${job.jobStatus} : 'Unknown'"></span>
+							</td>
+							<td
+								th:text="'' + (${job.deadline != null} ? ${#temporals.format(job.deadline, 'MMM dd, yyyy')} : 'N/A')"></td>
+							<td
+								th:text="'' + (${job.postedDate != null} ? ${#temporals.format(job.postedDate, 'MMM dd, yyyy')} : 'N/A')"></td>
+							<td>
+								<button class="btn btn-outline-violet action-btn view-details"
+									th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}, data-bs-target='#viewModal-' + ${job.jobId}"
+									data-bs-toggle="modal">
+									<i class="fas fa-eye"></i>
+								</button> <a class="btn btn-outline-violet action-btn"
+								th:href="@{'/employer/jobs/update/' + ${job.jobId}}"> <i
+									class="fas fa-edit"></i>
+							</a>
+								<form th:action="@{'/employer/job/' + ${job.jobId} + '/toggle'}"
+									method="post" style="display: inline;">
+									<button class="btn btn-outline-warning" type="submit">
+										<i class="fas"
+											th:classappend="${updatedJobStatus == 'OPEN'} ? 'fa-pause-circle' : 'fa-play-circle'"></i>
+										<span th:text="${updatedJobStatus}"></span>
+									</button>
+								</form>
+								<button type="button"
+									class="btn btn-outline-danger delete-job-btn"
+									th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}"
+									data-bs-toggle="modal" data-bs-target="#deleteModal">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 
-		<!-- Archived Jobs Section -->
-		<div id="archivedJobs" class="job-list-section" style="display: none;"></div>
+		<!-- Archived Jobs Table (Initially Hidden) -->
+		<div id="archivedJobs" class="job-list-section" style="display: none;">
+			<div class="table-responsive">
+				<table class="table-bordered">
+					<thead>
+						<tr>
+							<th>Job Title</th>
+							<th>Location</th>
+							<th>Job Type</th>
+							<th>Applicants</th>
+							<th>Status</th>
+							<th>Expires</th>
+							<th>Posted</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="job : ${expired}">
+							<td th:text="${job.jobRole != null} ? ${job.jobRole} : 'N/A'"></td>
+							<td
+								th:text="${job.locations != null and !#sets.isEmpty(job.locations)} ? ${#strings.listJoin(#lists.toList(job.locations), ', ')} : 'N/A'"></td>
+							<td th:text="${job.jobType != null} ? ${job.jobType} : 'N/A'"></td>
+							<td
+								th:text="${job.applicants != null} ? ${job.applicants} + '' : '0'"></td>
+							<td><span
+								th:classappend="'status-badge status-' + (${job.jobStatus != null} ? ${job.jobStatus.toLowerCase()} : 'unknown')"
+								th:text="${job.jobStatus != null} ? ${job.jobStatus} : 'Unknown'"></span>
+							</td>
+							<td
+								th:text="'' + (${job.deadline != null} ? ${#temporals.format(job.deadline, 'MMM dd, yyyy')} : 'N/A')"></td>
+							<td
+								th:text="'' + (${job.postedDate != null} ? ${#temporals.format(job.postedDate, 'MMM dd, yyyy')} : 'N/A')"></td>
+							<td>
+								<button class="btn btn-outline-violet action-btn view-details"
+									th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}, data-bs-target='#viewModal-' + ${job.jobId}"
+									data-bs-toggle="modal">
+									<i class="fas fa-eye"></i>
+								</button> <a class="btn btn-outline-violet action-btn"
+								th:href="@{'/employer/jobs/update/' + ${job.jobId}}"> <i
+									class="fas fa-edit"></i>
+							</a>
+								<form th:action="@{'/employer/job/' + ${job.jobId} + '/toggle'}"
+									method="post" style="display: inline;">
+									<button class="btn btn-outline-warning" type="submit">
+										<i class="fas"
+											th:classappend="${updatedJobStatus == 'OPEN'} ? 'fa-pause-circle' : 'fa-play-circle'"></i>
+										<span th:text="${updatedJobStatus}"></span>
+									</button>
+								</form>
+								<button type="button"
+									class="btn btn-outline-danger delete-job-btn"
+									th:attr="data-job-id=${job.jobId}, data-job-title=${job.jobRole}"
+									data-bs-toggle="modal" data-bs-target="#deleteModal">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
 
 		<!-- Empty State -->
 		<!-- Check if jobs list is empty -->
@@ -272,8 +293,8 @@
 									th:text="${job.jobCategory != null} ? ${job.jobCategory} : 'N/A'"></span>
 							</p>
 							<p>
-							<strong>Description: </strong> <span
-							th:text="${job.jobDescription != null ? #strings.replace(job.jobDescription, '\n', ' ') : 'N/A'}"></span>
+								<strong>Description: </strong> <span
+									th:text="${job.jobDescription != null ? #strings.replace(job.jobDescription, '\n', ' ') : 'N/A'}"></span>
 							</p>
 							<p>
 								<strong>Required Skills:</strong> <span

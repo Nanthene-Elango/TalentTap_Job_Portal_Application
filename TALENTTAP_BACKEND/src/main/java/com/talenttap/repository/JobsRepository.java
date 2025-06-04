@@ -1,5 +1,6 @@
 package com.talenttap.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -18,28 +19,28 @@ public interface JobsRepository extends JpaRepository<Jobs,Integer> {
 
 	List<Jobs> findByEmployer(Employer employer);
 
-    List<Jobs> findTop2ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(
+    List<Jobs> findTop3ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(
             Employer employer, JobStatus jobStatus, LocalDateTime deadline);
     
-    @Query("SELECT j FROM Jobs j " +
-            "LEFT JOIN j.jobType jt " +
-            "LEFT JOIN j.jobCategory jc " +
-            "LEFT JOIN j.requiredSkills s " +
-            "LEFT JOIN j.jobLocation l " +
-            "WHERE LOWER(j.jobRole) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(j.jobDescription) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(j.roles) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(j.responsibilities) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(j.benefits) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(j.yearsOfExperience) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(CAST(j.workType AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(CAST(j.jobStatus AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(CAST(j.approvalStatus AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(jt.employmentType) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(jc.jobCategory) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.skill) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(l.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-     Page<Jobs> searchByKeyword(String keyword, Pageable pageable);
+    @Query("SELECT DISTINCT j FROM Jobs j " +
+ 	       "LEFT JOIN j.jobType jt " +
+ 	       "LEFT JOIN j.jobCategory jc " +
+ 	       "LEFT JOIN j.requiredSkills s " +
+ 	       "LEFT JOIN j.jobLocation l " +
+ 	       "WHERE LOWER(j.jobRole) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(j.jobDescription) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(j.roles) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(j.responsibilities) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(j.benefits) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(j.yearsOfExperience) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(CAST(j.workType AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(CAST(j.jobStatus AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(CAST(j.approvalStatus AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(jt.employmentType) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(jc.jobCategory) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(s.skill) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+ 	       "OR LOWER(l.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+ 	List<Jobs> searchByKeywordNoPagination(@Param("keyword") String keyword);
     
     @Modifying
     @Transactional
@@ -47,5 +48,11 @@ public interface JobsRepository extends JpaRepository<Jobs,Integer> {
     int markExpiredJobs(@Param("expiredStatus") JobStatus expiredStatus,
                         @Param("now") LocalDateTime now,
                         @Param("employer") Employer employer);
+
+	//List<Jobs> findByEmployerAndJobStatus(int employerId, String string);
+    
+    List<Jobs> findByEmployerAndJobStatus(Employer employerId, JobStatus status);
+
+	List<Jobs> findByEmployerAndDeadlineAfter(Employer employer, LocalDateTime now);
 
 }

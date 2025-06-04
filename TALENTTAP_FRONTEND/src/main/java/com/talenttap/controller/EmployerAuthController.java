@@ -3,6 +3,13 @@ package com.talenttap.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,17 +17,27 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.EmployerRegisterDTO;
+import com.talenttap.DTO.ChangePasswordDTO;
+import com.talenttap.DTO.EditCompanyProfileDTO;
+import com.talenttap.DTO.EmailDTO;
+import com.talenttap.DTO.PasswordRequest;
 import com.talenttap.model.EmployerRegister;
+import com.talenttap.model.IndustryType;
 import com.talenttap.model.JwtToken;
+import com.talenttap.model.Location;
 import com.talenttap.model.Login;
 import com.talenttap.service.EmployerAuthService;
 import com.talenttap.service.JobseekerService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,6 +46,9 @@ public class EmployerAuthController {
     private EmployerAuthService employerService;
     
     private JobseekerService jobseekerService;
+    @Autowired
+	private RestTemplate restTemplate;
+	
 
     public EmployerAuthController(EmployerAuthService employerService, JobseekerService jobseekerService) {
         this.employerService = employerService;
@@ -130,8 +150,94 @@ public class EmployerAuthController {
 	    return "redirect:/";     
 	}
 	
+	@PostMapping("/employer/candidate/approve")
+	public String handleApproveCandidate(@ModelAttribute EmailDTO email,
+	                                     @RequestParam("applicantId") int applicantId,
+	                                     @CookieValue(value = "jwt", required = false) String jwt,
+	                                     RedirectAttributes redirectAttributes) {
+		System.out.println("i reached the controlller");
+	    if (jwt == null || jwt.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("error", "Unauthorized. Please log in.");
+	        return "redirect:/employer/candidates";
+	    }
 
+	    try {
+	        employerService.callApproveAPI(applicantId, email, jwt.trim());
+	        redirectAttributes.addFlashAttribute("success", "Candidate approved successfully.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Error during approval: " + e.getMessage());
+	    }
+
+	    return "redirect:/employer/candidates";
+	}
 	
-	
-	
+	@PostMapping("/employer/candidate/reject")
+	public String handleRejectCandidate(@ModelAttribute EmailDTO email,
+	                                     @RequestParam("applicantId") int applicantId,
+	                                     @CookieValue(value = "jwt", required = false) String jwt,
+	                                     RedirectAttributes redirectAttributes) {
+		System.out.println("i reached the controlller");
+	    if (jwt == null || jwt.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("error", "Unauthorized. Please log in.");
+	        return "redirect:/employer/candidates";
+	    }
+
+	    try {
+	        employerService.callRejectAPI(applicantId, email, jwt.trim());
+	        redirectAttributes.addFlashAttribute("success", "Candidate rejected successfully.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Error during approval: " + e.getMessage());
+	    }
+
+	    return "redirect:/employer/candidates";
+	}
+
+    @PostMapping("/uploadIdentity")
+    public String uploadIdentity(
+            @RequestParam("govId") MultipartFile govIdFile,
+            @RequestParam("companyId") MultipartFile companyIdFile,
+            @RequestParam("companyEmail") String companyEmail,
+            @CookieValue(value = "jwt", required = false) String jwt,
+            Model model) {
+
+        boolean uploadSuccess = employerService.handleIdentityUpload(govIdFile, companyIdFile, companyEmail, jwt);
+
+        if (uploadSuccess) {
+            model.addAttribute("message", "Files uploaded successfully!");
+        } else {
+            model.addAttribute("message", "Upload failed. Please try again.");
+        }
+
+        return "employer/employerProfile"; // or redirect to some page
+    }
+    
+    @PostMapping("/employer/update/password")
+    public String updatePassword(
+            @ModelAttribute("changePassword") @Valid ChangePasswordDTO changePassword,
+            BindingResult bindingResult,
+            @CookieValue(value = "jwt", required = false) String jwt,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // If form validation fails
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("changePassword", changePassword);
+            return "employer/accountSettings"; // Return the same page with errors
+        }
+
+        // Call service to change password
+        String message = employerService.changePassword(changePassword, jwt);
+
+        if (message.equalsIgnoreCase("success")) {
+            redirectAttributes.addFlashAttribute("successMessage", "Password updated successfully!");
+            return "redirect:/employer/account/security";
+        } else {
+            model.addAttribute("errorMessage", message); // Show failure message
+            model.addAttribute("changePassword", changePassword);
+            return "employer/accountSettings";
+        }
+    }
+
+  
+
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.talenttap.DTO.EditJob;
+import com.talenttap.DTO.EmployerJobFilterDTO;
 import com.talenttap.DTO.AdminJobDTO;
 import com.talenttap.DTO.CandidatesDTO;
 import com.talenttap.DTO.EmploymentTypeDTO;
@@ -225,7 +226,48 @@ public class JobService {
 	    int updatedCount = jobsRepo.markExpiredJobs(JobStatus.expired, LocalDateTime.now(), employer);
 	    logger.info("Marked {} jobs as EXPIRED for employer {}", updatedCount, username);
 
-	    List<Jobs> jobs = jobsRepo.findByEmployer(employer);
+	    List<Jobs> jobs = jobsRepo.findByEmployerAndDeadlineAfter(employer, LocalDate.now().atStartOfDay());
+
+
+	    logger.info("Returning {} job(s) for employer {}", jobs.size(), username);
+	    
+	    List<JobDisplayDTO> jobs1 = jobs.stream().map(JobDisplayDTO::new).toList();
+	    
+	    for (JobDisplayDTO j : jobs1) {
+			j.setApplicants(jobApplicationRepo.countByJob_JobId(j.getJobId()));
+		}
+
+	    return jobs1;
+	}
+	@Transactional
+	public List<JobDisplayDTO> getAllExpiredJobs(String jwt) {
+	    if (jwt == null || jwt.isBlank()) {
+	        logger.error("JWT token is empty or null");
+	        throw new InvalidJwtException("JWT token is empty or null");
+	    }
+
+	    logger.info("Received getAllJobs request with JWT token");
+
+	    String username = jwtutil.extractIdentifier(jwt);
+	    logger.debug("Extracted username from JWT: {}", username);
+
+	    Users user = userRepo.findByUsername(username)
+	            .orElseThrow(() -> {
+	                logger.error("User not found for username: {}", username);
+	                return new EmployerNotFoundException("User not found: " + username);
+	            });
+
+	    Employer employer = employerRepo.findByUser(user)
+	            .orElseThrow(() -> {
+	                logger.error("Employer not found for user: {}", username);
+	                return new EmployerNotFoundException("Employer not found for user: " + username);
+	            });
+
+	    logger.info("Marking expired jobs as EXPIRED for employer: {}", username);
+	    int updatedCount = jobsRepo.markExpiredJobs(JobStatus.expired, LocalDateTime.now(), employer);
+	    logger.info("Marked {} jobs as EXPIRED for employer {}", updatedCount, username);
+
+	    List<Jobs> jobs = jobsRepo.findByEmployerAndJobStatus(employer, JobStatus.expired);
 
 	    logger.info("Returning {} job(s) for employer {}", jobs.size(), username);
 	    
@@ -254,7 +296,7 @@ public class JobService {
 				.orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
 
 		// Fetch top 2 active jobs (not expired, ordered by posted date)
-		List<Jobs> jobs = jobsRepo.findTop2ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(employer,
+		List<Jobs> jobs = jobsRepo.findTop3ByEmployerAndJobStatusNotAndDeadlineAfterOrderByPostedDateDesc(employer,
 				JobStatus.expired, LocalDateTime.now());
 
 		// Map to JobDisplayDTO
@@ -375,9 +417,6 @@ public class JobService {
 		return job;
 	}
 
-	public Page<Jobs> searchJobs(String keyword, Pageable pageable) {
-		return jobsRepo.searchByKeyword(keyword, pageable);
-	}
 
 	
 	public List<CandidatesDTO> getAllAppliedCandidates(String jwt) {
@@ -554,5 +593,88 @@ public class JobService {
 	 	        jobsRepo.save(job);
 	 	    }
 	 	}
+
+	// applied candidates
+	public List<CandidatesDTO> getRecentAppliedCandidates(String jwt) {
+		if (jwt == null || jwt.isBlank()) {
+		    throw new IllegalArgumentException("JWT token is empty or null");
+		}
+
+		// Extract username from JWT
+		String username = jwtutil.extractIdentifier(jwt);
+		Users user = userRepo.findByUsername(username)
+		        .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+		// Fetch employer
+		Employer employer = employerRepo.findByUser(user)
+		        .orElseThrow(() -> new RuntimeException("Employer not found for user: " + username));
+
+		// Fetch top 5 recent applications
+		List<JobApplication> application = jobApplicationRepo.findTop5ByJob_EmployerAndStatusOrderByDateOfApplicationDesc(employer,ApplicationStatus.pending);
+		List<CandidatesDTO> candidates = application.stream().map(CandidatesDTO::new).toList();
+
+		return candidates;
+
+	}
+
+	public List<JobDisplayDTO> searchJobs(EmployerJobFilterDTO jobFilter) {
+	    List<Jobs> jobs = jobsRepo.searchByKeywordNoPagination(jobFilter.getKeyword().toLowerCase());
+
+    if (jobs != null) {
+
+    	if (jobFilter.getEmploymentType() != null && jobFilter.getEmploymentType() != 0) {
+    	    jobs = jobs.stream()
+    	        .filter(job -> job.getJobType() != null &&
+    	                       Integer.valueOf(job.getJobType().getEmploymentTypeId()).equals(jobFilter.getEmploymentType()))
+    	        .toList();
+    	   
+    	    System.out.println("hi im emp type" +jobs.get(0).getJobType().getEmploymentType());
+    	}
+
+
+
+        // Filter by location if not 0
+        if (jobFilter.getLocation() != 0) {
+            jobs = jobs.stream()
+                .filter(j -> j.getJobLocation() != null 
+                          && j.getJobLocation().stream()
+                              .anyMatch(loc -> loc.getLocationId() == jobFilter.getLocation()))
+                .toList();
+        }
+
+        // Filter by workType (assuming it's an integer field in Jobs)
+        if (jobFilter.getWorkType() != null && !jobFilter.getWorkType().isBlank() && !jobFilter.getWorkType().isEmpty()) {
+            jobs = jobs.stream()
+                .filter(j -> j.getWorkType() != null
+                          && j.getWorkType().name().equals(jobFilter.getWorkType()))
+                .toList();
+        }
+
+        if (jobFilter.getJobStatus() != null && !jobFilter.getJobStatus().isBlank()) {
+            JobStatus filterStatus = null;
+            try {
+                filterStatus = JobStatus.valueOf(jobFilter.getJobStatus().toLowerCase());
+                System.out.println("--- Filter Status (parsed enum): " + filterStatus.name() + " ---");
+            } catch (IllegalArgumentException e) {
+                System.out.println("--- Invalid job status filter value: " + jobFilter.getJobStatus() + " ---");
+                filterStatus = null;
+            }
+
+            if (filterStatus != null) {
+                final JobStatus finalFilterStatus = filterStatus;
+                jobs = jobs.stream()
+                    .filter(j -> {
+                        System.out.println("--- Checking job status: " + (j.getJobStatus() != null ? j.getJobStatus().name() : "null") + " against filter: " + finalFilterStatus.name() + " ---");
+                        return j.getJobStatus() != null && j.getJobStatus().name().equals(finalFilterStatus.name().toLowerCase());
+                    })
+                    .toList();
+                
+            }
+        }
+
+    }
+    // Map filtered Jobs entities to JobDisplayDTO (assuming you have a mapper)
+    return jobs.stream().map(JobDisplayDTO::new).toList();
+}
 
 }

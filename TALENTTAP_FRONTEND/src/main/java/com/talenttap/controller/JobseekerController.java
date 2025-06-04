@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
+import com.talenttap.model.Experience;
 import com.talenttap.model.JobCategory;
 import com.talenttap.model.JobFilter;
 import com.talenttap.model.Jobs;
@@ -187,19 +188,19 @@ public class JobseekerController {
 		return jobseekerService.deleteSeekerLanguage(id , jobseekerId , redirectAttributes);
 	}
 	
-	@PostMapping("/jobseeker/project/add/{id}")
-	public String addCertification(@PathVariable int id , @ModelAttribute Projects project , RedirectAttributes redirectAttributes) {
-		return jobseekerService.addProject(id , project , redirectAttributes);
+	@PostMapping("/jobseeker/experience/add/{id}")
+	public String addCertification(@PathVariable int id , @ModelAttribute Experience experience , RedirectAttributes redirectAttributes) {
+		return jobseekerService.addExperience(id , experience , redirectAttributes);
 	}
 	
-	@PostMapping("/jobseeker/project/edit")
-	public String updateEducation(@ModelAttribute Projects project, RedirectAttributes redirectAttributes) {
-		return jobseekerService.editProject(project , redirectAttributes);
+	@PostMapping("/jobseeker/experience/edit")
+	public String updateEducation(@ModelAttribute Experience experience, RedirectAttributes redirectAttributes) {
+		return jobseekerService.editExperience(experience , redirectAttributes);
 	}
 	
-	@PostMapping("/jobseeker/project/delete/{id}")
+	@PostMapping("/jobseeker/experience/delete/{id}")
 	public String deleteProjectById(@PathVariable int id , RedirectAttributes redirectAttributes) {
-		return jobseekerService.deleteProject(id , redirectAttributes);
+		return jobseekerService.deleteExperience(id , redirectAttributes);
 	}
 	
 }

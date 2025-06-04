@@ -2,7 +2,7 @@ package com.talenttap.controller;
 
 import java.util.List;
 import java.util.Map;
-
+import com.talenttap.DTO.EmployerJobFilterDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
@@ -133,17 +133,10 @@ public class JobsController {
 		return ResponseEntity.ok(jobService.editJob(job));
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<Page<Jobs>> searchJobs(@RequestParam String keyword,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "postedDate") String sortBy,
-			@RequestParam(defaultValue = "desc") String direction) {
-
-		PageRequest pageable = PageRequest.of(page, size,
-				direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
-
-		Page<Jobs> result = jobService.searchJobs(keyword, pageable);
-		return ResponseEntity.ok(result);
+	@PostMapping("/searchAndFilter")  // Changed to POST because you have a @RequestBody
+	public ResponseEntity<List<JobDisplayDTO>> searchJobs(@RequestBody EmployerJobFilterDTO dto) {
+	    List<JobDisplayDTO> result = jobService.searchJobs(dto);
+	    return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/getAllJobs")
@@ -154,6 +147,19 @@ public class JobsController {
 				 token.hashCode());
 
 		List<JobDisplayDTO> jobs = jobService.getAllJobs(token);
+		logger.info("Returning {} job(s)", jobs.size());
+
+		return ResponseEntity.ok(jobs);
+	}
+	
+	@GetMapping("/getAllExpiredJobs")
+	public ResponseEntity<List<JobDisplayDTO>> getEmployerExpiredJobs(@RequestHeader("Authorization") String authHeader) {
+		
+		String token = authHeader.replace("Bearer ", "");
+		logger.info("Received request to fetch jobs with token: {}",
+				 token.hashCode());
+
+		List<JobDisplayDTO> jobs = jobService.getAllExpiredJobs(token);
 		logger.info("Returning {} job(s)", jobs.size());
 
 		return ResponseEntity.ok(jobs);

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Security | TalentTap</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" th:href="@{/employer/css/accountSetting.css}">
+    <link rel="stylesheet" th:href="@{/employer/css/style.css}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+   <div th:replace="~{employer/navbar :: navbar}"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Password & Security Section -->
+                
+                <h2 class="content-title">Account Security</h2>
+                <form  th:action="@{/employer/update/password}" th:object="${changePassword}" method="post">
+                <div class="content-card">
+                    <div class="content-header">
+                        <h3 class="content-title">Change Password</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" th:field="*{oldPassword}" class="form-control" placeholder="Enter current password">
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" id="newPassword" class="form-control" th:field="*{newPassword}" placeholder="Enter new password">
+                        <div class="error-message"></div>
+                        <div class="password-requirements">
+                            <ul>
+                                <li id="length">At least 8 characters</li>
+                                <li id="uppercase">At least one uppercase letter</li>
+                                <li id="lowercase">At least one lowercase letter</li>
+                                <li id="number">At least one number</li>
+                                <li id="special">At least one special character</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" th:field="*{confirmNewPassword}" placeholder="Confirm new password">
+                        <div class="error-message"></div>
+                    </div>
+                    <button class="btn btn-primary" id="savePasswordBtn" type="submit">Save Password</button>
+                </div>
+                 </form>
+                <div class="content-card">
+                    <div class="content-header">
+                        <h3 class="content-title">Account Management</h3>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Deactivate Account</label>
+                        <p class="text-muted">Deactivating your account will temporarily disable it. You can reactivate it by logging in again.</p>
+                        <button class="btn btn-danger" id="deactivateAccountBtn">Deactivate Account</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Delete Account</label>
+                        <p class="text-muted">Deleting your account is permanent and cannot be undone. All your data will be removed.</p>
+                        <button class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Confirmation Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Password</h3>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your password to continue with this action.</p>
+                <div class="form-group">
+                    <label for="confirmPasswordInput" class="form-label">Password</label>
+                    <input type="password" id="confirmPasswordInput" class="form-control" placeholder="Enter your password">
+                    <div class="error-message"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script th:src="@{/employer/js/accountSettings.js}"></script>
+</body>

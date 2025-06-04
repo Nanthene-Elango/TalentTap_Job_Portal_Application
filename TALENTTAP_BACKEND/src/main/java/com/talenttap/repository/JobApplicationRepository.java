@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.talenttap.entity.ApplicationStatus;
 import com.talenttap.entity.Employer;
 import com.talenttap.entity.JobApplication;
 import com.talenttap.entity.JobSeeker;
-import com.talenttap.projections.JobApplicantCountProjection;
+import com.talenttap.entity.JobStatus;
 
 public interface JobApplicationRepository extends JpaRepository<JobApplication,Integer>{
 
@@ -17,11 +18,10 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication,I
 
 	 boolean existsByJobSeekerAndJob_JobId(JobSeeker jobSeeker, int jobId);
 	 
-	 @Query("SELECT ja.job.jobId AS jobId, COUNT(ja) AS applicantCount " +
-	           "FROM JobApplication ja WHERE ja.job.jobId IN :jobIds GROUP BY ja.job.jobId")
-	    List<JobApplicantCountProjection> countApplicantsForJobs(@Param("jobIds") List<Integer> jobIds);
-	 
-	 
+	 List<JobApplication> findByJob_EmployerAndStatus(Employer employer, ApplicationStatus status);
+
 	 List<JobApplication> findByJob_Employer(Employer employer);
+
+	List<JobApplication> findTop5ByJob_EmployerAndStatusOrderByDateOfApplicationDesc(Employer employer, ApplicationStatus status);
 
 }

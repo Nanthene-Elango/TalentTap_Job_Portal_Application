@@ -169,8 +169,9 @@ public class AdminService {
 
         Users user = userOptional.get();
 
+        System.out.println(user.getRole().getRole());
         // Verify the user is an admin
-        if (!user.getRole().getRole().equals("ADMIN")) {
+        if (!user.getRole().getRole().equals("ADMIN") && !user.getRole().getRole().equals("EMPLOYER")) {
             throw new RuntimeException("User is not an admin");
         }
 

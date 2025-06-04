@@ -2,14 +2,14 @@ package com.talenttap.model;
 
 public class Location {
 	
-    private int locationId;
+    private Integer locationId;
     private String location;
 
-    public int getLocationId() {
+    public Integer getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(int locationId) {
+    public void setLocationId(Integer locationId) {
         this.locationId = locationId;
     }
 
