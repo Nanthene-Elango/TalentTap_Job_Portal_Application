@@ -594,6 +594,7 @@ public class JobService {
 	 	    }
 	 	}
 
+	 	
 	// applied candidates
 	public List<CandidatesDTO> getRecentAppliedCandidates(String jwt) {
 		if (jwt == null || jwt.isBlank()) {

@@ -101,24 +101,6 @@ public class AdminController {
         }
     }
     
- // Delete a job by jobId
-    @DeleteMapping("/jobs/delete/{jobId}")
-    public ResponseEntity<String> deleteJob(@PathVariable("jobId") Integer jobId,
-                                            @RequestHeader("Authorization") String jwtToken) {
-        try {
-            String jwt = jwtToken.replace("Bearer ", "");
-            // Validate JWT and user (already done in deleteJob via approve/reject methods)
-            boolean deleted = jobService.deleteJob(jobId);
-            if (deleted) {
-                return ResponseEntity.ok("Job deleted successfully");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Job not found with ID: " + jobId);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error deleting job: " + e.getMessage());
-        }
-    }
-    
     @GetMapping("/profile")
     public ResponseEntity<?> getAdminProfile(@RequestHeader("Authorization") String jwtToken) {
         try {
@@ -209,6 +191,30 @@ public class AdminController {
             return ResponseEntity.ok("Selected employers set to Inactive");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error unverifying employers: " + e.getMessage());
+        }
+    }
+    
+    @PostMapping("/employer/verify-single")
+    public ResponseEntity<String> verifySingleEmployer(@RequestBody Integer employerId,
+                                                      @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            adminService.updateVerificationStatus(List.of(employerId), true, jwt);
+            return ResponseEntity.ok("Employer set to Active");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error verifying employer: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/employer/unverify-single")
+    public ResponseEntity<String> unverifySingleEmployer(@RequestBody Integer employerId,
+                                                        @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            adminService.updateVerificationStatus(List.of(employerId), false, jwt);
+            return ResponseEntity.ok("Employer set to Inactive");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error unverifying employer: " + e.getMessage());
         }
     }
 }
