@@ -12,12 +12,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.talenttap.DTO.EducationDTO;
 import com.talenttap.DTO.EmployerAdminDTO;
 import com.talenttap.DTO.EmployerDetailsDTO;
@@ -29,6 +32,7 @@ import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.exception.JobFetchException;
 import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
 import com.talenttap.model.EducationLevel;
@@ -643,4 +647,66 @@ public class PageRenderController {
         }
         return "admin/employer-details"; // Template name without .html
     }
+    
+    @PostMapping("/admin/employers/verify")
+    public String verifyEmployers(@RequestParam("employerIds") List<Integer> employerIds,
+                                  @CookieValue(value = "jwt", required = false) String jwt,
+                                  Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = adminService.verifyEmployers(jwt, employerIds);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to verify employers: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#employers";
+    }
+
+    // New endpoint for unverifying employers
+    @PostMapping("/admin/employers/unverify")
+    public String unverifyEmployers(@RequestParam("employerIds") List<Integer> employerIds,
+                                    @CookieValue(value = "jwt", required = false) String jwt,
+                                    Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = adminService.unverifyEmployers(jwt, employerIds);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to unverify employers: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#employers";
+    }
+    
+    @PostMapping("/admin/employer/verify-single")
+    public String verifySingleEmployer(@RequestParam("employerId") Integer employerId, @CookieValue(value = "jwt", required = false) String jwt, Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = adminService.verifySingleEmployer(jwt, employerId);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to verify employer: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#employers";
+    }
+
+    @PostMapping("/admin/employer/unverify-single")
+    public String unverifySingleEmployer(@RequestParam("employerId") Integer employerId, @CookieValue(value = "jwt", required = false) String jwt, Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            String result = adminService.unverifySingleEmployer(jwt, employerId);
+            model.addAttribute("message", result);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to unverify employer: " + e.getMessage());
+        }
+        return "redirect:/admin/adminDashboard#employers";
+    }
+    
 }

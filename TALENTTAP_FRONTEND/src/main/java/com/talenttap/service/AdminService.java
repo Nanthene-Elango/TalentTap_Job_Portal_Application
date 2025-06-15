@@ -266,4 +266,56 @@ public class AdminService {
             throw new RuntimeException("Error unverifying employers: " + e.getMessage(), e);
         }
     }
+    
+    public String verifySingleEmployer(String jwtToken, Integer employerId) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Integer> entity = new HttpEntity<>(employerId, headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    backendBaseUrl + "/admin/employer/verify-single",
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException(response.getBody() != null ? response.getBody() : "Failed to verify employer: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Invalid or expired JWT token: " + e.getStatusCode(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error verifying employer: " + e.getMessage(), e);
+        }
+    }
+
+    public String unverifySingleEmployer(String jwtToken, Integer employerId) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Integer> entity = new HttpEntity<>(employerId, headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    backendBaseUrl + "/admin/employer/unverify-single",
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException(response.getBody() != null ? response.getBody() : "Failed to unverify employer: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Invalid or expired JWT token: " + e.getStatusCode(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error unverifying employer: " + e.getMessage(), e);
+        }
+    }
 }
