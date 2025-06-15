@@ -73,12 +73,6 @@
                         <i class="fas fa-users me-2"></i> Job Seekers
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#applications" class="nav-link" data-section="applications"><i class="fas fa-file-alt me-2"></i> Applications</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#settings" class="nav-link" data-section="settings"><i class="fas fa-cog me-2"></i> Settings</a>
-                </li>
             </ul>
         </div>
 
@@ -195,7 +189,6 @@
                                         </div>
                                         <div>
                                             <a href="job-details.html?id=1" class="btn btn-sm btn-outline-secondary me-1"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-sm btn-outline-secondary me-1"><i class="fas fa-edit"></i></a>
                                             <a href="#" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></a>
                                         </div>
                                     </div>
@@ -214,8 +207,8 @@
                                             <p class="text-muted small">Registered 3 days ago</p>
                                         </div>
                                         <div>
-                                            <button class="btn btn-sm btn-success me-1">Approve</button>
-                                            <button class="btn btn-sm btn-warning">Reject</button>
+                                            <button class="btn btn-sm btn-violet me-1">Approve</button>
+                                            <button class="btn btn-sm btn-danger">Reject</button>
                                         </div>
                                     </div>
                                 </div>
@@ -515,124 +508,99 @@
 
                 <!-- Job Seekers Section -->
                 <div class="section jobseekers-section" id="jobseekersSection">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="row g-3 align-items-center">
-                                <div class="col-md-3 col-sm-6">
-                                    <select id="seekerStatusFilter" class="form-select">
-                                        <option value="">All Status</option>
-                                        <option value="active">Active</option>
-                                        <option value="suspended">Suspended</option>
-                                        <option value="pending">Pending</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <select id="locationFilter" class="form-select">
-                                        <option value="">All Locations</option>
-                                        <option value="new york">New York</option>
-                                        <option value="san francisco">San Francisco</option>
-                                        <option value="chicago">Chicago</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <input type="text" id="seekerSearch" class="form-control" placeholder="Search by name or email">
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="d-flex">
-                                        <input type="date" id="registeredStartDate" class="form-control me-1" placeholder="Start Date">
-                                        <input type="date" id="registeredEndDate" class="form-control" placeholder="End Date">
-                                    </div>
-                                </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="seekerFilterForm" class="row g-3 align-items-center">
+                        <div class="col-md-3 col-sm-6">
+                            <select id="seekerStatusFilter" class="form-select" name="status">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="suspended">Suspended</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <select id="locationFilter" class="form-select" name="location">
+                                <option value="">All Locations</option>
+                                <option th:each="location : ${locations}" th:value="${location.location}" th:text="${location.location}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <input type="text" id="seekerSearch" class="form-control" name="search" placeholder="Search by name or email">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="d-flex">
+                                <input type="date" id="registeredStartDate" class="form-control me-1" name="startDate" placeholder="Start Date">
+                                <input type="date" id="registeredEndDate" class="form-control" name="endDate" placeholder="End Date">
                             </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Job Seeker Listings</h5>
+                        <div>
+                            <input type="checkbox" id="selectAllSeekers">
+                            <label for="selectAllSeekers" class="ms-2">Select All</label>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Job Seeker Listings</h5>
-                                <div>
-                                    <input type="checkbox" id="selectAllSeekers">
-                                    <label for="selectAllSeekers" class="ms-2">Select All</label>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="seekerTable">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"><input type="checkbox" disabled></th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Location</th>
-                                            <th scope="col">Experience</th>
-                                            <th scope="col">Applications</th>
-                                            <th scope="col">Registered</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="checkbox" class="seeker-select"></td>
-                                            <td>John Doe</td>
-                                            <td><a href="mailto:john.doe@example.com">john.doe@example.com</a></td>
-                                            <td>New York</td>
-                                            <td>5</td>
-                                            <td>10</td>
-                                            <td>2025-03-15</td>
-                                            <td><span class="badge bg-success">Active</span></td>
-                                            <td>
-                                                <a href="job-seeker-details.html?id=1" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend"><i class="fas fa-pause"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="seeker-select"></td>
-                                            <td>Jane Smith</td>
-                                            <td><a href="mailto:jane.smith@example.com">jane.smith@example.com</a></td>
-                                            <td>San Francisco</td>
-                                            <td>3</td>
-                                            <td>5</td>
-                                            <td>2025-04-01</td>
-                                            <td><span class="badge bg-warning">Pending</span></td>
-                                            <td>
-                                                <a href="job-seeker-details.html?id=2" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend"><i class="fas fa-pause"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" class="seeker-select"></td>
-                                            <td>Mike Johnson</td>
-                                            <td><a href="mailto:mike.johnson@example.com">mike.johnson@example.com</a></td>
-                                            <td>Chicago</td>
-                                            <td>7</td>
-                                            <td>8</td>
-                                            <td>2025-02-20</td>
-                                            <td><span class="badge bg-danger">Suspended</span></td>
-                                            <td>
-                                                <a href="job-seeker-details.html?id=3" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend"><i class="fas fa-pause"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div>
-                                    <button class="btn btn-sm btn-success me-1" id="bulkActivateSeekers" disabled>Activate Selected</button>
-                                    <button class="btn btn-sm btn-warning" id="bulkSuspendSeekers" disabled>Suspend Selected</button>
-                                </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
+                    <th:block th:if="${jobSeekerError} != null">
+                        <div class="alert alert-danger" th:text="${jobSeekerError}"></div>
+                    </th:block>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="seekerTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><input type="checkbox" disabled></th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Experience</th>
+                                    <th scope="col">Applications</th>
+                                    <th scope="col">Registered</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="seeker : ${jobSeekers}">
+                                    <td><input type="checkbox" class="seeker-select" th:value="${seeker.jobSeekerId}"></td>
+                                    <td th:text="${seeker.name}"></td>
+                                    <td><a th:href="'mailto:' + ${seeker.email}" th:text="${seeker.email}"></a></td>
+                                    <td th:text="${seeker.location}"></td>
+                                    <td th:text="${seeker.experience}"></td>
+                                    <td th:text="${seeker.applicationCount}"></td>
+                                    <td th:text="${seeker.registered}"></td>
+                                    <td>
+                                        <span class="badge bg-success" >Active</span>
+                                    </td>
+                                    <td>
+                                       <a th:href="@{/admin/jobseeker/{id}(id=${seeker.jobSeekerId})}" class="btn btn-sm btn-violet me-1" title="View Profile"><i class="fas fa-eye"></i></a>
+                                       <button class="btn btn-sm btn-outline-warning suspend-btn" title="Suspend" th:disabled="true"><i class="fas fa-pause"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <button class="btn btn-sm btn-violet me-1" id="bulkActivateSeekers" disabled>Activate Selected</button>
+                            <button class="btn btn-sm btn-danger" id="bulkSuspendSeekers" disabled>Suspend Selected</button>
                         </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </div>

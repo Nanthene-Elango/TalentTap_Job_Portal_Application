@@ -1,0 +1,200 @@
+/* General styling for the body to ensure consistency */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fafc; /* Light gray background */
+    color: #333; /* Dark gray text */
+}
+
+/* Container for centering the card */
+.d-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Styling for the card */
+.card.dashboard-card {
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    padding: 20px;
+    max-width: 800px; /* Match max-width from HTML */
+    width: 100%;
+}
+
+/* Main title styling */
+.card-title {
+    font-size: 1.75rem; /* Slightly smaller than employer-details h2 */
+    font-weight: 700;
+    color: #2a0a5a; /* Dark purple */
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+/* Section heading styling */
+h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2a0a5a; /* Dark purple */
+    margin-bottom: 12px;
+    border-bottom: 2px solid #e0e7ff; /* Light indigo border */
+    padding-bottom: 5px;
+}
+
+/* Paragraph styling for personal and professional info */
+p {
+    font-size: 1rem;
+    color: #4b5563; /* Medium gray */
+    line-height: 1.6;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+/* Strong tags within paragraphs */
+p strong {
+    color: #2a0a5a; /* Dark purple for labels */
+    font-weight: 600;
+}
+
+/* Email link styling */
+p a[href^="mailto:"] {
+    color: #4f46e5; /* Indigo */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+p a[href^="mailto:"]:hover {
+    color: #3730a3; /* Darker indigo on hover */
+}
+
+/* Container for skills badges */
+#skills {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Space between badges */
+}
+
+/* Skill badge styling */
+.skill-badge {
+    display: inline-block;
+    background-color: #e0e7ff; /* Light indigo background */
+    color: #4f46e5; /* Indigo text */
+    padding: 6px 12px;
+    border-radius: 16px; /* Rounded corners */
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1;
+    text-transform: capitalize; /* Capitalize skills */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: background-color 0.3s ease;
+}
+
+.skill-badge:hover {
+    background-color: #c7d2fe; /* Slightly darker indigo on hover */
+}
+
+/* Status badge styling (Active, Pending, Suspended) */
+.badge.bg-success {
+    background-color: #10b981 !important; /* Green for Active */
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.badge.bg-warning {
+    background-color: #f59e0b !important; /* Yellow for Pending */
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.badge.bg-danger {
+    background-color: #ef4444 !important; /* Red for Suspended */
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Resume button styling */
+#resume {
+    display: inline-block;
+    background-color: #5e17eb; /* Violet background */
+    color: #ffffff !important; /* White text */
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    line-height: 1;
+}
+
+#resume:hover {
+    background-color: #4a12b7; /* Darker violet on hover */
+}
+
+/* Button styling for 'Back to Job Seekers' */
+.btn-outline-primary {
+    display: inline-block;
+    background-color: transparent;
+    border: 1px solid #5e17eb; /* Violet border */
+    color: #5e17eb; /* Violet text */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #5e17eb; /* Violet background on hover */
+    color: #ffffff; /* White text on hover */
+}
+
+/* Error alert styling */
+.alert-danger {
+    background-color: #f8d7da; /* Light red background */
+    color: #dc3545; /* Red text */
+    border: 1px solid #dc3545; /* Red border */
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card.dashboard-card {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    h5 {
+        font-size: 1.1rem;
+    }
+
+    p {
+        font-size: 0.95rem;
+    }
+
+    .row.g-4 {
+        flex-direction: column; /* Stack columns on smaller screens */
+    }
+
+    #resume {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
