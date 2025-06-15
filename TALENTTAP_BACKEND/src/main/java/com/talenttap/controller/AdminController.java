@@ -28,6 +28,8 @@ import com.talenttap.DTO.AdminProfileDTO;
 import com.talenttap.DTO.ChangePasswordDTO;
 import com.talenttap.DTO.EmployerAdminDTO;
 import com.talenttap.DTO.EmployerDetailsDTO;
+import com.talenttap.DTO.JobSeekerAdminDTO;
+import com.talenttap.DTO.JobSeekerDetailsDTO;
 import com.talenttap.service.AdminService;
 import com.talenttap.service.JobService;
 
@@ -215,6 +217,30 @@ public class AdminController {
             return ResponseEntity.ok("Employer set to Inactive");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error unverifying employer: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/jobseekers")
+    public ResponseEntity<List<JobSeekerAdminDTO>> getAllJobSeekers(
+            @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            List<JobSeekerAdminDTO> jobSeekers = adminService.getAllJobSeekers(jwt);
+            return ResponseEntity.ok(jobSeekers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping("/jobseeker/{id}")
+    public ResponseEntity<JobSeekerDetailsDTO> getJobSeekerDetails(@PathVariable("id") int jobSeekerId,
+                                                                  @RequestHeader("Authorization") String jwtToken) {
+        try {
+            String jwt = jwtToken.replace("Bearer ", "");
+            JobSeekerDetailsDTO jobSeekerDetails = adminService.getJobSeekerDetails(jobSeekerId, jwt);
+            return ResponseEntity.ok(jobSeekerDetails);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

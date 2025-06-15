@@ -4,14 +4,19 @@ import com.talenttap.DTO.AdminProfileDTO;
 import com.talenttap.DTO.AdminRegisterDTO;
 import com.talenttap.DTO.EmployerAdminDTO;
 import com.talenttap.DTO.EmployerDetailsDTO;
+import com.talenttap.DTO.JobSeekerAdminDTO;
+import com.talenttap.DTO.JobSeekerDetailsDTO;
 import com.talenttap.DTO.LoginDTO;
 import com.talenttap.entity.Employer;
+import com.talenttap.entity.JobSeeker;
 import com.talenttap.entity.Jobs;
 import com.talenttap.entity.Roles;
+import com.talenttap.entity.Skills;
 import com.talenttap.entity.Users;
 import com.talenttap.repository.EmployerRepository;
 import com.talenttap.repository.JobApplicationRepository;
 import com.talenttap.repository.JobsRepository;
+import com.talenttap.repository.JobseekerRepository;
 import com.talenttap.repository.RoleRepository;
 import com.talenttap.repository.UsersRepository;
 import com.talenttap.security.JwtUtil;
@@ -26,10 +31,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -50,6 +57,9 @@ public class AdminService {
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
 
+    @Autowired
+    private JobseekerRepository jobSeekerRepository;
+    
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -383,4 +393,80 @@ public class AdminService {
     	}
     }
     
+    public List<JobSeekerAdminDTO> getAllJobSeekers(String jwt) {
+        if (jwt == null || jwt.isBlank()) {
+            throw new IllegalArgumentException("JWT token is empty or null");
+        }
+
+        String username = jwtUtil.extractIdentifier(jwt);
+        Users user = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        if (!"ADMIN".equals(user.getRole().getRole())) {
+            throw new RuntimeException("User is not authorized as admin");
+        }
+
+        List<JobSeeker> jobSeekers = jobSeekerRepository.findAll();
+        List<JobSeekerAdminDTO> jobSeekerDTOs = new ArrayList<>();
+
+        for (JobSeeker jobSeeker : jobSeekers) {
+            JobSeekerAdminDTO dto = new JobSeekerAdminDTO();
+            dto.setJobSeekerId(jobSeeker.getJobSeekerId());
+            dto.setName(jobSeeker.getUser().getFullName());
+            dto.setEmail(jobSeeker.getUser().getEmail());
+            dto.setLocation(jobSeeker.getLocation() != null ? jobSeeker.getLocation().getLocation() : "N/A");
+            dto.setExperience(jobSeeker.getYearOfExperience());
+            dto.setRegistered(jobSeeker.getUser().getDateOfRegistration());
+
+            // Use JobApplicationRepository to count applications
+            int applicationCount = jobApplicationRepository.findByJobSeeker(jobSeeker).size();
+            dto.setApplicationCount(applicationCount);
+
+            jobSeekerDTOs.add(dto);
+        }
+
+        return jobSeekerDTOs;
+    }
+
+    public JobSeekerDetailsDTO getJobSeekerDetails(int jobSeekerId, String jwt) {
+        if (jwt == null || jwt.isBlank()) {
+            throw new IllegalArgumentException("JWT token is empty or null");
+        }
+
+        String username = jwtUtil.extractIdentifier(jwt);
+        Users user = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        if (!"ADMIN".equals(user.getRole().getRole())) {
+            throw new RuntimeException("User is not authorized as admin");
+        }
+
+        JobSeeker jobSeeker = jobSeekerRepository.findById(jobSeekerId)
+                .orElseThrow(() -> new RuntimeException("JobSeeker not found with ID: " + jobSeekerId));
+
+        JobSeekerDetailsDTO dto = new JobSeekerDetailsDTO();
+        dto.setJobSeekerId(jobSeeker.getJobSeekerId());
+        String fullName = jobSeeker.getUser().getFullName();
+        dto.setFullName(fullName);
+
+        // Split fullName into firstName and lastName
+        String[] nameParts = fullName != null ? fullName.split("\\s+", 2) : new String[]{"", ""};
+        dto.setFirstName(nameParts.length > 0 ? nameParts[0] : "");
+        dto.setLastName(nameParts.length > 1 ? nameParts[1] : "");
+
+        dto.setEmail(jobSeeker.getUser().getEmail());
+        dto.setPhone(jobSeeker.getUser().getMobileNumber());
+        dto.setSkills(jobSeeker.getSeekerSkills().stream()
+                .map(Skills::getSkill)
+                .collect(Collectors.toList()));
+        dto.setResumeBase64(jobSeeker.getResume() != null ? Base64.getEncoder().encodeToString(jobSeeker.getResume()) : null);
+        dto.setRegistrationDate(jobSeeker.getUser().getDateOfRegistration());
+        dto.setLocation(jobSeeker.getLocation() != null ? jobSeeker.getLocation().getLocation() : "N/A");
+
+        // Use JobApplicationRepository to count applications
+        int applicationCount = jobApplicationRepository.findByJobSeeker(jobSeeker).size();
+        dto.setApplicationCount(applicationCount);
+
+        return dto;
+    }
 }

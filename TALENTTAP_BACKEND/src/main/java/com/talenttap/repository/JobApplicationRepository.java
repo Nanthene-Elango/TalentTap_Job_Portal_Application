@@ -24,4 +24,6 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication,I
 
 	List<JobApplication> findTop5ByJob_EmployerAndStatusOrderByDateOfApplicationDesc(Employer employer, ApplicationStatus status);
 
+	@Query("SELECT ja FROM JobApplication ja WHERE ja.jobSeeker = :jobSeeker")
+    List<JobApplication> findByJobSeeker(@Param("jobSeeker") JobSeeker jobSeeker);
 }

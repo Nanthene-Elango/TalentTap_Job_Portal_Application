@@ -32,6 +32,8 @@ import com.talenttap.DTO.EditJobFormDTO;
 import com.talenttap.DTO.EmployerProfileDTO;
 import com.talenttap.DTO.JobDisplayDTO;
 import com.talenttap.DTO.JobFormDTO;
+import com.talenttap.DTO.JobSeekerAdminDTO;
+import com.talenttap.DTO.JobSeekerDetailsDTO;
 import com.talenttap.exception.JobFetchException;
 import com.talenttap.model.Certifications;
 import com.talenttap.model.Education;
@@ -574,6 +576,13 @@ public class PageRenderController {
             } else {
                 model.addAttribute("employers", employers);
             }
+            List<JobSeekerAdminDTO> jobSeekers = adminService.getAllJobSeekers(jwt);
+            if (jobSeekers == null || jobSeekers.isEmpty()) {
+                model.addAttribute("jobSeekerError", "No job seekers found or failed to fetch job seekers.");
+            } else {
+                // Add static status for display (to be replaced with actual status later)
+                model.addAttribute("jobSeekers", jobSeekers);
+            }
         } catch (Exception e) {
             model.addAttribute("error", "Failed to fetch data: " + e.getMessage());
         }
@@ -708,5 +717,21 @@ public class PageRenderController {
         }
         return "redirect:/admin/adminDashboard#employers";
     }
-    
+
+    @GetMapping("/admin/jobseeker/{id}")
+    public String jobSeekerDetails(@PathVariable("id") Integer jobSeekerId,
+                                  @CookieValue(value = "jwt", required = false) String jwt,
+                                  Model model) {
+        if (jwt == null || jwt.trim().isEmpty()) {
+            return "redirect:/admin/login";
+        }
+        try {
+            JobSeekerDetailsDTO jobSeeker = adminService.getJobSeekerDetails(jwt, jobSeekerId);
+            model.addAttribute("jobSeeker", jobSeeker);
+        } catch (Exception e) {
+            model.addAttribute("jobSeeker", null);
+            model.addAttribute("error", "Failed to fetch job seeker details: " + e.getMessage());
+        }
+        return "admin/jobseeker-details";
+    }
 }

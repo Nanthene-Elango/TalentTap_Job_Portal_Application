@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Seeker Details - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/admin/css/jobseeker-details.css}">
+</head>
+<body>
+    <div class="d-flex justify-content-center align-items-center min-vh-100 p-3">
+        <div class="card dashboard-card">
+            <div class="card-body" th:object="${jobSeeker}">
+                <h4 class="card-title mb-4" id="seeker-title">Job Seeker Profile</h4>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h5>Personal Information</h5>
+                        <p><strong>First Name:</strong> <span id="first-name" th:text="*{firstName}">N/A</span></p>
+                        <p><strong>Last Name:</strong> <span id="last-name" th:text="*{lastName}">N/A</span></p>
+                        <p><strong>Email:</strong> <span id="email"><a th:href="'mailto:' + *{email}" th:text="*{email}">N/A</a></span></p>
+                        <p><strong>Phone:</strong> <span id="phone" th:text="*{phone}">N/A</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Professional Information</h5>
+                        <p><strong>Skills:</strong> <span id="skills" th:text="*{skills}">N/A</span></p>
+                        <p><strong>Resume:</strong>
+                            <a th:if="*{resumeBase64} != null" href="#" id="resume" class="text-primary" th:data-resume="*{resumeBase64}">View Resume</a>
+                            <span th:if="*{resumeBase64} == null">No resume uploaded</span>
+                        </p>
+                        <p><strong>Applications:</strong> <span id="applications" th:text="*{applicationCount}">0</span></p>
+                        <p><strong>Registration Date:</strong> <span id="registration-date" th:text="*{registrationDate}">N/A</span></p>
+                        <p><strong>Status:</strong> <span id="status" class="badge bg-success">Active</span></p>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <a th:href="@{/admin/adminDashboard#jobseekers}" class="btn btn-outline-primary"><i class="fas fa-arrow-left me-1"></i> Back to Job Seekers</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/admin/js/jobseeker-details.js}"></script>
+</body>
+</html>

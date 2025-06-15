@@ -4,6 +4,8 @@ import com.talenttap.DTO.AdminProfileDTO;
 import com.talenttap.DTO.ChangePasswordDTO;
 import com.talenttap.DTO.EmployerAdminDTO;
 import com.talenttap.DTO.EmployerDetailsDTO;
+import com.talenttap.DTO.JobSeekerAdminDTO;
+import com.talenttap.DTO.JobSeekerDetailsDTO;
 import com.talenttap.DTO.LoginDTO;
 import com.talenttap.model.Login;
 import jakarta.servlet.http.HttpServletResponse;
@@ -316,6 +318,56 @@ public class AdminService {
             throw new RuntimeException("Invalid or expired JWT token: " + e.getStatusCode(), e);
         } catch (Exception e) {
             throw new RuntimeException("Error unverifying employer: " + e.getMessage(), e);
+        }
+    }
+    
+    public List<JobSeekerAdminDTO> getAllJobSeekers(String jwtToken) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<JobSeekerAdminDTO[]> response = restTemplate.exchange(
+                    backendBaseUrl + "/admin/jobseekers",
+                    HttpMethod.GET,
+                    entity,
+                    JobSeekerAdminDTO[].class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                return Arrays.asList(response.getBody());
+            } else {
+                throw new RuntimeException("Failed to fetch job seekers: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Invalid or expired JWT token: " + e.getStatusCode(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching job seekers: " + e.getMessage(), e);
+        }
+    }
+
+    public JobSeekerDetailsDTO getJobSeekerDetails(String jwtToken, Integer jobSeekerId) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<JobSeekerDetailsDTO> response = restTemplate.exchange(
+                    backendBaseUrl + "/admin/jobseeker/" + jobSeekerId,
+                    HttpMethod.GET,
+                    entity,
+                    JobSeekerDetailsDTO.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Failed to fetch job seeker details: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Invalid or expired JWT token: " + e.getStatusCode(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching job seeker details: " + e.getMessage(), e);
         }
     }
 }

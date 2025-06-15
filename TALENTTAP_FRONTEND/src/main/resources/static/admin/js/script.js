@@ -279,6 +279,7 @@ function deleteJob(jobId) {
 
 // Event Listeners for Jobs Section
 document.addEventListener('DOMContentLoaded', function() {
+
     // Add event listeners for delete buttons
     document.querySelectorAll('.delete-job-btn').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -287,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
             deleteJob(jobId);
         });
     });
+		    
 // Event Listeners for Jobs Section
 document.getElementById('statusFilter')?.addEventListener('change', filterJobs);
 document.getElementById('approvalFilter')?.addEventListener('change', filterJobs);
@@ -740,132 +742,127 @@ if (bulkSuspendSeekers) {
 
 // Dashboard Charts
 document.addEventListener('DOMContentLoaded', function() {
-    const hash = window.location.hash.replace('#', '');
-    const validSections = ['dashboard', 'jobs', 'employers', 'jobseekers', 'applications', 'settings'];
-    if (hash && validSections.includes(hash)) {
-        showSection(hash);
-    } else {
-        showSection('dashboard');
-    }
 
-    initJobPagination();
+	const hash = window.location.hash.replace('#', '');
+	    const validSections = ['dashboard', 'jobs', 'employers', 'jobseekers', 'applications', 'settings'];
+	    if (hash && validSections.includes(hash)) {
+	        showSection(hash);
+	    } else {
+	        showSection('dashboard');
+	    }
+		
+	    new Chart(document.getElementById('userGrowthChart'), {
+	        type: 'pie',
+	        data: {
+	            labels: ['Job Seekers', 'Employers'],
+	            datasets: [{
+	                data: [750, 250],
+	                backgroundColor: ['#5e17eb', '#2a0a5a']
+	            }]
+	        },
+	        options: {
+	            responsive: true,
+	            maintainAspectRatio: false,
+	            plugins: {
+	                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            }
+	        }
+	    });
 
-    if (typeof Chart !== 'undefined') {
-        new Chart(document.getElementById('userGrowthChart'), {
-            type: 'pie',
-            data: {
-                labels: ['Job Seekers', 'Employers'],
-                datasets: [{
-                    data: [750, 250],
-                    backgroundColor: ['#5e17eb', '#2a0a5a']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                }
-            }
-        });
+	    new Chart(document.getElementById('jobPostingsChart'), {
+	        type: 'line',
+	        data: {
+	            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+	            datasets: [{
+	                label: 'IT',
+	                data: [50, 60, 70, 65, 80],
+	                borderColor: '#5e17eb',
+	                fill: false
+	            }, {
+	                label: 'Marketing',
+	                data: [30, 40, 35, 45, 50],
+	                borderColor: '#c4a0ff',
+	                fill: false
+	            }, {
+	                label: 'Healthcare',
+	                data: [20, 25, 30, 35, 40],
+	                borderColor: '#2a0a5a',
+	                fill: false
+	            }]
+	        },
+	        options: {
+	            responsive: true,
+	            maintainAspectRatio: false,
+	            plugins: {
+	                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            },
+	            scales: {
+	                x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
+	                y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            }
+	        }
+	    });
 
-        new Chart(document.getElementById('jobPostingsChart'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-                datasets: [{
-                    label: 'IT',
-                    data: [50, 60, 70, 65, 80],
-                    borderColor: '#5e17eb',
-                    fill: false
-                }, {
-                    label: 'Marketing',
-                    data: [30, 40, 35, 45, 50],
-                    borderColor: '#c4a0ff',
-                    fill: false
-                }, {
-                    label: 'Healthcare',
-                    data: [20, 25, 30, 35, 40],
-                    borderColor: '#2a0a5a',
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                },
-                scales: {
-                    x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
-                    y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                }
-            }
-        });
+	    new Chart(document.getElementById('jobApplicationsChart'), {
+	        type: 'line',
+	        data: {
+	            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+	            datasets: [{
+	                label: 'IT',
+	                data: [100, 120, 130, 125, 140],
+	                borderColor: '#5e17eb',
+	                fill: false
+	            }, {
+	                label: 'Marketing',
+	                data: [60, 70, 65, 75, 80],
+	                borderColor: '#c4a0ff',
+	                fill: false
+	            }, {
+	                label: 'Healthcare',
+	                data: [40, 45, 50, 55, 60],
+	                borderColor: '#2a0a5a',
+	                fill: false
+	            }]
+	        },
+	        options: {
+	            responsive: true,
+	            maintainAspectRatio: false,
+	            plugins: {
+	                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            },
+	            scales: {
+	                x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
+	                y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            }
+	        }
+	    });
 
-        new Chart(document.getElementById('jobApplicationsChart'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-                datasets: [{
-                    label: 'IT',
-                    data: [100, 120, 130, 125, 140],
-                    borderColor: '#5e17eb',
-                    fill: false
-                }, {
-                    label: 'Marketing',
-                    data: [60, 70, 65, 75, 80],
-                    borderColor: '#c4a0ff',
-                    fill: false
-                }, {
-                    label: 'Healthcare',
-                    data: [40, 45, 50, 55, 60],
-                    borderColor: '#2a0a5a',
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                },
-                scales: {
-                    x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
-                    y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                }
-            }
-        });
-
-        new Chart(document.getElementById('recruiterAnalyticsChart'), {
-            type: 'bar',
-            data: {
-                labels: ['TechCorp', 'MarketPro', 'HealthInc'],
-                datasets: [{
-                    label: 'Job Postings',
-                    data: [50, 30, 20],
-                    backgroundColor: '#5e17eb',
-                    barThickness: 18
-                }, {
-                    label: 'Applications',
-                    data: [150, 90, 60],
-                    backgroundColor: '#000000',
-                    barThickness: 18
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
-                    y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                },
-                plugins: {
-                    legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
-                }
-            }
-        });
-    } else {
-        console.warn("Chart.js library not found. Charts will not be rendered.");
-    }
-});
+	    new Chart(document.getElementById('recruiterAnalyticsChart'), {
+	        type: 'bar',
+	        data: {
+	            labels: ['TechCorp', 'MarketPro', 'HealthInc'],
+	            datasets: [{
+	                label: 'Job Postings',
+	                data: [50, 30, 20],
+	                backgroundColor: '#5e17eb',
+	                barThickness: 18
+	            }, {
+	                label: 'Applications',
+	                data: [150, 90, 60],
+	                backgroundColor: '#000000',
+	                barThickness: 18
+	            }]
+	        },
+	        options: {
+	            responsive: true,
+	            maintainAspectRatio: false,
+	            scales: {
+	                x: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } },
+	                y: { ticks: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            },
+	            plugins: {
+	                legend: { labels: { color: '#2a0a5a', font: { family: 'Poppins', size: 12 } } }
+	            }
+	        }
+	    });
+	});
